@@ -206,7 +206,7 @@
                         <td>${dataFormatada}</td>
                         <td>
                             <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn-action" style="background:#18aeb6; color:white; padding:0.4rem 0.8rem; font-size:0.85rem;" title="Fazer Entrevista" onclick="alert('Tela de Entrevista será aberta aqui.')"><i class="ri-survey-line" style="margin-right: 0.3rem;"></i>Entrevista</button>
+                                <button class="btn-action" style="background:#18aeb6; color:white; padding:0.4rem 0.8rem; font-size:0.85rem;" title="Fazer Entrevista" onclick="window.location.href='entrevista.html?id=${user.id}&empresa=${encodeURIComponent(user.empresa_name)}&contato=${encodeURIComponent(user.contato_name)}'"><i class="ri-survey-line" style="margin-right: 0.3rem;"></i>Entrevista</button>
                                 <button class="btn-action primary" style="padding:0.4rem 0.8rem; font-size:0.85rem;" title="Criar Orçamento" onclick="alert('Modal de Orçamento será aberto aqui.')"><i class="ri-money-dollar-circle-line" style="margin-right: 0.3rem;"></i>Orçamento</button>
                                 <button class="btn-action" style="background:rgba(239,68,68,0.15); color:#ef4444; padding:0.4rem; font-size:1.1rem; border:1px solid rgba(239,68,68,0.3);" title="Apagar Empresa" onclick="deleteUser(${user.id}, '${user.empresa_name}')"><i class="ri-delete-bin-line"></i></button>
                             </div>
