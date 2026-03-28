@@ -278,7 +278,7 @@
                     <h4>Fale com a Gestão</h4>
                     <p>Ficou com alguma dúvida ou deseja adiantar informações? Envie uma mensagem confidencial para a equipe de análise.</p>
                 </div>
-                <button class="btn-action" style="background: #18aeb6; color: white;" onclick="document.getElementById('quick-message-input').focus(); window.scrollTo(0, document.body.scrollHeight);">Enviar Mensagem <i class="ri-message-3-line"></i></button>
+                <button class="btn-action" style="background: #18aeb6; color: white;" onclick="toggleChat()">Enviar Mensagem <i class="ri-message-3-line"></i></button>
             </div>
         </div>
         
@@ -357,8 +357,8 @@
             </div>
         </div>
 
-        <!-- Painel Duplo: Histórico e Mensagens -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 4rem;">
+        <!-- Painel Central: Histórico do Projeto -->
+        <div style="margin-top: 4rem;">
             <!-- Histórico de Atividades -->
             <div class="recent-activity" style="margin-top: 0;">
                 <h3 style="font-size: 1.4rem; margin-bottom: 1.5rem; color: var(--text-white); display: flex; align-items: center; gap: 0.5rem;"><i class="ri-history-line" style="color: var(--primary-light);"></i> Histórico do Projeto</h3>
@@ -375,39 +375,51 @@
                             <h5>Conta Corporativa Criada</h5>
                             <p>Perfil estruturado no banco de dados.</p>
                         </div>
-                        <span style="color: var(--text-muted); font-size: 0.9rem;">Ontem, 14:15</span>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">Recente</span>
                     </li>
                 </ul>
-            </div>
-
-            <!-- Caixa de Mensagens (Chat Embebido) -->
-            <div class="recent-activity" style="margin-top: 0; display: flex; flex-direction: column; max-height: 500px;">
-                <h3 style="font-size: 1.4rem; margin-bottom: 1.5rem; color: var(--text-white); display: flex; align-items: center; gap: 0.5rem;"><i class="ri-chat-4-line" style="color: #18aeb6;"></i> Chat com a Gestão</h3>
-                
-                <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-                    <!-- Área de Histórico -->
-                    <div id="chat-history-area" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; min-height: 250px;">
-                        
-                        <!-- Mensagem Inicial do Sistema -->
-                        <div style="align-self: flex-start; max-width: 85%; background: rgba(25, 25, 30, 0.9); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; border-top-left-radius: 0;">
-                            <p style="color: var(--text-white); margin: 0; font-size: 0.95rem; line-height: 1.5;">Olá! Sua caixa de mensagens está ativa. As respostas da Ariane e da equipe de gestão aparecerão diretamente aqui nesta conversa.</p>
-                            <span style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; text-align: right;"><i class="ri-check-line"></i> Mensagem Automática</span>
-                        </div>
-                        
-                    </div>
-
-                    <!-- Área de Digitação -->
-                    <div style="background: rgba(25, 25, 30, 0.95); padding: 1rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 0.5rem; align-items: center;">
-                        <input type="text" id="quick-message-input" placeholder="Digite sua mensagem aqui..." style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem 1.2rem; border-radius: 50px; font-family: inherit; font-size: 0.95rem; outline: none; transition: 0.3s;" onfocus="this.style.borderColor='#18aeb6';" onblur="this.style.borderColor='rgba(255,255,255,0.1)';">
-                        <button onclick="sendQuickMessage()" class="btn-action" style="background: #18aeb6; color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; flex-shrink: 0;"><i class="ri-send-plane-fill" style="margin-right: 2px;"></i></button>
-                    </div>
-                </div>
             </div>
         </div>
 
     </main>
 
+    <div id="floating-chat" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end;">
+        <!-- Chat Area (Hidden By Default) -->
+        <div id="chat-window" style="display: none; width: 350px; height: 450px; background: rgba(25, 25, 30, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; margin-bottom: 1rem; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(20px);">
+            <div style="padding: 1rem; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: white; font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;"><i class="ri-chat-4-line" style="color: #18aeb6;"></i> Suporte da Gestão</span>
+                <button onclick="toggleChat()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.5rem;"><i class="ri-close-line"></i></button>
+            </div>
+
+            <div id="chat-history-area" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: rgba(0,0,0,0.1);">
+                <div style="align-self: flex-start; max-width: 85%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; border-top-left-radius: 0;">
+                    <p style="color: var(--text-white); margin: 0; font-size: 0.9rem; line-height: 1.5;">Olá! Pode mandar sua mensagem que a nossa Gestão responde direto por aqui.</p>
+                </div>
+            </div>
+
+            <div style="padding: 1rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 0.5rem; align-items: center; background: rgba(25, 25, 30, 0.95);">
+                <input type="text" id="quick-message-input" placeholder="Digite sua mensagem..." style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.6rem 1rem; border-radius: 50px; font-family: inherit; font-size: 0.9rem; outline: none;">
+                <button onclick="sendQuickMessage()" class="btn-action" style="background: #18aeb6; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; flex-shrink: 0;"><i class="ri-send-plane-fill"></i></button>
+            </div>
+        </div>
+
+        <!-- Float Button -->
+        <button onclick="toggleChat()" style="width: 65px; height: 65px; border-radius: 50%; background: #18aeb6; border: none; color: white; font-size: 2rem; cursor: pointer; box-shadow: 0 10px 25px rgba(24, 174, 182, 0.5); display: flex; justify-content: center; align-items: center; transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)'">
+            <i class="ri-chat-smile-3-line"></i>
+        </button>
+    </div>
+
     <script>
+    function toggleChat() {
+        const chatWindow = document.getElementById('chat-window');
+        if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+            chatWindow.style.display = 'flex';
+            setTimeout(() => { document.getElementById('quick-message-input').focus(); }, 100);
+        } else {
+            chatWindow.style.display = 'none';
+        }
+    }
+
     function sendQuickMessage() {
         const input = document.getElementById('quick-message-input');
         const msg = input.value.trim();
@@ -417,9 +429,9 @@
         
         // Simular o balão do usuário (Empresa)
         const userBubble = document.createElement('div');
-        userBubble.style.cssText = "align-self: flex-end; max-width: 85%; background: rgba(24, 174, 182, 0.15); border: 1px solid rgba(24, 174, 182, 0.3); padding: 1rem; border-radius: 12px; border-top-right-radius: 0; animation: fadeInSlide 0.3s ease forwards;";
+        userBubble.style.cssText = "align-self: flex-end; max-width: 85%; background: rgba(24, 174, 182, 0.15); border: 1px solid rgba(24, 174, 182, 0.3); padding: 1rem; border-radius: 12px; border-top-right-radius: 0;";
         userBubble.innerHTML = `
-            <p style="color: white; margin: 0; font-size: 0.95rem; line-height: 1.5;">${msg}</p>
+            <p style="color: white; margin: 0; font-size: 0.9rem; line-height: 1.5;">${msg}</p>
             <span style="display: block; font-size: 0.75rem; color: #18aeb6; margin-top: 0.5rem; text-align: left;"><i class="ri-check-double-line"></i> Agora</span>
         `;
         
