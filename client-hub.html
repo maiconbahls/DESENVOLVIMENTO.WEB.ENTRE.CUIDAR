@@ -521,9 +521,15 @@
         }, 5000);
 
         // Fetch propostas
+        console.log("Buscando proposta para user_id:", userId);
+        if(!userId) {
+            console.error("ERRO: userId não encontrado no localStorage!");
+        }
+
         fetch(`api/get_my_proposta.php?user_id=${userId}`)
         .then(res => res.json())
         .then(data => {
+            console.log("Resposta Proposta:", data);
             if(data.status === 'success' && data.data) {
                 if(data.data.status === 'Respondido') {
                     // Atualiza o card de orcamento
