@@ -2,7 +2,8 @@
 require 'config.php';
 
 $sql = "SELECT u.id, u.empresa_name, u.contato_name, u.email, u.created_at, 
-               p.id as proposta_id, p.status as proposta_status 
+               p.id as proposta_id, p.status as proposta_status,
+               p.q1, p.q2, p.q3, p.q4, p.q5
         FROM users u 
         LEFT JOIN propostas p ON u.id = p.user_id 
         WHERE u.role = 'empresa' 
