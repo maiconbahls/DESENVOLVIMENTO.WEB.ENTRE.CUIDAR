@@ -357,18 +357,50 @@
         function finishForm() {
             const radio = document.querySelector(`input[name="q5"]:checked`);
             if (!radio) return alert('Por favor, selecione uma opção.');
-            
+            const user_id = localStorage.getItem('user_id');
+            if(!user_id) {
+                alert('Erro na sua sessão. Faça login novamente.');
+                window.location.href = 'index.html';
+                return;
+            }
+
             const btn = document.querySelector('button[onclick="finishForm()"]');
             const originalHTML = btn.innerHTML;
             btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Enviando...';
             btn.disabled = true;
 
-            setTimeout(() => {
-                document.getElementById('step-6').classList.remove('active');
-                document.getElementById('step-7').classList.add('active');
-                // Hide indicators
-                document.getElementById('admin-steps').style.display = 'none';
-            }, 1000);
+            const formPayload = {
+                user_id: user_id,
+                q1: document.querySelector('input[name="q1"]:checked') ? document.querySelector('input[name="q1"]:checked').value : '',
+                q2: document.querySelector('input[name="q2"]:checked') ? document.querySelector('input[name="q2"]:checked').value : '',
+                q3: document.querySelector('input[name="q3"]:checked') ? document.querySelector('input[name="q3"]:checked').value : '',
+                q4: Array.from(document.querySelectorAll('input[name="q4"]:checked')).map(el => el.value),
+                q5: radio.value
+            };
+
+            fetch('api/save_proposta.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formPayload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                if(data.status === 'success') {
+                    document.getElementById('step-6').classList.remove('active');
+                    document.getElementById('step-7').classList.add('active');
+                    document.getElementById('admin-steps').style.display = 'none';
+                } else {
+                    alert('Houve um erro: ' + data.message);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Erro de conexão com o servidor.');
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
         }
 
         function updateIndicators(step) {

@@ -85,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.status === 'success') {
                 if(data.user && data.user.empresa) {
                     localStorage.setItem('user_empresa', data.user.empresa);
+                    localStorage.setItem('user_id', data.user.id);
                 }
                 if(data.user.role === 'admin') {
                     window.location.href = 'admin.html';
@@ -140,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.status === 'success') {
                 if(data.user && data.user.empresa) {
                     localStorage.setItem('user_empresa', data.user.empresa);
+                    localStorage.setItem('user_id', data.user.id);
                 }
                 alert("Sua conta foi criada com sucesso! Redirecionando para as soluções...");
                 window.location.href = 'client-hub.html';
