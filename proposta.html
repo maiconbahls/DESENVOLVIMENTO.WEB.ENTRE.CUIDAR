@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EntreCuidar - Proposta Comercial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <style>
+        .form-step { max-width: 900px; }
+        .product-cards.grid-4 { grid-template-columns: 1fr 1fr; }
+        .product-card input[type="checkbox"] { position: absolute; opacity: 0; cursor: pointer; }
+        .product-card input[type="checkbox"]:checked+.card-content {
+            background: rgba(24, 174, 182, 0.05);
+            border-color: var(--primary-color);
+        }
+        .product-card input[type="checkbox"]:checked+.card-content .icon-wrapper {
+            background: var(--primary-color);
+        }
+        .product-card input[type="checkbox"]:checked+.card-content .icon-wrapper i {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="form-wrapper glass-container" id="admin-view" style="display: flex;">
+        <header class="form-header">
+            <div class="header-top">
+                <img src="assets/img/EntreCuidar_Manualdemarca_v1.pdf.gif" alt="EntreCuidar Logo" class="logo">
+                <button class="btn-logout" title="Início" onclick="window.location.href='index.html'"><i class="ri-home-line"></i></button>
+            </div>
+            <h2>Diagnóstico e Proposta</h2>
+            <p>Preencha os dados da sua empresa e responda 5 perguntas rápidas para analisarmos o seu escopo.</p>
+            <div class="neon-divider"></div>
+        </header>
+
+        <div class="step-indicator" id="admin-steps" style="flex-wrap: wrap;">
+            <div class="step active" data-step="1"><i class="ri-building-line"></i></div>
+            <div class="step-line"></div>
+            <div class="step" data-step="2">1</div>
+            <div class="step-line"></div>
+            <div class="step" data-step="3">2</div>
+            <div class="step-line"></div>
+            <div class="step" data-step="4">3</div>
+            <div class="step-line"></div>
+            <div class="step" data-step="5">4</div>
+            <div class="step-line"></div>
+            <div class="step" data-step="6">5</div>
+        </div>
+
+        <form id="proposta-form">
+            <!-- STEP 1: EMPRESA -->
+            <div class="form-step active" id="step-1">
+                <h3>Dados de Contato da Empresa</h3>
+                <p class="subtitle">Precisamos das suas informações básicas para retornar o contato com a proposta.</p>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="empresa_nome">Nome da Empresa</label>
+                        <div class="input-icon">
+                            <i class="ri-building-4-line"></i>
+                            <input type="text" id="empresa_nome" name="empresa_nome" placeholder="Digite o nome da empresa" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="contato_nome">Nome do Contato</label>
+                        <div class="input-icon">
+                            <i class="ri-user-line"></i>
+                            <input type="text" id="contato_nome" name="contato_nome" placeholder="Seu nome completo" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="email">E-mail Corporativo</label>
+                        <div class="input-icon">
+                            <i class="ri-mail-line"></i>
+                            <input type="email" id="email" name="email" placeholder="contato@empresa.com" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="telefone">WhatsApp</label>
+                        <div class="input-icon">
+                            <i class="ri-whatsapp-line"></i>
+                            <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group align-right">
+                    <button type="button" class="btn-primary" onclick="nextStep(1)">Avançar <i class="ri-arrow-right-line"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="form-step" id="step-2">
+                <h3>1. Quantos beneficiários ativos a operadora possui?</h3>
+                <p class="subtitle">Essa informação define o volume de dados que será analisado.</p>
+                <div class="product-cards grid-4">
+                    <label class="product-card">
+                        <input type="radio" name="q1" value="Até 5.000" required>
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-hospital-line"></i></div>
+                            <h4>Até 5.000</h4>
+                            <p>Operadora de pequeno porte</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q1" value="5.000 a 20.000">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-building-line"></i></div>
+                            <h4>5.000 a 20.000</h4>
+                            <p>Operadora de médio porte</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q1" value="20.000 a 50.000">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-building-4-line"></i></div>
+                            <h4>20.000 a 50.000</h4>
+                            <p>Operadora de grande porte</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q1" value="Acima de 50.000">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-global-line"></i></div>
+                            <h4>Acima de 50.000</h4>
+                            <p>Operadora de porte nacional</p>
+                        </div>
+                    </label>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep(2)"><i class="ri-arrow-left-line"></i> Voltar</button>
+                    <button type="button" class="btn-primary" onclick="nextStep(2)">Avançar <i class="ri-arrow-right-line"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="form-step" id="step-3">
+                <h3>2. Quantas autorizações de neurodesenvolvimento processam por mês?</h3>
+                <p class="subtitle">Inclua ABA, fonoaudiologia, psicologia, etc.</p>
+                <div class="product-cards grid-4">
+                    <label class="product-card">
+                        <input type="radio" name="q2" value="Menos de 100">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-file-list-line"></i></div>
+                            <h4>Menos de 100/mês</h4>
+                            <p>Volume baixo</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q2" value="100 a 500">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-bar-chart-2-line"></i></div>
+                            <h4>100 a 500/mês</h4>
+                            <p>Volume moderado</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q2" value="500 a 2.000">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-line-chart-line"></i></div>
+                            <h4>500 a 2.000/mês</h4>
+                            <p>Volume alto</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q2" value="Acima de 2.000">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-rocket-line"></i></div>
+                            <h4>Acima de 2.000/mês</h4>
+                            <p>Volume muito alto</p>
+                        </div>
+                    </label>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep(3)"><i class="ri-arrow-left-line"></i> Voltar</button>
+                    <button type="button" class="btn-primary" onclick="nextStep(3)">Avançar <i class="ri-arrow-right-line"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="form-step" id="step-4">
+                <h3>3. Já possuem protocolos estruturados para autismo e TDAH?</h3>
+                <p class="subtitle">Protocolos de autorização, altas e acompanhamento.</p>
+                <div class="product-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <label class="product-card">
+                        <input type="radio" name="q3" value="Sim">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-checkbox-circle-line"></i></div>
+                            <h4>Sim</h4>
+                            <p>Temos protocolos aplicados</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q3" value="Parcialmente">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-settings-4-line"></i></div>
+                            <h4>Parcial</h4>
+                            <p>Existem mas sem padronização</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q3" value="Não">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-close-circle-line"></i></div>
+                            <h4>Não</h4>
+                            <p>Processos informais/inexistentes</p>
+                        </div>
+                    </label>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep(4)"><i class="ri-arrow-left-line"></i> Voltar</button>
+                    <button type="button" class="btn-primary" onclick="nextStep(4)">Avançar <i class="ri-arrow-right-line"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 5 -->
+            <div class="form-step" id="step-5">
+                <h3>4. Quais são os principais desafios com esse público?</h3>
+                <p class="subtitle">Selecione todos que se aplicam (múltipla escolha).</p>
+                <div class="product-cards grid-4">
+                    <label class="product-card">
+                        <input type="checkbox" name="q4" value="Custo elevado">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-money-dollar-circle-line"></i></div>
+                            <h4>Custo elevado</h4>
+                            <p>Gastos acima do esperado</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="checkbox" name="q4" value="Falta critério de alta">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-loop-right-line"></i></div>
+                            <h4>Falta critério de alta</h4>
+                            <p>Tratamento indefinido</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="checkbox" name="q4" value="Judicialização">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-scales-3-line"></i></div>
+                            <h4>Judicialização</h4>
+                            <p>Ações por negativas</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="checkbox" name="q4" value="Sem dados estruturados">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-file-chart-line"></i></div>
+                            <h4>Sem Dados</h4>
+                            <p>Dificuldade de monitorar</p>
+                        </div>
+                    </label>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep(5)"><i class="ri-arrow-left-line"></i> Voltar</button>
+                    <button type="button" class="btn-primary" onclick="nextStep(5)">Avançar <i class="ri-arrow-right-line"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 6 -->
+            <div class="form-step" id="step-6">
+                <h3>5. Em quantas cidades sua operadora atua?</h3>
+                <p class="subtitle">Impacta no levantamento de processos regionais.</p>
+                <div class="product-cards grid-4">
+                    <label class="product-card">
+                        <input type="radio" name="q5" value="1 cidade">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-map-pin-line"></i></div>
+                            <h4>1 Cidade</h4>
+                            <p>Atuação local</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q5" value="2 a 5 cidades">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-map-pin-range-line"></i></div>
+                            <h4>2 a 5 Cidades</h4>
+                            <p>Atuação regional</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q5" value="6 a 20 cidades">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-road-map-line"></i></div>
+                            <h4>6 a 20 Cidades</h4>
+                            <p>Atuação multirregional</p>
+                        </div>
+                    </label>
+                    <label class="product-card">
+                        <input type="radio" name="q5" value="Mais de 20">
+                        <div class="card-content">
+                            <div class="icon-wrapper"><i class="ri-earth-line"></i></div>
+                            <h4>Mais de 20</h4>
+                            <p>Estadual/Nacional</p>
+                        </div>
+                    </label>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep(6)"><i class="ri-arrow-left-line"></i> Voltar</button>
+                    <button type="button" class="btn-primary" onclick="finishForm()">Enviar Solicitação <i class="ri-check-line"></i></button>
+                </div>
+            </div>
+
+            <!-- FINAL REPORT -->
+            <div class="form-step success-step" id="step-7">
+                <div class="success-icon"><i class="ri-file-search-line"></i></div>
+                <h3>Solicitação Enviada com Sucesso!</h3>
+                <p>Nossa equipe de Gestão (Ariane) recebeu todos os seus dados e as suas respostas. Entraremos em contato com você o mais breve possível com um escopo feito sob medida.</p>
+                
+                <div class="btn-group align-center">
+                    <button type="button" class="btn-secondary" onclick="window.location.href='index.html'">Voltar ao Portal</button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        function validateInputs(step) {
+            const currentStepElement = document.getElementById(`step-${step}`);
+            const inputs = currentStepElement.querySelectorAll('input[required]');
+            let valid = true;
+            inputs.forEach(input => {
+                if(input.value.trim() === '') {
+                    valid = false;
+                    input.closest('.input-group').classList.add('error');
+                } else {
+                    input.closest('.input-group').classList.remove('error');
+                }
+            });
+            return valid;
+        }
+
+        function nextStep(current) {
+            if (current === 1) {
+                if(!validateInputs(1)) return alert('Preencha todos os campos da empresa.');
+            } else if (current === 5) {
+                const checks = document.querySelectorAll(`input[name="q4"]:checked`);
+                if (checks.length === 0) return alert('Selecione pelo menos um desafio.');
+            } else {
+                const radio = document.querySelector(`input[name="q${current-1}"]:checked`);
+                if (!radio) return alert('Por favor, selecione uma opção.');
+            }
+
+            document.getElementById(`step-${current}`).classList.remove('active');
+            document.getElementById(`step-${current + 1}`).classList.add('active');
+            updateIndicators(current + 1);
+        }
+
+        function prevStep(current) {
+            document.getElementById(`step-${current}`).classList.remove('active');
+            document.getElementById(`step-${current - 1}`).classList.add('active');
+            updateIndicators(current - 1);
+        }
+
+        function finishForm() {
+            const radio = document.querySelector(`input[name="q5"]:checked`);
+            if (!radio) return alert('Por favor, selecione uma opção.');
+            
+            const btn = document.querySelector('button[onclick="finishForm()"]');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Enviando...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('step-6').classList.remove('active');
+                document.getElementById('step-7').classList.add('active');
+                // Hide indicators
+                document.getElementById('admin-steps').style.display = 'none';
+            }, 1000);
+        }
+
+        function updateIndicators(step) {
+            const indicators = document.querySelectorAll('.step-indicator .step');
+            indicators.forEach((ind, index) => {
+                if (index + 1 === step) {
+                    ind.classList.add('active');
+                    ind.classList.remove('completed');
+                } else if (index + 1 < step) {
+                    ind.classList.remove('active');
+                    ind.classList.add('completed');
+                } else {
+                    ind.classList.remove('active', 'completed');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

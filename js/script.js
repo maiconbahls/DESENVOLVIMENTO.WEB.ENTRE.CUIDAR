@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const submitBtn = loginForm.querySelector('button[type="submit"]');
+        const emailInput = loginForm.querySelector('input[type="email"]').value;
+        const passInput = loginForm.querySelector('input[type="password"]').value;
         const originalText = submitBtn.innerHTML;
 
         submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Entrando...';
@@ -62,11 +64,28 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-            loginForm.reset();
-
-            // Hide Login, Show Code Input
-            loginBox.classList.remove('active');
-            codeBox.classList.add('active');
+            
+            if(emailInput === 'ariane@entrecuidar.com.br' && passInput === 'gestao') {
+                window.location.href = 'admin.html';
+                return;
+            } else if (emailInput === 'empresa1@hotmail.com' && passInput === 'empresa') {
+                window.location.href = 'client-hub.html';
+                return;
+            } else {
+                let errorMsg = loginForm.querySelector('.login-error');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('p');
+                    errorMsg.className = 'login-error auth-switch';
+                    errorMsg.style.color = '#ff6b6b';
+                    errorMsg.style.marginTop = '1rem';
+                    errorMsg.innerText = 'E-mail ou senha incorretos.';
+                    loginForm.appendChild(errorMsg);
+                } else {
+                    // blink effect if error already exists
+                    errorMsg.style.opacity = '0.5';
+                    setTimeout(() => errorMsg.style.opacity = '1', 150);
+                }
+            }
         }, 1000);
     });
 
@@ -79,15 +98,23 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Criando conta...';
         submitBtn.disabled = true;
 
-        // Simulate API Registration
+        // Simulate API Registration checking
         setTimeout(() => {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-            registerForm.reset();
-
-            // Hide Register, Show Code Input
-            registerBox.classList.remove('active');
-            codeBox.classList.add('active');
+            
+            let errorMsg = registerForm.querySelector('.login-error');
+            if (!errorMsg) {
+                errorMsg = document.createElement('p');
+                errorMsg.className = 'login-error auth-switch';
+                errorMsg.style.color = '#ff6b6b';
+                errorMsg.style.marginTop = '1rem';
+                errorMsg.innerText = 'Cadastro indisponível. Utilize as contas de demonstração fornecidas.';
+                registerForm.appendChild(errorMsg);
+            } else {
+                errorMsg.style.opacity = '0.5';
+                setTimeout(() => errorMsg.style.opacity = '1', 150);
+            }
         }, 1000);
     });
 
