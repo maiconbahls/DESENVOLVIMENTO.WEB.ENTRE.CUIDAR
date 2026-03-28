@@ -1,109 +1,175 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EntreCuidar - Gestão</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/style.css?v=5">
+    <link rel="stylesheet" href="css/style.css?v=8">
     <style>
-        .dashboard { max-width: 1200px; padding: 2rem; width: 100%; display: flex; flex-direction: column; gap: 2rem; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #111 0%, #080808 100%);
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        .top-navbar {
+            width: 100%;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4rem;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-navbar img { height: 45px; }
+
+        .user-menu { display: flex; align-items: center; gap: 1.5rem; }
+        .user-menu span { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; }
+        .user-menu span i { font-size: 1.2rem; color: var(--primary-color); }
+
+        .main-container {
+            margin-top: 80px;
+            padding: 4rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        .page-header { margin-bottom: 3rem; }
+        .page-header h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem; }
+        .page-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 4rem; }
+        
+        .stat-card {
+            background: rgba(25, 25, 30, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.1); }
         .stat-card h4 { color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
-        .stat-card .value { font-size: 2.2rem; font-weight: 700; color: var(--primary-light); }
-        .table-responsive { width: 100%; overflow-x: auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; }
+        .stat-card .value { font-size: 2.5rem; font-weight: 700; color: var(--primary-light); }
+        
+        .recent-activity h3 { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--text-white); }
+        
+        .table-responsive { width: 100%; overflow-x: auto; background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1rem; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; text-align: left; }
-        th { padding: 1rem; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
-        td { padding: 1rem; color: var(--text-white); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        tr:hover td { background: rgba(255,255,255,0.03); }
+        th { padding: 1rem; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        td { padding: 1rem; color: var(--text-white); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        
         .badge { background: rgba(100,205,246,0.15); color: var(--primary-light); padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
         .badge.pendente { background: rgba(243,115,62,0.15); color: var(--primary-color); }
+        .badge.analisado { background: rgba(157, 207, 127, 0.15); color: #9dcf7f; }
+        
+        .btn-action { background: rgba(255,255,255,0.05); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        .btn-action:hover { background: rgba(255,255,255,0.1); }
+        .btn-action.primary { background: var(--primary-color); }
+        .btn-action.primary:hover { background: #d86231; }
     </style>
 </head>
+
 <body>
-    <div style="width: 100vw; display: flex; justify-content: center;">
-        <main class="dashboard glass-container" style="margin-top: 2rem; border-radius: 16px;">
-            <header class="header-top" style="margin-bottom: 0;">
-                <img src="assets/img/EntreCuidar_Manualdemarca_v1.pdf.gif" alt="EntreCuidar Logo" style="height: 60px;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <span style="color: var(--text-muted);">Bem-vinda, Ariane</span>
-                    <button class="btn-logout" title="Sair" onclick="window.location.href='index.html'"><i class="ri-logout-box-r-line"></i></button>
-                </div>
-            </header>
-            
-            <div class="neon-divider" style="margin: 0;"></div>
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+        <img src="assets/img/EntreCuidar_Manualdemarca_v1.pdf.gif" alt="EntreCuidar Logo">
+        <div class="user-menu">
+            <span><i class="ri-shield-star-line"></i> Gestão Ariane</span>
+            <button class="btn-logout" title="Sair do Sistema" onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
+                <i class="ri-logout-box-r-line"></i> Sair
+            </button>
+        </div>
+    </nav>
 
-            <div>
-                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Visão Geral</h3>
-                <p style="color: var(--text-light);">Acompanhamento de cadastros e solicitações de diagnóstico.</p>
-            </div>
+    <main class="main-container">
+        <div class="page-header">
+            <h2>Gestão Operacional <i class="ri-briefcase-4-line" style="color: var(--primary-color);"></i></h2>
+            <p>Acompanhe o funil de diagnósticos e as propostas enviadas pelas operadoras interessadas.</p>
+        </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div>
-                        <h4>Clientes Cadastrados</h4>
-                        <div class="value">24</div>
-                    </div>
-                    <i class="ri-building-line" style="font-size: 2.5rem; color: var(--primary-light); opacity: 0.8;"></i>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div>
+                    <h4>Clientes na Base</h4>
+                    <div class="value">24</div>
                 </div>
-                <div class="stat-card">
-                    <div>
-                        <h4>Diagnósticos Pendentes</h4>
-                        <div class="value" style="color: var(--primary-color);">5</div>
-                    </div>
-                    <i class="ri-survey-line" style="font-size: 2.5rem; color: var(--primary-color); opacity: 0.8;"></i>
-                </div>
-                <div class="stat-card">
-                    <div>
-                        <h4>Propostas Analisadas</h4>
-                        <div class="value" style="color: #9dcf7f;">19</div>
-                    </div>
-                    <i class="ri-checkbox-circle-line" style="font-size: 2.5rem; color: #9dcf7f; opacity: 0.8;"></i>
-                </div>
+                <i class="ri-building-line" style="font-size: 3rem; color: var(--primary-light); opacity: 0.8;"></i>
             </div>
+            <div class="stat-card" style="border-color: rgba(243,115,62,0.3); background: linear-gradient(145deg, rgba(25,25,30,0.6) 0%, rgba(243,115,62,0.05) 100%);">
+                <div>
+                    <h4>Diagnósticos Pendentes</h4>
+                    <div class="value" style="color: var(--primary-color);">5</div>
+                </div>
+                <i class="ri-survey-line" style="font-size: 3rem; color: var(--primary-color); opacity: 0.8;"></i>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <h4>Propostas Analisadas</h4>
+                    <div class="value" style="color: #9dcf7f;">19</div>
+                </div>
+                <i class="ri-checkbox-circle-line" style="font-size: 3rem; color: #9dcf7f; opacity: 0.8;"></i>
+            </div>
+        </div>
 
-            <div>
-                <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Últimas Solicitações Recebidas</h3>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Empresa</th>
-                                <th>Contato</th>
-                                <th>Beneficiários</th>
-                                <th>Status</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>NobreSaúde Care</strong></td>
-                                <td>carlos@nobresaude.com.br<br><small>(11) 98888-7777</small></td>
-                                <td>5.000 a 20.000</td>
-                                <td><span class="badge pendente">Pendente</span></td>
-                                <td><button class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Analisar <i class="ri-arrow-right-line"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Vitalis Regional</strong></td>
-                                <td>amanda.silva@vitalis.com<br><small>(41) 99999-1111</small></td>
-                                <td>Até 5.000</td>
-                                <td><span class="badge">Analisado</span></td>
-                                <td><button class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Visualizar</button></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Grupo Alpha Saúde</strong></td>
-                                <td>diretoria@alpha.com.br<br><small>(21) 97777-5555</small></td>
-                                <td>Acima de 50.000</td>
-                                <td><span class="badge">Analisado</span></td>
-                                <td><button class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Visualizar</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="recent-activity">
+            <h3><i class="ri-list-check-3" style="margin-right: 0.5rem; color: var(--primary-light);"></i> Últimas Solicitações Recebidas</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Empresa</th>
+                            <th>Contato</th>
+                            <th>Volume Beneficiários</th>
+                            <th>Status Questionário</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Empresa 1 S/A</strong></td>
+                            <td>diretoria@empresa1.com<br><small>(11) 98888-7777</small></td>
+                            <td>5.000 a 20.000</td>
+                            <td><span class="badge pendente">Pendente Avaliação</span></td>
+                            <td><button class="btn-action primary">Analisar <i class="ri-arrow-right-line"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vitalis Regional</strong></td>
+                            <td>amanda.silva@vitalis.com<br><small>(41) 99999-1111</small></td>
+                            <td>Até 5.000</td>
+                            <td><span class="badge analisado">Analisado</span></td>
+                            <td><button class="btn-action">Ver Relatório</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Grupo Alpha Saúde</strong></td>
+                            <td>diretoria@alpha.com.br<br><small>(21) 97777-5555</small></td>
+                            <td>Acima de 50.000</td>
+                            <td><span class="badge analisado">Analisado</span></td>
+                            <td><button class="btn-action">Ver Relatório</button></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
 </body>
 </html>

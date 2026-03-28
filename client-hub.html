@@ -1,65 +1,307 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EntreCuidar - Hub da Operadora</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/style.css?v=6">
+    <link rel="stylesheet" href="css/style.css?v=7">
     <style>
-        .dashboard { max-width: 1200px; padding: 2rem; width: 100%; display: flex; flex-direction: column; gap: 2rem; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden; }
-        .stat-card h4 { color: var(--text-white); font-size: 1.1rem; margin-bottom: 0.2rem; }
-        .stat-card p { color: var(--text-muted); font-size: 0.9rem; }
-        .badge { background: rgba(100,205,246,0.15); color: var(--primary-light); padding: 0.4rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; align-self: flex-start; }
-        .badge.pendente { background: rgba(243,115,62,0.15); color: var(--primary-color); }
+        /* Override styles for full-page website look */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #111 0%, #080808 100%);
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        .top-navbar {
+            width: 100%;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4rem;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-navbar img {
+            height: 45px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-menu span {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-menu span i {
+            font-size: 1.2rem;
+            color: var(--primary-light);
+        }
+
+        .main-container {
+            margin-top: 80px; /* Offset for navbar */
+            padding: 4rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(25, 25, 30, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .stat-card h4 {
+            color: var(--text-white);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .badge {
+            background: rgba(100, 205, 246, 0.15);
+            color: var(--primary-light);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge.pendente { background: rgba(243, 115, 62, 0.15); color: var(--primary-color); }
         .badge.liberado { background: rgba(157, 207, 127, 0.15); color: #9dcf7f; }
+
+        .card-icon-bg {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 12rem;
+            z-index: 0;
+        }
+
+        .card-content {
+            z-index: 1;
+        }
+
+        .btn-action {
+            z-index: 1;
+            align-self: flex-start;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .btn-action.primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(243, 115, 62, 0.3);
+        }
+
+        .btn-action.primary:hover {
+            background: #d86231;
+            transform: translateY(-2px);
+        }
+
+        .btn-action.disabled {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+        
+        .recent-activity {
+            margin-top: 4rem;
+        }
+        
+        .recent-activity h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-white);
+        }
+        
+        .activity-list {
+            background: rgba(25, 25, 30, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .activity-item {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-info h5 {
+            font-size: 1.1rem;
+            color: var(--text-white);
+            margin-bottom: 0.3rem;
+        }
+        
+        .activity-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
     </style>
 </head>
+
 <body>
-    <div style="width: 100vw; display: flex; justify-content: center; min-height: 100vh;">
-        <main class="dashboard glass-container" style="margin-top: 2rem; border-radius: 16px; align-self: flex-start;">
-            <header class="header-top" style="margin-bottom: 0;">
-                <img src="assets/img/EntreCuidar_Manualdemarca_v1.pdf.gif" alt="EntreCuidar Logo" style="height: 60px;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <span style="color: var(--text-muted);">Bem-vinda, Empresa 1</span>
-                    <button class="btn-logout" title="Sair" onclick="window.location.href='index.html'"><i class="ri-logout-box-r-line"></i></button>
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+        <img src="assets/img/EntreCuidar_Manualdemarca_v1.pdf.gif" alt="EntreCuidar Logo">
+        <div class="user-menu">
+            <span><i class="ri-building-4-line"></i> Empresa 1 S/A</span>
+            <button class="btn-logout" title="Sair do Portal" onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
+                <i class="ri-logout-box-r-line"></i> Sair
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Portal Content -->
+    <main class="main-container">
+        
+        <div class="page-header">
+            <h2>Meu Portal <i class="ri-dashboard-line" style="color: var(--primary-color);"></i></h2>
+            <p>Acompanhe o andamento das suas solicitações, realize diagnósticos e veja suas propostas de escopo.</p>
+        </div>
+
+        <div class="stats-grid">
+            <!-- Card Questionário Liberado -->
+            <div class="stat-card" style="border-color: rgba(157, 207, 127, 0.3); background: linear-gradient(145deg, rgba(25,25,30,0.6) 0%, rgba(157,207,127,0.05) 100%);">
+                <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.03);"><i class="ri-survey-line"></i></div>
+                <div class="card-content">
+                    <span class="badge liberado"><i class="ri-lock-unlock-line"></i> Ação Necessária</span>
+                    <h4>Diagnóstico Operacional e Clínico</h4>
+                    <p>A equipe de Gestão da EntreCuidar liberou seu questionário primário. Responda as perguntas críticas para que possamos mapear o escopo do seu projeto.</p>
                 </div>
-            </header>
+                <button class="btn-action primary" onclick="window.location.href='proposta.html'">Responder Questionário <i class="ri-arrow-right-line"></i></button>
+            </div>
+
+            <!-- Card Proposta (Bloqueado) -->
+            <div class="stat-card">
+                <div class="card-icon-bg" style="color: rgba(255, 255, 255, 0.02);"><i class="ri-file-search-line"></i></div>
+                <div class="card-content">
+                    <span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-muted);"><i class="ri-lock-line"></i> Bloqueado</span>
+                    <h4>Relatório de Proposta e Escopo</h4>
+                    <p>Sua proposta totalmente detalhada com o levantamento de custos, áreas de atuação e cronograma aparecerá aqui após a análise do seu diagnóstico.</p>
+                </div>
+                <button class="btn-action disabled" disabled>Aguardando Respostas <i class="ri-time-line"></i></button>
+            </div>
             
-            <div class="neon-divider" style="margin: 0;"></div>
-
-            <div>
-                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Meu Portal</h3>
-                <p style="color: var(--text-light);">Acompanhe o andamento das suas solicitações e propostas.</p>
-            </div>
-
-            <div class="stats-grid">
-                <!-- Card Questionário Liberado -->
-                <div class="stat-card" style="border-color: rgba(157, 207, 127, 0.3);">
-                    <div style="position: absolute; top: -20px; right: -20px; font-size: 8rem; color: rgba(157, 207, 127, 0.05); z-index: 0;"><i class="ri-survey-line"></i></div>
-                    <div style="z-index: 1;">
-                        <span class="badge liberado" style="margin-bottom: 0.5rem; display: inline-block;"><i class="ri-lock-unlock-line"></i> Formulário Liberado</span>
-                        <h4>Diagnóstico Operacional e Clínico</h4>
-                        <p>A equipe de Gestão liberou seu questionário primário. Responda as 5 perguntas para receber a Análise de Escopo.</p>
-                    </div>
-                    <button class="btn-primary" style="z-index: 1; align-self: flex-start; padding: 0.6rem 1.2rem; margin-top: 0.5rem;" onclick="window.location.href='proposta.html'">Responder Diagnóstico <i class="ri-arrow-right-line"></i></button>
+            <!-- Card Atendimento -->
+            <div class="stat-card">
+                <div class="card-icon-bg" style="color: rgba(100, 205, 246, 0.02);"><i class="ri-customer-service-2-line"></i></div>
+                <div class="card-content">
+                    <span class="badge"><i class="ri-whatsapp-line"></i> Suporte</span>
+                    <h4>Atendimento Exclusivo</h4>
+                    <p>Ficou com dúvidas sobre o preenchimento ou deseja antecipar algum detalhe com nossos especialistas? Entre em contato agora.</p>
                 </div>
-
-                <!-- Card Proposta (Bloqueado) -->
-                <div class="stat-card">
-                    <div style="position: absolute; top: -20px; right: -20px; font-size: 8rem; color: rgba(255, 255, 255, 0.02); z-index: 0;"><i class="ri-file-search-line"></i></div>
-                    <div style="z-index: 1;">
-                        <span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-muted); margin-bottom: 0.5rem; display: inline-block;"><i class="ri-lock-line"></i> Bloqueado</span>
-                        <h4>Relatório de Proposta e Escopo</h4>
-                        <p>Sua proposta detalhada com levantamento de custos e cronograma aparecerá aqui após a análise do diagnóstico.</p>
-                    </div>
-                    <button class="btn-secondary" style="z-index: 1; align-self: flex-start; padding: 0.6rem 1.2rem; margin-top: 0.5rem; opacity: 0.5; cursor: not-allowed;" disabled>Aguardando Questionário</button>
-                </div>
+                <button class="btn-action" style="background: #18aeb6; color: white;" onclick="alert('Em breve: Redirecionamento para o WhatsApp da Ariane.')">Falar no WhatsApp <i class="ri-whatsapp-line"></i></button>
             </div>
-        </main>
-    </div>
+        </div>
+        
+        <!-- Histórico de Atividades -->
+        <div class="recent-activity">
+            <h3><i class="ri-history-line" style="margin-right: 0.5rem; color: var(--primary-light);"></i> Histórico do Projeto</h3>
+            <ul class="activity-list">
+                <li class="activity-item">
+                    <div class="activity-info">
+                        <h5>Acesso ao Portal Liberado</h5>
+                        <p>A equipe liberou suas credenciais de acesso ao sistema.</p>
+                    </div>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">Hoje, 09:30</span>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-info">
+                        <h5>Conta Corporativa Criada</h5>
+                        <p>Perfil da Empresa 1 S/A estruturado no banco de dados.</p>
+                    </div>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">Ontem, 14:15</span>
+                </li>
+            </ul>
+        </div>
+
+    </main>
 </body>
 </html>
