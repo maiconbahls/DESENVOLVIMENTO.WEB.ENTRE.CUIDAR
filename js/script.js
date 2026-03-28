@@ -23,6 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const btnBackLinks = document.querySelectorAll('.btn-back-intro-link');
+    btnBackLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            authView.classList.add('hidden');
+            introView.classList.remove('hidden');
+            loginBox.classList.add('active');
+            registerBox.classList.remove('active');
+            loginForm.reset();
+            registerForm.reset();
+        });
+    });
+
     // ---- AUTHENTICATION LOGIC ----
     const loginBox = document.getElementById('login-box');
     const registerBox = document.getElementById('register-box');

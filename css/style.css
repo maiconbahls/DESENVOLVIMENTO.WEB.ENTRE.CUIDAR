@@ -549,15 +549,17 @@ body::before {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.15);
     color: var(--text-muted);
-    width: 45px;
+    width: auto;
+    padding: 0.5rem 1rem;
     height: 45px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
     cursor: pointer;
     transition: var(--transition);
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 .btn-logout:hover {

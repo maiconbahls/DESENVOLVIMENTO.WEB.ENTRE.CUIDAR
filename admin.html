@@ -20,6 +20,7 @@
         }
 
         .top-navbar {
+            box-sizing: border-box;
             width: 100%;
             height: 80px;
             background: rgba(255, 255, 255, 0.02);
@@ -92,7 +93,7 @@
 <body>
     <!-- Top Navigation Bar -->
     <nav class="top-navbar">
-        <img src="assets/img/EntreCuidar_Manualdemarca_v1.pdf.gif" alt="EntreCuidar Logo">
+        <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo">
         <div class="user-menu">
             <span><i class="ri-shield-star-line"></i> Gestão Ariane</span>
             <button class="btn-logout" title="Sair do Sistema" onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
@@ -165,6 +166,33 @@
                             <td>Acima de 50.000</td>
                             <td><span class="badge analisado">Analisado</span></td>
                             <td><button class="btn-action">Ver Relatório</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="recent-activity" style="margin-top: 4rem;">
+            <h3><i class="ri-mail-unread-line" style="margin-right: 0.5rem; color: #18aeb6;"></i> Caixa de Mensagens (Suporte)</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Quando um cliente utilizar a opção "Fale com a Gestão" no Portal dele, as mensagens cairão nesta caixa de entrada.</p>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Protocolo</th>
+                            <th>Remetente (Operadora)</th>
+                            <th>Sua Mensagem</th>
+                            <th>Recebido em</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span style="font-family: monospace; color: #6c757d;">#MSG-1002</span></td>
+                            <td><strong>Empresa 1 S/A</strong></td>
+                            <td style="color: #18aeb6; font-style: italic;"><i class="ri-chat-1-line" style="margin-right: 0.3rem;"></i> "Olá, poderia nos ajudar com o questionário?"</td>
+                            <td>Hoje, 14:30</td>
+                            <td><button class="btn-action primary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;" onclick="alert('Um modal de chat abrirá aqui para responder diretamente ao painel da Empresa.')">Visualizar e Responder</button></td>
                         </tr>
                     </tbody>
                 </table>
