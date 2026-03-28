@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Diagnósticos - EntreCuidar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css?v=13">
+    <style>
+        body { margin: 0; padding: 0; min-height: 100vh; background: #080808; color: white; font-family: 'Outfit', sans-serif; }
+        .top-navbar { height: 80px; width: 100%; position: fixed; top: 0; z-index: 100; background: rgba(25, 25, 30, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 4rem; box-sizing: border-box; }
+        .main-content { max-width: 1400px; margin: 120px auto 100px; padding: 0 4rem; }
+        .page-header { margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: flex-end; }
+        .filters-bar { background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; display: flex; gap: 1.5rem; align-items: center; }
+        .search-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1.2rem; border-radius: 10px; color: white; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: #18aeb6; }
+        .table-container { background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { padding: 1.2rem 1.5rem; background: rgba(0,0,0,0.2); color: #6b7280; font-weight: 500; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: #e5e7eb; font-size: 0.95rem; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+        .status-badge { padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .badge-analysed { background: rgba(24, 174, 182, 0.1); color: #18aeb6; }
+        .btn-view { background: #18aeb6; color: white; padding: 0.5rem 1rem; border-radius: 8px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 0.4rem; }
+        .btn-view:hover { background: #0e7b82; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+    <nav class="top-navbar">
+        <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo" style="height: 45px;">
+        <div style="display: flex; gap: 2rem;">
+            <a href="admin.html" style="color: #9ca3af; text-decoration: none; font-size: 0.95rem; font-weight: 500;">Gestão Operacional</a>
+            <a href="entrevistas-lista.html" style="color: white; text-decoration: none; font-size: 0.95rem; font-weight: 600; border-bottom: 2px solid #18aeb6; padding-bottom: 4px;">Relatórios de Diagnóstico</a>
+        </div>
+        <div style="width: 45px;"></div>
+    </nav>
+
+    <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 800;">Central de B.I</h1>
+                <p style="color: #9ca3af;">Acompanhe todos os diagnósticos profundos realizados por empresa.</p>
+            </div>
+            <div style="text-align: right;">
+                <span id="total-reports" style="font-size: 2rem; font-weight: 800; color: #18aeb6; display: block;">0</span>
+                <span style="color: #6b7280; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">Relatórios Gerados</span>
+            </div>
+        </div>
+
+        <div class="filters-bar">
+            <i class="ri-search-2-line" style="color: #18aeb6; font-size: 1.2rem;"></i>
+            <input type="text" id="search-box" class="search-input" placeholder="Filtrar por nome da empresa ou respondente..." onkeyup="filterReports()">
+            <select id="filter-porte" class="search-input" style="max-width: 200px;" onchange="filterReports()">
+                <option value="">Porte da Empresa (Todos)</option>
+                <option value="<500">Menos de 500</option>
+                <option value="500-2000">500 a 2.000</option>
+                <option value=">2000">Acima de 2.000</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table id="reports-table">
+                <thead>
+                    <tr>
+                        <th>Cód</th>
+                        <th>Empresa</th>
+                        <th>Respondente</th>
+                        <th>Data Realizada</th>
+                        <th>Porte / Região</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let allReports = [];
+
+        function loadReports() {
+            fetch('api/get_entrevistas.php')
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    allReports = data.data;
+                    document.getElementById('total-reports').innerText = allReports.length;
+                    renderTable(allReports);
+                }
+            });
+        }
+
+        function renderTable(list) {
+            const tbody = document.querySelector('#reports-table tbody');
+            tbody.innerHTML = '';
+            
+            if(list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:3rem; color:#6b7280;">Nenhum diagnóstico encontrado.</td></tr>';
+                return;
+            }
+
+            list.forEach(item => {
+                const tr = document.createElement('tr');
+                const d = new Date(item.created_at);
+                const dataStr = d.toLocaleDateString('pt-BR');
+
+                tr.innerHTML = `
+                    <td><span style="color:#6b7280;">#${item.id}</span></td>
+                    <td><strong style="color:white; font-size:1rem;">${item.empresa_nome}</strong></td>
+                    <td>${item.respondente_nome} (${item.respondente_cargo})</td>
+                    <td>${dataStr}</td>
+                    <td>${item.porte_empresa} / ${item.regiao_atuacao}</td>
+                    <td>
+                        <button class="btn-view" onclick="window.location.href='relatorio-diagnostico.html?id=${item.id}'">
+                            <i class="ri-bar-chart-box-line"></i> Abrir Indicadores
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterReports() {
+            const search = document.getElementById('search-box').value.toLowerCase();
+            const porte = document.getElementById('filter-porte').value;
+
+            const filtered = allReports.filter(r => {
+                const matchName = r.empresa_nome.toLowerCase().includes(search) || r.respondente_nome.toLowerCase().includes(search);
+                const matchPorte = porte === "" || r.porte_empresa === porte;
+                return matchName && matchPorte;
+            });
+            renderTable(filtered);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadReports);
+    </script>
+</body>
+</html>

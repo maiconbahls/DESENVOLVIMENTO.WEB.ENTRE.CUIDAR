@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Indicadores - EntreCuidar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css?v=13">
+    <style>
+        body { margin: 0; padding: 0; min-height: 100vh; background: #080808; color: white; font-family: 'Outfit', sans-serif; }
+        .top-navbar { height: 80px; width: 100%; position: fixed; top: 0; z-index: 100; background: rgba(25, 25, 30, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 4rem; box-sizing: border-box; }
+        .main-content { max-width: 1400px; margin: 120px auto 100px; padding: 0 4rem; }
+        .grid-header { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+        .kpi-card { background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .kpi-value { font-size: 2.2rem; font-weight: 800; color: #18aeb6; margin: 0.5rem 0; }
+        .kpi-label { color: #6b7280; font-size: 0.8rem; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+        .chart-container { background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 2.5rem; margin-bottom: 2rem; }
+        .chart-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; color: white; display: flex; align-items: center; gap: 0.6rem; }
+        .bar-row { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.2rem; }
+        .bar-label { flex: 0 0 400px; font-size: 0.95rem; color: #e5e7eb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .bar-outer { flex: 1; height: 12px; background: rgba(255,255,255,0.03); border-radius: 50px; overflow: hidden; }
+        .bar-inner { height: 100%; background: linear-gradient(90deg, #18aeb6, #0e7b82); width: 0%; border-radius: 50px; transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
+        .bar-value { flex: 0 0 40px; text-align: right; color: #18aeb6; font-weight: 700; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="top-navbar">
+        <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo" style="height: 45px;">
+        <button onclick="window.history.back()" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding: 0.6rem 1.2rem; border-radius: 30px; color:white; cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+            <i class="ri-arrow-left-line"></i> Voltar à Lista
+        </button>
+    </nav>
+
+    <div class="main-content">
+        <header style="margin-bottom: 4rem; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <span id="label-empresa" style="background: rgba(24, 174, 182, 0.1); color: #18aeb6; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Diagnóstico Consolidado</span>
+                <h1 id="title-empresa" style="font-size: 3rem; margin-top: 0.8rem; font-weight: 800;">---</h1>
+                <p style="color: #6b7280; margin-top: 0.4rem; font-size: 1.1rem;"><i class="ri-calendar-line"></i> Data da Entrevista: <span id="data-entrevista">---</span></p>
+            </div>
+            <div style="text-align: right;">
+                <p style="color: #6b7280; margin-bottom: 0.4rem;">Índice Geral de Risco</p>
+                <div id="risk-score" style="font-size: 3.5rem; font-weight: 800; color: #ff6b6b;">0%</div>
+            </div>
+        </header>
+
+        <div class="grid-header">
+            <div class="kpi-card">
+                <i class="ri-team-line" style="color:#18aeb6; font-size:1.5rem; margin-bottom:0.5rem;"></i>
+                <div class="kpi-value" id="kpi-beneficiarios">---</div>
+                <div class="kpi-label">Beneficiários TEA</div>
+            </div>
+            <div class="kpi-card">
+                <i class="ri-exchange-funds-line" style="color:#18aeb6; font-size:1.5rem; margin-bottom:0.5rem;"></i>
+                <div class="kpi-value" id="kpi-custo">---</div>
+                <div class="kpi-label">Custo Médio Mensal</div>
+            </div>
+            <div class="kpi-card">
+                <i class="ri-line-chart-line" style="color:#18aeb6; font-size:1.5rem; margin-bottom:0.5rem;"></i>
+                <div class="kpi-value" id="kpi-tendencia">---</div>
+                <div class="kpi-label">Tendência Financeira</div>
+            </div>
+            <div class="kpi-card">
+                <i class="ri-node-tree" style="color:#18aeb6; font-size:1.5rem; margin-bottom:0.5rem;"></i>
+                <div class="kpi-value" id="kpi-protocolo">---</div>
+                <div class="kpi-label">Maturidade Clínica</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title"><i class="ri-alert-line" style="color:#ff6b6b;"></i> Mapa de Entraves Identificados (Gravidade x Incidência)</h2>
+            <div id="indicators-list">
+                <!-- JS -->
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div class="chart-container">
+                <h3 class="chart-title"><i class="ri-file-search-line"></i> Processo Regulatório</h3>
+                <div id="analise-auditoria" style="color: #e5e7eb; font-size: 1.1rem; line-height: 1.6;">---</div>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title"><i class="ri-group-line"></i> Estrutura de Gestão</h3>
+                <div id="analise-equipe" style="color: #e5e7eb; font-size: 1.1rem; line-height: 1.6;">---</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const entrantsNames = [
+            "Alto Custo Terápico",
+            "Falta de Indicadores de Evolução",
+            "Controle de Alta Terapêutica",
+            "Carga Horária Exagerada",
+            "Laudos Receita de Bolo",
+            "Diagnósticos Precipitados",
+            "Intervenção Precoce Tardia",
+            "Manutenção de Terapias Convencionais",
+            "Dificuldade de Auditoria In Loco",
+            "Prescrições com Conflito de Interesse",
+            "Vulnerabilidade Psicológica/Fraude"
+        ];
+
+        function loadDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if(!id) return;
+
+            fetch(`api/get_entrevista_detalhes.php?id=${id}`)
+            .then(res => res.json())
+            .then(resData => {
+                if(resData.status === 'success') {
+                    const d = resData.data;
+                    document.getElementById('title-empresa').textContent = d.empresa_nome;
+                    document.getElementById('data-entrevista').textContent = new Date(d.data_entrevista).toLocaleDateString('pt-BR');
+                    
+                    document.getElementById('kpi-beneficiarios').textContent = d.q1_beneficiarios;
+                    document.getElementById('kpi-custo').textContent = d.q2_custo_mensal;
+                    document.getElementById('kpi-tendencia').textContent = d.q3_crescimento;
+                    document.getElementById('kpi-protocolo').textContent = d.q4_protocolo;
+                    
+                    document.getElementById('analise-auditoria').innerHTML = `Sistema de Acompanhamento: <strong>${d.q6_ferramenta_acompanhamento || 'Não informado'}</strong><br>Histórico de Auditoria: <strong>${d.q7_auditoria || 'Nula'}</strong>`;
+                    document.getElementById('analise-equipe').innerHTML = `Equipe Dedicada: <strong>${d.q5_equipe_dedicada}</strong><br>Porte da Operadora: <strong>${d.porte_empresa}</strong>`;
+
+                    // Generate Indicators
+                    const listCont = document.getElementById('indicators-list');
+                    let totalGravity = 0;
+                    
+                    for(let i=1; i<=11; i++) {
+                        const gravity = parseInt(d['g'+i]);
+                        const percent = (gravity / 5) * 100;
+                        totalGravity += gravity;
+                        
+                        const row = document.createElement('div');
+                        row.className = 'bar-row';
+                        row.innerHTML = `
+                            <div class="bar-label">${i}. ${entrantsNames[i-1]}</div>
+                            <div class="bar-outer"><div class="bar-inner" style="width: ${percent}%; ${gravity > 3 ? 'background: linear-gradient(90deg, #ff6b6b, #b91c1c);' : ''}"></div></div>
+                            <div class="bar-value" style="${gravity > 3 ? 'color: #ff6b6b;' : ''}">${gravity}</div>
+                        `;
+                        listCont.appendChild(row);
+                    }
+
+                    // Score Cálculo (Total Gravidade x 100 / Máx possível 55)
+                    const finalRisk = Math.round((totalGravity / (11 * 5)) * 100);
+                    document.getElementById('risk-score').innerText = finalRisk + '%';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDetails);
+    </script>
+</body>
+</html>

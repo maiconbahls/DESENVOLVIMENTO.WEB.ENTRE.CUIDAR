@@ -7,22 +7,26 @@ if(!isset($data->user_id) || !isset($data->valor)) {
     exit;
 }
 
-// Failsafe to ensure columns exist
-$conn->query("ALTER TABLE propostas ADD COLUMN orcamento_produto VARCHAR(255) NULL");
-$conn->query("ALTER TABLE propostas ADD COLUMN orcamento_valor VARCHAR(255) NULL");
-$conn->query("ALTER TABLE propostas ADD COLUMN orcamento_detalhes TEXT NULL");
+// Failsafe to ensure columns exist w/o throwing fatal errors if they already exist
+try { $conn->query("ALTER TABLE propostas ADD COLUMN orcamento_produto VARCHAR(255) NULL"); } catch(Exception $e) {}
+try { $conn->query("ALTER TABLE propostas ADD COLUMN orcamento_valor VARCHAR(255) NULL"); } catch(Exception $e) {}
+try { $conn->query("ALTER TABLE propostas ADD COLUMN orcamento_detalhes TEXT NULL"); } catch(Exception $e) {}
 
 $u = $data->user_id;
 $p = $data->produto;
 $v = $data->valor;
 $d = $data->detalhes;
 
-$stmt = $conn->prepare("UPDATE propostas SET orcamento_produto = ?, orcamento_valor = ?, orcamento_detalhes = ?, status = 'Respondido' WHERE user_id = ?");
-$stmt->bind_param("sssi", $p, $v, $d, $u);
-$stmt->execute();
+$check = $conn->prepare("SELECT id FROM propostas WHERE user_id = ?");
+$check->bind_param("i", $u);
+$check->execute();
+$res = $check->get_result();
 
-if($stmt->affected_rows == 0) {
-    // It means the user never even submitted the diagnostic form. Let's create an empty one with the budget.
+if($res->num_rows > 0) {
+    $stmt = $conn->prepare("UPDATE propostas SET orcamento_produto = ?, orcamento_valor = ?, orcamento_detalhes = ?, status = 'Respondido' WHERE user_id = ?");
+    $stmt->bind_param("sssi", $p, $v, $d, $u);
+    $stmt->execute();
+} else {
     $stmt2 = $conn->prepare("INSERT INTO propostas (user_id, status, orcamento_produto, orcamento_valor, orcamento_detalhes) VALUES (?, 'Respondido', ?, ?, ?)");
     $stmt2->bind_param("isss", $u, $p, $v, $d);
     $stmt2->execute();

@@ -3,79 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário Analítico - Gestão</title>
+    <title>Entrevista Diagnóstica Avançada - EntreCuidar</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/style.css?v=8">
+    <link rel="stylesheet" href="css/style.css?v=12">
     <style>
-        body {
-            margin: 0; padding: 0; min-height: 100vh;
-            background: #080808; color: white;
-            font-family: 'Outfit', sans-serif;
-        }
-        .top-navbar {
-            height: 80px; width: 100%; position: fixed; top: 0; z-index: 100;
-            background: rgba(25, 25, 30, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between;
-            padding: 0 4rem; box-sizing: border-box;
-        }
-        .container { max-width: 1000px; margin: 120px auto 40px; padding: 2rem; background: rgba(25, 25, 30, 0.4); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
-        .section-title { font-size: 1.4rem; color: #18aeb6; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; margin-top: 3rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 1.05rem; color: #e5e7eb; }
-        .form-control { width: 100%; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: inherit; box-sizing: border-box; }
-        .radio-group { display: flex; flex-direction: column; gap: 0.5rem; margin-left: 0.5rem; }
-        .radio-item { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-muted); }
-        .matrix-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        .matrix-table th, .matrix-table td { padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
-        .matrix-table th { color: var(--text-muted); font-weight: 500; font-size: 0.9rem; }
-        .btn-submit { background: var(--primary-color); color: white; padding: 1rem 2rem; border-radius: 8px; border: none; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 3rem; transition: 0.3s; }
-        .btn-submit:hover { background: #d86231; transform: translateY(-2px); }
+        body { margin: 0; padding: 0; min-height: 100vh; background: #080808; color: white; font-family: 'Outfit', sans-serif; }
+        .top-navbar { height: 80px; width: 100%; position: fixed; top: 0; z-index: 100; background: rgba(25, 25, 30, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 4rem; box-sizing: border-box; }
+        .container { max-width: 1000px; margin: 120px auto 100px; padding: 3rem; background: rgba(25, 25, 30, 0.4); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .section-title { font-size: 1.4rem; color: #18aeb6; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem; margin-top: 4rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.8rem; letter-spacing: 0.5px; }
+        .section-title i { font-size: 1.6rem; }
+        .form-group { margin-bottom: 1.8rem; }
+        .form-group label { display: block; margin-bottom: 0.8rem; font-weight: 500; font-size: 1.1rem; color: #e5e7eb; }
+        .form-control { width: 100%; padding: 1.1rem; border-radius: 12px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: inherit; box-sizing: border-box; font-size: 1rem; transition: 0.3s; }
+        .form-control:focus { outline: none; border-color: #18aeb6; background: rgba(24, 174, 182, 0.05); }
+        .radio-group { display: flex; flex-direction: column; gap: 0.8rem; margin-left: 0.5rem; }
+        .radio-item { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; color: #9ca3af; transition: 0.3s; padding: 0.5rem; border-radius: 8px; }
+        .radio-item:hover { background: rgba(255,255,255,0.03); color: white; }
+        .radio-item input { width: 18px; height: 18px; accent-color: #18aeb6; }
+        .matrix-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        .matrix-table th, .matrix-table td { padding: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
+        .matrix-table th { color: #6b7280; font-weight: 500; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-submit { background: linear-gradient(135deg, #18aeb6 0%, #0e7b82 100%); color: white; padding: 1.2rem 2.5rem; border-radius: 12px; border: none; font-size: 1.2rem; font-weight: 700; cursor: pointer; width: 100%; margin-top: 4rem; transition: 0.4s; box-shadow: 0 10px 20px rgba(24, 174, 182, 0.2); display: flex; align-items: center; justify-content: center; gap: 0.8rem; }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(24, 174, 182, 0.4); filter: brightness(1.1); }
+        .btn-submit:disabled { background: #374151; cursor: not-allowed; transform: none; box-shadow: none; }
     </style>
 </head>
 <body>
     <nav class="top-navbar">
         <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo" style="height: 45px;">
-        <div style="color: var(--text-muted);"><i class="ri-survey-line"></i> Portal de Relatórios Clínicos e Financeiros</div>
-        <button onclick="window.location.href='admin.html'" style="background:none; border:none; color:white; cursor:pointer; font-size:1rem; display:flex; align-items:center; gap:0.5rem;">
-            <i class="ri-arrow-go-back-line"></i> Voltar pra Gestão
+        <div style="color: #9ca3af; font-weight: 500;"><i class="ri-dashboard-3-line"></i> Diagnóstico e Gestão de Beneficiários</div>
+        <button onclick="window.history.back()" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding: 0.6rem 1.2rem; border-radius: 30px; color:white; cursor:pointer; font-size:0.9rem; display:flex; align-items:center; gap:0.5rem; transition: 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+            <i class="ri-arrow-left-line"></i> Voltar
         </button>
     </nav>
 
     <div class="container">
-        <div style="margin-bottom: 2rem;">
-            <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Entrevista Diagnóstica Avançada</h1>
-            <p style="color: var(--text-muted);">Empresa vinculada: <strong id="header-empresa" style="color: white; font-size: 1.1rem;">Carregando...</strong></p>
-        </div>
+        <header style="margin-bottom: 4rem; text-align: center;">
+            <span style="background: rgba(24, 174, 182, 0.1); color: #18aeb6; padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;">Protocolo Diagnóstico</span>
+            <h1 style="font-size: 2.8rem; margin: 1rem 0 0.5rem; font-weight: 800; background: linear-gradient(135deg, #fff 0%, #9ca3af 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Entrevista Diagnóstica Completa</h1>
+            <p style="color: #9ca3af; font-size: 1.1rem;">Análise técnica para a empresa: <strong id="header-empresa" style="color: #18aeb6;">Carregando...</strong></p>
+        </header>
 
         <form id="entrevista-form">
-
-            <!-- ID DO USUÁRIO INVISÍVEL -->
             <input type="hidden" id="user_id" name="user_id">
 
-            <div class="section-title"><i class="ri-profile-line"></i> Seção 1 — Identificação da Empresa</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <!-- SEÇÃO 1: IDENTIFICAÇÃO -->
+            <div class="section-title"><i class="ri-building-line"></i> Seção 1 — Identificação da Empresa</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div class="form-group">
                     <label>Nome da operadora/empresa</label>
-                    <input type="text" class="form-control" name="s1_nome" id="s1_nome" required>
+                    <input type="text" class="form-control" name="empresa" id="s1_nome" required>
                 </div>
                 <div class="form-group">
                     <label>Nome do respondente</label>
-                    <input type="text" class="form-control" name="s1_respondente" id="s1_respondente" required>
+                    <input type="text" class="form-control" name="respondente" id="s1_respondente" required>
                 </div>
                 <div class="form-group">
                     <label>Cargo/função</label>
-                    <input type="text" class="form-control" name="s1_cargo" required>
+                    <input type="text" class="form-control" name="cargo" id="s1_cargo" required>
                 </div>
                 <div class="form-group">
                     <label>Data da entrevista</label>
-                    <input type="date" class="form-control" name="s1_data" required>
+                    <input type="date" class="form-control" name="data" id="s1_data" required>
                 </div>
                 <div class="form-group">
-                    <label>Porte da empresa</label>
-                    <select class="form-control" name="s1_porte">
-                        <option value="">Selecione...</option>
-                        <option value="<500">Menos de 500 beneficiários</option>
+                    <label>Porte da empresa (Nº Beneficiários)</label>
+                    <select class="form-control" name="porte" id="s1_porte" required>
+                        <option value="">Selecione o porte...</option>
+                        <option value="<500">Menos de 500</option>
                         <option value="500-2000">500 a 2.000</option>
                         <option value="2001-10000">2.001 a 10.000</option>
                         <option value=">10000">Mais de 10.000</option>
@@ -83,115 +79,113 @@
                 </div>
                 <div class="form-group">
                     <label>Região de atuação</label>
-                    <input type="text" class="form-control" name="s1_regiao" placeholder="Ex: Sul e Sudeste">
+                    <input type="text" class="form-control" name="regiao" id="s1_regiao" placeholder="ex: Nacional, Sul, etc.">
                 </div>
             </div>
 
-            <div class="section-title"><i class="ri-money-dollar-circle-line"></i> Seção 2 — Contexto Financeiro e Volume</div>
-            
+            <!-- SEÇÃO 2: FINANCEIRO -->
+            <div class="section-title"><i class="ri-money-dollar-box-line"></i> Seção 2 — Contexto Financeiro e Volume</div>
             <div class="form-group">
-                <label>Q1. Quantos beneficiários ativos possuem diagnóstico de neurodesenvolvimento (TEA, TDAH, etc.)?</label>
+                <label>Q1. Quantos beneficiários ativos possuem diagnóstico de neurodesenvolvimento?</label>
                 <div class="radio-group">
                     <label class="radio-item"><input type="radio" name="q1" value="<50"> Menos de 50</label>
                     <label class="radio-item"><input type="radio" name="q1" value="50-200"> 50 a 200</label>
                     <label class="radio-item"><input type="radio" name="q1" value="201-500"> 201 a 500</label>
                     <label class="radio-item"><input type="radio" name="q1" value=">500"> Acima de 500</label>
-                    <label class="radio-item"><input type="radio" name="q1" value="Não sei"> Não sei informar</label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Q2. Qual o custo médio mensal estimado com terapias especializadas (ABA, Fonoaudiologia, TO etc.)?</label>
+                <label>Q2. Qual o custo médio mensal estimado com terapias especializadas?</label>
                 <div class="radio-group">
-                    <label class="radio-item"><input type="radio" name="q2" value="<50k"> Menos de R$ 50 mil</label>
-                    <label class="radio-item"><input type="radio" name="q2" value="50-200k"> R$ 50 mil – R$ 200 mil</label>
-                    <label class="radio-item"><input type="radio" name="q2" value="200-500k"> R$ 200 mil – R$ 500 mil</label>
+                    <label class="radio-item"><input type="radio" name="q2" value="<50k"> Até R$ 50 mil</label>
+                    <label class="radio-item"><input type="radio" name="q2" value="50-200k"> R$ 50 mil a R$ 200 mil</label>
+                    <label class="radio-item"><input type="radio" name="q2" value="200-500k"> R$ 200 mil a R$ 500 mil</label>
                     <label class="radio-item"><input type="radio" name="q2" value=">500k"> Acima de R$ 500 mil</label>
-                    <label class="radio-item"><input type="radio" name="q2" value="Não sei"> Não sei informar</label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Q3. Houve crescimento nos custos com neurodesenvolvimento nos últimos 12 meses?</label>
+                <label>Q3. Houve crescimento nos custos nos últimos 12 meses?</label>
                 <div class="radio-group">
-                    <label class="radio-item"><input type="radio" name="q3" value="Significativo"> Sim, crescimento significativo (>20%)</label>
-                    <label class="radio-item"><input type="radio" name="q3" value="Moderado"> Sim, crescimento moderado (até 20%)</label>
-                    <label class="radio-item"><input type="radio" name="q3" value="Estável"> Estável</label>
-                    <label class="radio-item"><input type="radio" name="q3" value="Reduziu"> Reduziu</label>
-                    <label class="radio-item"><input type="radio" name="q3" value="Não monitorado"> Não monitoramos</label>
+                    <label class="radio-item"><input type="radio" name="q3" value="Aumento Expressivo"> Sim, aumento expressivo (>25%)</label>
+                    <label class="radio-item"><input type="radio" name="q3" value="Aumento Moderado"> Sim, aumento moderado (até 25%)</label>
+                    <label class="radio-item"><input type="radio" name="q3" value="Estável"> Estável / Controlado</label>
                 </div>
             </div>
 
-            <div class="section-title"><i class="ri-git-merge-line"></i> Seção 3 — Processos e Estrutura Interna</div>
+            <!-- SEÇÃO 3: ESTRUTURA -->
+            <div class="section-title"><i class="ri-stack-line"></i> Seção 3 — Processos e Estrutura Interna</div>
+            <div class="form-group">
+                <label>Q4. A operadora possui protocolo formal para gestão desses beneficiários?</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="q4" value="Sim, estruturado"> Sim, estruturado</label>
+                    <label class="radio-item"><input type="radio" name="q4" value="Em implantação"> Parcial / Em implantação</label>
+                    <label class="radio-item"><input type="radio" name="q4" value="Não possui"> Ainda não possui</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Q5. A empresa possui equipe dedicada ao gerenciamento de casos de TEA?</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="q5" value="Sim, exclusiva"> Sim, equipe exclusiva</label>
+                    <label class="radio-item"><input type="radio" name="q5" value="Sim, híbrida"> Sim, equipe híbrida</label>
+                    <label class="radio-item"><input type="radio" name="q5" value="Não"> Não possui equipe dedicada</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Q6. Qual sistema ou ferramenta é utilizado atualmente para o acompanhamento clínico?</label>
+                <input type="text" class="form-control" name="q6" placeholder="ex: Planilhas Excel, Software de Auditoria...">
+            </div>
+
+            <div class="form-group">
+                <label>Q7. Avaliação de Auditoria Técnica:</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="q7" value="Eficiente"> Auditoria Eficiente</label>
+                    <label class="radio-item"><input type="radio" name="q7" value="Parcial"> Auditoria Parcial/Fragilizada</label>
+                    <label class="radio-item"><input type="radio" name="q7" value="Nula"> Inexistente</label>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 7: MATRIZ -->
+            <div class="section-title"><i class="ri-bar-chart-2-line"></i> Seção 7 — Mapeamento de Entraves e Riscos</div>
+            <p style="color: #9ca3af; margin-bottom: 2rem;">Avalie a **Gravidade (0-5)** e a **Frequência** observada para cada fator crítico abaixo:</p>
             
-            <div class="form-group">
-                <label>Q4. A operadora possui protocolo formal para gestão de beneficiários?</label>
-                <div class="radio-group">
-                    <label class="radio-item"><input type="radio" name="q4" value="Estruturado"> Sim, estruturado e documentado</label>
-                    <label class="radio-item"><input type="radio" name="q4" value="Informal"> Sim, mas informal</label>
-                    <label class="radio-item"><input type="radio" name="q4" value="Não possui"> Não possui</label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Q5. A empresa possui equipe dedicada ao gerenciamento de casos?</label>
-                <div class="radio-group">
-                    <label class="radio-item"><input type="radio" name="q5" value="Exclusiva"> Sim, equipe exclusiva</label>
-                    <label class="radio-item"><input type="radio" name="q5" value="Compartilhada"> Compartilhada com outras demandas</label>
-                    <label class="radio-item"><input type="radio" name="q5" value="Não possui"> Não possui</label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Q6. Qual ferramenta/sistema é usado para acompanhar esses beneficiários?</label>
-                <input type="text" class="form-control" name="q6" placeholder="Ex: Planilhas, Sistema Integrado...">
-            </div>
-
-            <div class="form-group">
-                <label>Q7. Já houve tentativa de implementar auditoria ou regulação?</label>
-                <div class="radio-group">
-                    <label class="radio-item"><input type="radio" name="q7" value="Sim, sucesso"> Sim, com sucesso</label>
-                    <label class="radio-item"><input type="radio" name="q7" value="Sim, sem resultado"> Sim, mas sem resultado</label>
-                    <label class="radio-item"><input type="radio" name="q7" value="Não"> Não</label>
-                </div>
-            </div>
-
-            <div class="section-title"><i class="ri-bar-chart-2-line"></i> Seção 7 — Mapeamento dos 11 Entraves</div>
-            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">Avalie cada item abaixo: 0 = Não se aplica | 1-2 = Baixo | 3 = Moderado | 4-5 = Alto</p>
-            
-            <div style="overflow-x: auto;">
+            <div style="overflow-x: auto; background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
                 <table class="matrix-table">
                     <thead>
                         <tr>
-                            <th>Entrave Identificado</th>
-                            <th style="width: 15%">Gravidade (0 a 5)</th>
+                            <th>Entrave / Risco Identificado</th>
+                            <th style="width: 18%">Gravidade (0 a 5)</th>
                             <th style="width: 25%">Frequência</th>
                         </tr>
                     </thead>
                     <tbody id="entraves-body">
-                        <!-- Populated manually to keep the code clean -->
+                        <!-- Gerado via JS -->
                     </tbody>
                 </table>
             </div>
 
-            <button type="button" class="btn-submit" onclick="alert('Salvamento e PDF em construção.')"><i class="ri-save-line"></i> Finalizar Entrevista e Submeter</button>
-
+            <button type="submit" class="btn-submit" id="btn-submit-final">
+                <i class="ri-save-3-line"></i> Finalizar Diagnóstico e Gerar Indicadores
+            </button>
         </form>
     </div>
 
     <script>
         const entravesList = [
-            "Alto custo com as terapias",
-            "Baixo controle da efetividade do tratamento",
-            "Imprevisibilidade de alta e evolução das crianças",
-            "Carga horária exagerada",
-            "Prescrições médicas 'receita de bolo'",
-            "Diagnósticos forçados",
-            "Diagnóstico tardio e perda de intervenção precoce",
-            "Paciente em terapia convencional quando deveria ser especial",
-            "Falta de auditoria eficiente nas clínicas",
-            "Plano terapêutico com conflito de interesse",
-            "Sofrimento emocional dos pais / vulnerabilidade a fraudes"
+            "Custo exorbitante das terapias especializadas",
+            "Inexistência de indicadores de evolução clínica",
+            "Falta de controle sobre a alta terapêutica",
+            "Carga horária prescrita desproporcional ao quadro",
+            "Laudos genéricos e pouco individualizados",
+            "Suspeita de diagnósticos precipitados",
+            "Intervenção precoce ineficaz ou tardia",
+            "Manutenção de terapias convencionais sem resultado",
+            "Dificuldade de auditoria técnica in loco",
+            "Prescrições com conflito de interesse evidente",
+            "Vulnerabilidade da família frente a promessas de cura"
         ];
 
         const tbody = document.getElementById('entraves-body');
@@ -199,42 +193,76 @@
             const i = index + 1;
             tbody.innerHTML += `
                 <tr>
-                    <td style="color:white; font-size:0.95rem;">${i}. ${entrave}</td>
+                    <td style="color:white; font-size:0.95rem; line-height:1.4;"><strong>${i}.</strong> ${entrave}</td>
                     <td>
-                        <select class="form-control" style="padding:0.5rem;" name="gravidade_${i}">
-                            <option value="0">0</option>
+                        <select class="form-control" style="padding:0.6rem; font-size:0.9rem;" name="g${i}" required>
+                            <option value="0">0 (Nulo)</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option value="5">5 (Crítico)</option>
                         </select>
                     </td>
                     <td>
-                        <select class="form-control" style="padding:0.5rem;" name="frequencia_${i}">
+                        <select class="form-control" style="padding:0.6rem; font-size:0.9rem;" name="f${i}" required>
                             <option value="Raramente">Raramente</option>
                             <option value="Às vezes">Às vezes</option>
-                            <option value="Sempre">Sempre</option>
+                            <option value="Frequentemente">Frequentemente</option>
+                            <option value="Grave/Constante">Grave/Constante</option>
                         </select>
                     </td>
                 </tr>
             `;
         });
 
-        // Parse Query Params to prefill data
+        // Prefill from URL
         const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
         const empresaName = urlParams.get('empresa');
         const contatoName = urlParams.get('contato');
-        const userId = urlParams.get('id');
 
-        if(empresaName) {
-            document.getElementById('header-empresa').textContent = empresaName;
-            document.getElementById('s1_nome').value = empresaName;
+        if(userId) {
             document.getElementById('user_id').value = userId;
+            document.getElementById('header-empresa').textContent = empresaName || '---';
+            document.getElementById('s1_nome').value = empresaName || '';
+            document.getElementById('s1_respondente').value = contatoName || '';
+            document.getElementById('s1_data').valueAsDate = new Date();
         }
-        if(contatoName) {
-            document.getElementById('s1_respondente').value = contatoName;
-        }
+
+        // FORM SUBMISSION
+        document.getElementById('entrevista-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-final');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Processando Diagnóstico...';
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            fetch('api/save_entrevista.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(resData => {
+                if(resData.status === 'success') {
+                    alert('Entrevista Finalizada com Sucesso! Redirecionando para o Dashboard de Indicadores...');
+                    window.location.href = `relatorio-diagnostico.html?id=${resData.id}`;
+                } else {
+                    alert('Erro ao salvar: ' + resData.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="ri-save-3-line"></i> Tentar Novamente';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Erro na conexão com o servidor.');
+                btn.disabled = false;
+            });
+        });
     </script>
 </body>
 </html>
