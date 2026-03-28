@@ -207,7 +207,7 @@
                         <td>
                             <div style="display: flex; gap: 0.5rem;">
                                 <button class="btn-action" style="background:#18aeb6; color:white; padding:0.4rem 0.8rem; font-size:0.85rem;" title="Fazer Entrevista" onclick="window.location.href='entrevista.html?id=${user.id}&empresa=${encodeURIComponent(user.empresa_name)}&contato=${encodeURIComponent(user.contato_name)}'"><i class="ri-survey-line" style="margin-right: 0.3rem;"></i>Entrevista</button>
-                                <button class="btn-action primary" style="padding:0.4rem 0.8rem; font-size:0.85rem;" title="Criar Orçamento" onclick="alert('Modal de Orçamento será aberto aqui.')"><i class="ri-money-dollar-circle-line" style="margin-right: 0.3rem;"></i>Orçamento</button>
+                                <button class="btn-action primary" style="padding:0.4rem 0.8rem; font-size:0.85rem;" title="Criar Orçamento" onclick="abrirModalOrcamento(${user.id}, '${user.empresa_name}')"><i class="ri-money-dollar-circle-line" style="margin-right: 0.3rem;"></i>Orçamento</button>
                                 <button class="btn-action" style="background:rgba(239,68,68,0.15); color:#ef4444; padding:0.4rem; font-size:1.1rem; border:1px solid rgba(239,68,68,0.3);" title="Apagar Empresa" onclick="deleteUser(${user.id}, '${user.empresa_name}')"><i class="ri-delete-bin-line"></i></button>
                             </div>
                         </td>
@@ -245,6 +245,53 @@
     }
 
     document.addEventListener('DOMContentLoaded', loadUsers);
+
+    function abrirModalOrcamento(id, empresa) {
+        document.getElementById('orc_empresa').innerText = empresa;
+        document.getElementById('orc_user_id').value = id;
+        document.getElementById('orcamento-modal').style.display = 'flex';
+    }
+
+    function salvarOrcamento() {
+        const userId = document.getElementById('orc_user_id').value;
+        const btn = event.target;
+        btn.innerHTML = 'Enviando...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            alert('Orçamento Oficial Liberado para o cliente com Sucesso! (Salvamento e PDF nos próximos passos)');
+            document.getElementById('orcamento-modal').style.display = 'none';
+            btn.innerHTML = 'Enviar Oficial';
+            btn.disabled = false;
+        }, 1200);
+    }
     </script>
+
+    <!-- Modal de Orçamento -->
+    <div id="orcamento-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+        <div style="background:#111; padding: 2.5rem; border-radius:16px; border:1px solid rgba(255,255,255,0.1); width: 500px; max-width:90%; color:white;">
+            <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Gerenciador de Orçamento</h3>
+            <p style="color:var(--text-muted); margin-bottom: 1.5rem;">Defina valores para a empresa: <strong id="orc_empresa" style="color:white;"></strong></p>
+            
+            <input type="hidden" id="orc_user_id">
+            
+            <label style="display:block; margin-bottom: 0.5rem; color:#bbb;">Produto Indicado</label>
+            <select id="orc_produto" style="background:#222; border:1px solid rgba(255,255,255,0.1); width:100%; margin-bottom:1.5rem; padding:0.8rem; color:white; border-radius:8px;">
+                <option value="Essencial">Plano Essencial (Base)</option>
+                <option value="Integral">Plano Integral (Completo)</option>
+            </select>
+
+            <label style="display:block; margin-bottom: 0.5rem; color:#bbb;">Valor Mensal (R$)</label>
+            <input type="number" id="orc_valor" placeholder="Ex: 1500" style="background:#222; border:1px solid rgba(255,255,255,0.1); width:100%; margin-bottom:1.5rem; padding:0.8rem; color:white; border-radius:8px; box-sizing: border-box;">
+
+            <label style="display:block; margin-bottom: 0.5rem; color:#bbb;">Proposta Técnica (Escopo e Observações)</label>
+            <textarea id="orc_obs" rows="4" placeholder="Descreva os itens do diagnóstico que estão inclusos..." style="background:#222; border:1px solid rgba(255,255,255,0.1); width:100%; margin-bottom:1.5rem; padding:0.8rem; color:white; border-radius:8px; box-sizing: border-box; font-family: inherit;"></textarea>
+            
+            <div style="display:flex; justify-content: flex-end; gap:1rem; margin-top:1rem;">
+                <button onclick="document.getElementById('orcamento-modal').style.display='none'" style="padding:0.7rem 1.2rem; border-radius:8px; cursor:pointer; background:rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.1);">Cancelar</button>
+                <button onclick="salvarOrcamento()" style="background:var(--primary-color); color:white; border:none; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; font-weight:600;"><i class="ri-check-line"></i> Confirmar Orçamento</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
