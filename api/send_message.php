@@ -7,9 +7,16 @@ if (!isset($data->user_id) || !isset($data->message)) {
     exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO messages (user_id, message, is_admin) VALUES (?, ?, ?)");
+$u = $data->user_id;
+$m = $data->message;
 $is_admin = isset($data->is_admin) ? $data->is_admin : 0;
-$stmt->bind_param("isi", $data->user_id, $data->message, $is_admin);
+
+$stmt = $conn->prepare("INSERT INTO messages (user_id, message, is_admin) VALUES (?, ?, ?)");
+if(!$stmt) {
+    echo json_encode(["status" => "error", "message" => "Erro no banco. A tabela 'messages' existe? Rode setup_messages.php. Detalhe: " . $conn->error]);
+    exit;
+}
+$stmt->bind_param("isi", $u, $m, $is_admin);
 
 if ($stmt->execute()) {
     echo json_encode(["status" => "success"]);
