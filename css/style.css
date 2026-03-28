@@ -58,7 +58,7 @@ body::before {
     left: -5%;
     width: 110%;
     height: 110%;
-    background-image: linear-gradient(rgba(10, 15, 20, 0.6), rgba(5, 8, 12, 0.9)), url('bg-brain.png');
+    background-image: linear-gradient(rgba(10, 15, 20, 0.6), rgba(5, 8, 12, 0.9)), url('../assets/img/bg-brain.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
