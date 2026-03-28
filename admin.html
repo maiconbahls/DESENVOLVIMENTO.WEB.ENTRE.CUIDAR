@@ -178,7 +178,7 @@
     </main>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    function loadUsers() {
         // Carrega todas as operadoras cadastradas no MySQL via Backend
         fetch('api/get_users.php')
         .then(res => res.json())
@@ -204,7 +204,13 @@
                         <td>${user.contato_name}</td>
                         <td>${user.email}</td>
                         <td>${dataFormatada}</td>
-                        <td><button class="btn-action primary" onclick="alert('Integração do Diagnóstico em andamento.')">Analisar <i class="ri-arrow-right-line"></i></button></td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn-action" style="background:#18aeb6; color:white; padding:0.4rem 0.8rem; font-size:0.85rem;" title="Fazer Entrevista" onclick="alert('Tela de Entrevista será aberta aqui.')"><i class="ri-survey-line" style="margin-right: 0.3rem;"></i>Entrevista</button>
+                                <button class="btn-action primary" style="padding:0.4rem 0.8rem; font-size:0.85rem;" title="Criar Orçamento" onclick="alert('Modal de Orçamento será aberto aqui.')"><i class="ri-money-dollar-circle-line" style="margin-right: 0.3rem;"></i>Orçamento</button>
+                                <button class="btn-action" style="background:rgba(239,68,68,0.15); color:#ef4444; padding:0.4rem; font-size:1.1rem; border:1px solid rgba(239,68,68,0.3);" title="Apagar Empresa" onclick="deleteUser(${user.id}, '${user.empresa_name}')"><i class="ri-delete-bin-line"></i></button>
+                            </div>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -217,7 +223,28 @@
             console.error("Erro ao puxar usuários do DB:", err);
             document.querySelector('#table-empresas tbody').innerHTML = '<tr><td colspan="6" style="text-align:center; color:#ff6b6b; padding: 2rem;">Falha na conexão com o banco ou API não enviada.</td></tr>';
         });
-    });
+    }
+
+    function deleteUser(userId, companyName) {
+        if(confirm(`Tem certeza que deseja APAGAR os dados da empresa ${companyName}? Isso excluirá também o chat e orçamentos vinculados a ela.`)) {
+            fetch('api/delete_user.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: userId})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    loadUsers(); 
+                } else {
+                    alert('Erro ao apagar empresa: ' + data.message);
+                }
+            })
+            .catch(err => console.error(err));
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadUsers);
     </script>
 </body>
 </html>
