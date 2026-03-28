@@ -232,7 +232,7 @@
     <nav class="top-navbar">
         <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo">
         <div class="user-menu">
-            <span><i class="ri-building-4-line"></i> Empresa 1 S/A</span>
+            <span id="nome-empresa-logada"><i class="ri-building-4-line"></i> Empresa</span>
             <button class="btn-logout" title="Sair do Portal" onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
                 <i class="ri-logout-box-r-line"></i> Sair
             </button>
@@ -432,6 +432,13 @@
 
     document.getElementById('quick-message-input').addEventListener('keypress', function(e) {
         if(e.key === 'Enter') sendQuickMessage();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const empresa = localStorage.getItem('user_empresa');
+        if(empresa) {
+            document.getElementById('nome-empresa-logada').innerHTML = `<i class="ri-building-4-line"></i> ${empresa}`;
+        }
     });
     </script>
 </body>

@@ -83,6 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = false;
             
             if (data.status === 'success') {
+                if(data.user && data.user.empresa) {
+                    localStorage.setItem('user_empresa', data.user.empresa);
+                }
                 if(data.user.role === 'admin') {
                     window.location.href = 'admin.html';
                 } else {
@@ -135,6 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = false;
             
             if (data.status === 'success') {
+                if(data.user && data.user.empresa) {
+                    localStorage.setItem('user_empresa', data.user.empresa);
+                }
                 alert("Sua conta foi criada com sucesso! Redirecionando para as soluções...");
                 window.location.href = 'client-hub.html';
             } else {
