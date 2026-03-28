@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBox.classList.add('active');
     });
 
-    // Handle Login Submit
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const submitBtn = loginForm.querySelector('button[type="submit"]');
@@ -73,17 +72,22 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Entrando...';
         submitBtn.disabled = true;
 
-        // Simulate API Login
-        setTimeout(() => {
+        fetch('api/login.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email: emailInput, password: passInput })
+        })
+        .then(res => res.json())
+        .then(data => {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
             
-            if(emailInput === 'ariane@entrecuidar.com.br' && passInput === 'gestao') {
-                window.location.href = 'admin.html';
-                return;
-            } else if (emailInput === 'empresa1@hotmail.com' && passInput === 'empresa') {
-                window.location.href = 'client-hub.html';
-                return;
+            if (data.status === 'success') {
+                if(data.user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'client-hub.html';
+                }
             } else {
                 let errorMsg = loginForm.querySelector('.login-error');
                 if (!errorMsg) {
@@ -91,44 +95,70 @@ document.addEventListener('DOMContentLoaded', () => {
                     errorMsg.className = 'login-error auth-switch';
                     errorMsg.style.color = '#ff6b6b';
                     errorMsg.style.marginTop = '1rem';
-                    errorMsg.innerText = 'E-mail ou senha incorretos.';
+                    errorMsg.innerText = data.message;
                     loginForm.appendChild(errorMsg);
                 } else {
-                    // blink effect if error already exists
+                    errorMsg.innerText = data.message;
                     errorMsg.style.opacity = '0.5';
                     setTimeout(() => errorMsg.style.opacity = '1', 150);
                 }
             }
-        }, 1000);
+        })
+        .catch(err => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            alert('Erro de comunicação. Tente novamente mais tarde.');
+            console.error(err);
+        });
     });
 
-    // Handle Register Submit
     registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const submitBtn = registerForm.querySelector('button[type="submit"]');
+        const empresaInput = registerForm.querySelectorAll('input[type="text"]')[0].value;
+        const contatoInput = registerForm.querySelectorAll('input[type="text"]')[1].value;
+        const emailInput = registerForm.querySelector('input[type="email"]').value;
+        const passInput = registerForm.querySelector('input[type="password"]').value;
         const originalText = submitBtn.innerHTML;
 
         submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Criando conta...';
         submitBtn.disabled = true;
 
-        // Simulate API Registration checking
-        setTimeout(() => {
+        fetch('api/register.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ empresa: empresaInput, contato: contatoInput, email: emailInput, password: passInput })
+        })
+        .then(res => res.json())
+        .then(data => {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
             
-            let errorMsg = registerForm.querySelector('.login-error');
-            if (!errorMsg) {
-                errorMsg = document.createElement('p');
-                errorMsg.className = 'login-error auth-switch';
-                errorMsg.style.color = '#ff6b6b';
-                errorMsg.style.marginTop = '1rem';
-                errorMsg.innerText = 'Cadastro indisponível. Utilize as contas de demonstração fornecidas.';
-                registerForm.appendChild(errorMsg);
+            if (data.status === 'success') {
+                alert("Sua conta foi criada com sucesso! Redirecionando para as soluções...");
+                window.location.href = 'client-hub.html';
             } else {
-                errorMsg.style.opacity = '0.5';
-                setTimeout(() => errorMsg.style.opacity = '1', 150);
+                let errorMsg = registerForm.querySelector('.login-error');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('p');
+                    errorMsg.className = 'login-error auth-switch';
+                    errorMsg.style.color = '#ff6b6b';
+                    errorMsg.style.marginTop = '1rem';
+                    errorMsg.innerText = data.message;
+                    registerForm.appendChild(errorMsg);
+                } else {
+                    errorMsg.innerText = data.message;
+                    errorMsg.style.opacity = '0.5';
+                    setTimeout(() => errorMsg.style.opacity = '1', 150);
+                }
             }
-        }, 1000);
+        })
+        .catch(err => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            alert('Erro de comunicação. Tente novamente mais tarde.');
+            console.error(err);
+        });
     });
 
     // Handle Logout
