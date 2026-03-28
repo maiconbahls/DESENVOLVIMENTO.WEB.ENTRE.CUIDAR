@@ -6,9 +6,9 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 // Preencha com os dados fornecidos pelo banco da Hostinger
 $host = "localhost";
-$dbname = "u902256670_entrecuidar"; // Digite "entrecuidar" no campo "Nome do banco de dados"
-$user = "u902256670_root"; // Digite "root" ou "admin" no campo de usuário (ou preencha com o final do maiconbahls@co que está no print)
-$pass = "LOSpirado@2020.,"; // A senha que você digitou no print
+$dbname = "u902256670_entrecuidar";
+$user = "u902256670_admin";
+$pass = "LOSpirado@2020.,";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
 
