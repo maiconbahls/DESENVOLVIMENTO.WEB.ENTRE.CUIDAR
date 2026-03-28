@@ -415,9 +415,54 @@
         if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
             chatWindow.style.display = 'flex';
             setTimeout(() => { document.getElementById('quick-message-input').focus(); }, 100);
+            loadMessages();
         } else {
             chatWindow.style.display = 'none';
         }
+    }
+
+    function loadMessages() {
+        const userId = localStorage.getItem('user_id');
+        if(!userId) return;
+
+        fetch(`api/get_messages.php?user_id=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                const historyBox = document.getElementById('chat-history-area');
+                historyBox.innerHTML = '';
+                
+                if(data.data.length === 0) {
+                    historyBox.innerHTML = `
+                    <div style="align-self: flex-start; max-width: 85%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; border-top-left-radius: 0;">
+                        <p style="color: var(--text-white); margin: 0; font-size: 0.9rem; line-height: 1.5;">Olá! Pode mandar sua mensagem que a nossa Gestão responde direto por aqui.</p>
+                    </div>`;
+                } else {
+                    data.data.forEach(msg => {
+                        const div = document.createElement('div');
+                        const isUser = msg.is_admin == 0;
+                        const d = new Date(msg.created_at);
+                        const timeString = d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+                        
+                        if(isUser) {
+                            div.style.cssText = "align-self: flex-end; max-width: 85%; background: rgba(24, 174, 182, 0.15); border: 1px solid rgba(24, 174, 182, 0.3); padding: 1rem; border-radius: 12px; border-top-right-radius: 0;";
+                            div.innerHTML = `
+                                <p style="color: white; margin: 0; font-size: 0.9rem; line-height: 1.5;">${msg.message}</p>
+                                <span style="display: block; font-size: 0.75rem; color: #18aeb6; margin-top: 0.5rem; text-align: left;"><i class="ri-check-double-line"></i> ${timeString}</span>
+                            `;
+                        } else {
+                            div.style.cssText = "align-self: flex-start; max-width: 85%; background: rgba(243, 115, 62, 0.15); border: 1px solid rgba(243, 115, 62, 0.3); padding: 1rem; border-radius: 12px; border-top-left-radius: 0;";
+                            div.innerHTML = `
+                                <p style="color: white; margin: 0; font-size: 0.9rem; line-height: 1.5;">${msg.message}</p>
+                                <span style="display: block; font-size: 0.75rem; color: var(--primary-color); margin-top: 0.5rem; text-align: right;"><i class="ri-shield-star-line"></i> Gestão • ${timeString}</span>
+                            `;
+                        }
+                        historyBox.appendChild(div);
+                    });
+                }
+                historyBox.scrollTop = historyBox.scrollHeight;
+            }
+        });
     }
 
     function sendQuickMessage() {
@@ -425,21 +470,24 @@
         const msg = input.value.trim();
         if(!msg) return;
 
-        const historyBox = document.getElementById('chat-history-area');
-        
-        // Simular o balão do usuário (Empresa)
-        const userBubble = document.createElement('div');
-        userBubble.style.cssText = "align-self: flex-end; max-width: 85%; background: rgba(24, 174, 182, 0.15); border: 1px solid rgba(24, 174, 182, 0.3); padding: 1rem; border-radius: 12px; border-top-right-radius: 0;";
-        userBubble.innerHTML = `
-            <p style="color: white; margin: 0; font-size: 0.9rem; line-height: 1.5;">${msg}</p>
-            <span style="display: block; font-size: 0.75rem; color: #18aeb6; margin-top: 0.5rem; text-align: left;"><i class="ri-check-double-line"></i> Agora</span>
-        `;
-        
-        historyBox.appendChild(userBubble);
-        input.value = '';
-        
-        // Auto rolagem para baixo
-        historyBox.scrollTop = historyBox.scrollHeight;
+        const userId = localStorage.getItem('user_id');
+        if(!userId) return alert('Sessão expirada. Faça login novamente.');
+
+        // Salvar via API
+        fetch('api/send_message.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ user_id: userId, message: msg })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                input.value = '';
+                loadMessages();
+            } else {
+                alert('Erro ao enviar mensagem.');
+            }
+        });
     }
 
     document.getElementById('quick-message-input').addEventListener('keypress', function(e) {
@@ -451,6 +499,14 @@
         if(empresa) {
             document.getElementById('nome-empresa-logada').innerHTML = `<i class="ri-building-4-line"></i> ${empresa}`;
         }
+        
+        // Polling do chat a cada 5 segundos se estiver aberto
+        setInterval(() => {
+            const chatWindow = document.getElementById('chat-window');
+            if(chatWindow.style.display !== 'none') {
+                loadMessages();
+            }
+        }, 5000);
     });
     </script>
 </body>
