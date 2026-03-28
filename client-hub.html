@@ -507,6 +507,33 @@
                 loadMessages();
             }
         }, 5000);
+
+        // Fetch propostas
+        fetch(`api/get_my_proposta.php?user_id=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success' && data.data) {
+                if(data.data.status === 'Respondido') {
+                    // Atualiza o card de orcamento
+                    const orcCard = document.getElementById('card-orcamento');
+                    if(orcCard) {
+                        orcCard.innerHTML = `
+                            <div style="background: rgba(157, 207, 127, 0.1); color: #9dcf7f; font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.8rem; border-radius: 50px; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem;"><i class="ri-check-line"></i> Orçamento Aprovado</div>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: white;">Seu Orçamento Chegou</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem;">A Gestão elaborou uma proposta com base no seu diagnóstico.</p>
+                            
+                            <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                                <p style="margin-bottom:0.5rem;"><strong style="color:white;">Plano:</strong> ${data.data.orcamento_produto || 'Integral'}</p>
+                                <p style="margin-bottom:0.5rem;"><strong style="color:var(--primary-light);">Valor Mensal:</strong> R$ ${data.data.orcamento_valor || '0,00'}</p>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">${data.data.orcamento_detalhes || ''}</p>
+                            </div>
+                            
+                            <button class="btn-primary" style="width:100%;" onclick="alert('Emissão de Contrato em Desenvolvimento')"><i class="ri-file-download-line"></i> Assinar e Baixar PDF</button>
+                        `;
+                    }
+                }
+            }
+        });
     });
     </script>
 </body>

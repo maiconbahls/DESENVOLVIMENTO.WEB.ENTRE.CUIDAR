@@ -190,8 +190,12 @@
                 const tbody = document.querySelector('#table-empresas tbody');
                 tbody.innerHTML = '';
                 
-                    const tr = document.createElement('tr');
-                    // Formatando a data
+                if(data.data && data.data.length > 0) {
+                    document.getElementById('total-clientes').innerText = data.data.length;
+                    
+                    data.data.forEach(user => {
+                        const tr = document.createElement('tr');
+                        // Formatando a data
                     let dataFormatada = "Recente";
                     if(user.created_at) {
                         const d = new Date(user.created_at);
@@ -213,10 +217,11 @@
                         </td>
                     `;
                     tbody.appendChild(tr);
-                });
-            } else {
-                document.getElementById('total-clientes').innerText = "0";
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#6c757d; padding: 2rem;">Nenhuma operadora se cadastrou ainda. Teste o cadastro na home!</td></tr>';
+                    });
+                } else {
+                    document.getElementById('total-clientes').innerText = "0";
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#6c757d; padding: 2rem;">Nenhuma operadora se cadastrou ainda. Teste o cadastro na home!</td></tr>';
+                }
             }
         })
         .catch(err => {
@@ -275,16 +280,36 @@
 
     function salvarOrcamento() {
         const userId = document.getElementById('orc_user_id').value;
+        const produto = document.getElementById('orc_produto').value;
+        const valor = document.getElementById('orc_valor').value;
+        const orc_obs = document.getElementById('orc_obs').value;
+
         const btn = event.target;
-        btn.innerHTML = 'Enviando...';
+        btn.innerHTML = 'Enviando Oficial...';
         btn.disabled = true;
 
-        setTimeout(() => {
-            alert('Orçamento Oficial Liberado para o cliente com Sucesso! (Salvamento e PDF nos próximos passos)');
-            document.getElementById('orcamento-modal').style.display = 'none';
-            btn.innerHTML = 'Enviar Oficial';
+        fetch('api/save_budget.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ user_id: userId, produto: produto, valor: valor, detalhes: orc_obs })
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.innerHTML = 'Confirmar Orçamento';
             btn.disabled = false;
-        }, 1200);
+            if(data.status === 'success') {
+                alert('Orçamento Oficial Liberado para o cliente com Sucesso e cravado no Painel dele!');
+                document.getElementById('orcamento-modal').style.display = 'none';
+                loadUsers(); // refresh the table
+            } else {
+                alert('Erro ao gerar orçamento: ' + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            btn.innerHTML = 'Confirmar Orçamento';
+            btn.disabled = false;
+        });
     }
     </script>
 
