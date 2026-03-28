@@ -1,5 +1,7 @@
 <?php
 require 'config.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 $data = json_decode(file_get_contents("php://input"));
 if (!isset($data->user_id) || !isset($data->message)) {

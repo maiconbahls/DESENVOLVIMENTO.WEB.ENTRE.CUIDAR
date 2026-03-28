@@ -3,106 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Indicadores - EntreCuidar</title>
+    <title>Dashboard Inteligente - EntreCuidar B.I</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/style.css?v=13">
+    <link rel="stylesheet" href="css/style.css?v=15">
     <style>
-        body { margin: 0; padding: 0; min-height: 100vh; background: #080808; color: white; font-family: 'Outfit', sans-serif; }
-        .top-navbar { height: 80px; width: 100%; position: fixed; top: 0; z-index: 100; background: rgba(25, 25, 30, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 4rem; box-sizing: border-box; }
-        .main-content { max-width: 1400px; margin: 120px auto 100px; padding: 0 4rem; }
-        .grid-header { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
-        .kpi-card { background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .kpi-value { font-size: 2.2rem; font-weight: 800; color: #18aeb6; margin: 0.5rem 0; }
-        .kpi-label { color: #6b7280; font-size: 0.8rem; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
-        .chart-container { background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 2.5rem; margin-bottom: 2rem; }
-        .chart-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; color: white; display: flex; align-items: center; gap: 0.6rem; }
-        .bar-row { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.2rem; }
-        .bar-label { flex: 0 0 400px; font-size: 0.95rem; color: #e5e7eb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .bar-outer { flex: 1; height: 12px; background: rgba(255,255,255,0.03); border-radius: 50px; overflow: hidden; }
-        .bar-inner { height: 100%; background: linear-gradient(90deg, #18aeb6, #0e7b82); width: 0%; border-radius: 50px; transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
-        .bar-value { flex: 0 0 40px; text-align: right; color: #18aeb6; font-weight: 700; font-size: 1rem; }
+        :root {
+            --bg-dark: #080808;
+            --card-bg: rgba(25, 25, 30, 0.6);
+            --primary: #18aeb6;
+            --secondary: #f3733e;
+            --danger: #ff4d4d;
+            --success: #00e676;
+            --warning: #ffb300;
+        }
+
+        body { 
+            margin: 0; padding: 0; min-height: 100vh; 
+            background: var(--bg-dark); color: white; 
+            font-family: 'Outfit', sans-serif; 
+            background-image: radial-gradient(circle at 50% -20%, rgba(24, 174, 182, 0.15) 0%, transparent 50%);
+        }
+
+        .top-navbar { 
+            height: 80px; width: 100%; position: fixed; top: 0; z-index: 100; 
+            background: rgba(10, 10, 12, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 4rem; box-sizing: border-box; 
+        }
+
+        .main-content { max-width: 1500px; margin: 120px auto 100px; padding: 0 4rem; }
+
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(12, 1fr); 
+            gap: 1.5rem; 
+            margin-top: 2rem;
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid rgba(255,255,255,0.06); 
+            border-radius: 20px; 
+            padding: 2rem; 
+            backdrop-filter: blur(10px);
+            transition: 0.3s ease;
+        }
+        .card:hover { border-color: rgba(24, 174, 182, 0.3); transform: translateY(-3px); }
+
+        .kpi-card { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .kpi-label { color: #888; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.5rem; }
+        .kpi-value { font-size: 2.5rem; font-weight: 800; color: white; }
+        .kpi-sub { font-size: 0.9rem; color: var(--primary); font-weight: 500; margin-top: 0.5rem; }
+
+        .risk-ring {
+            width: 150px; height: 150px; position: relative;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: conic-gradient(var(--danger) 0% 65%, rgba(255,255,255,0.05) 65% 100%);
+            margin-bottom: 1rem;
+        }
+        .risk-ring::after {
+            content: ""; position: absolute; width: 130px; height: 130px;
+            background: #111; border-radius: 50%;
+        }
+        .risk-ring span { position: relative; z-index: 2; font-size: 2.2rem; font-weight: 800; }
+
+        .indicator-row { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .indicator-name { flex: 0 0 320px; font-size: 0.9rem; color: #ccc; }
+        .progress-box { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
+        .val-badge { flex: 0 0 40px; text-align: right; font-weight: 700; color: var(--primary); }
+
+        .thermal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .thermal-item { padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.03); text-align: center; }
+        .thermal-item.critical { background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.2); }
+        .thermal-item.ok { background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); }
+
+        .badge { padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        
+        button.btn-print { background: var(--primary); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 0.5rem; }
+        button.btn-print:hover { background: #0e7b82; transform: scale(1.05); }
+
+        h2.title { font-size: 1.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.8rem; margin-bottom: 2rem; }
+        h2.title i { color: var(--primary); font-size: 1.8rem; }
     </style>
 </head>
 <body>
     <nav class="top-navbar">
-        <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo" style="height: 45px;">
-        <button onclick="window.history.back()" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding: 0.6rem 1.2rem; border-radius: 30px; color:white; cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-            <i class="ri-arrow-left-line"></i> Voltar à Lista
-        </button>
+        <img src="assets/img/entrecuidar-logo.gif" alt="Logo" style="height: 40px;">
+        <div style="font-weight: 700; font-size: 1.2rem; color: #18aeb6;">CENTRAL DE RELATÓRIOS B.I</div>
+        <div style="display: flex; gap: 1rem;">
+            <button onclick="window.print()" class="btn-print"><i class="ri-printer-line"></i> Exportar PDF</button>
+            <button onclick="window.history.back()" style="background:none; border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.8rem 1.2rem; border-radius: 12px; cursor: pointer;"><i class="ri-close-line"></i> Sair</button>
+        </div>
     </nav>
 
     <div class="main-content">
-        <header style="margin-bottom: 4rem; display: flex; justify-content: space-between; align-items: flex-end;">
+        <!-- HEADER DO RELATÓRIO -->
+        <header style="background: linear-gradient(90deg, rgba(24, 174, 182, 0.1) 0%, transparent 100%); padding: 3rem; border-radius: 30px; border: 1px solid rgba(24, 174, 182, 0.2); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <span id="label-empresa" style="background: rgba(24, 174, 182, 0.1); color: #18aeb6; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Diagnóstico Consolidado</span>
-                <h1 id="title-empresa" style="font-size: 3rem; margin-top: 0.8rem; font-weight: 800;">---</h1>
-                <p style="color: #6b7280; margin-top: 0.4rem; font-size: 1.1rem;"><i class="ri-calendar-line"></i> Data da Entrevista: <span id="data-entrevista">---</span></p>
+                <span class="badge" style="background: var(--primary); color: white; margin-bottom: 1rem;">Protocolo Analisado: #<span id="protocolo-id">---</span></span>
+                <h1 id="ent-empresa" style="font-size: 3.5rem; margin: 0.5rem 0; font-weight: 900; letter-spacing: -1px;">---</h1>
+                <p style="font-size: 1.2rem; color: #888;"><i class="ri-user-follow-line"></i> Respondente: <strong id="ent-respondente" style="color: white;">---</strong> | <i class="ri-calendar-event-line"></i> Realizado em: <strong id="ent-data" style="color: white;">---</strong></p>
             </div>
-            <div style="text-align: right;">
-                <p style="color: #6b7280; margin-bottom: 0.4rem;">Índice Geral de Risco</p>
-                <div id="risk-score" style="font-size: 3.5rem; font-weight: 800; color: #ff6b6b;">0%</div>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 3rem;">
+                <div class="risk-ring" id="risk-visual">
+                    <span id="risk-val">0%</span>
+                </div>
+                <div id="risk-label" style="font-weight: 700; color: var(--danger); font-size: 1rem; text-transform: uppercase;">Alto Risco Operacional</div>
             </div>
         </header>
 
-        <div class="grid-header">
-            <div class="kpi-card">
-                <i class="ri-team-line" style="color:#18aeb6; font-size:1.5rem; margin-bottom:0.5rem;"></i>
-                <div class="kpi-value" id="kpi-beneficiarios">---</div>
-                <div class="kpi-label">Beneficiários TEA</div>
+        <div class="dashboard-grid">
+            <!-- KPIs LATERAIS -->
+            <div class="card kpi-card" style="grid-column: span 3;">
+                <div class="kpi-label">População Analisada</div>
+                <div class="kpi-value" id="val-pop">---</div>
+                <div class="kpi-sub" id="porte-label">Porte: Médio</div>
             </div>
-            <div class="kpi-card">
-                <i class="ri-exchange-funds-line" style="color:#18aeb6; font-size:1.5rem; margin-bottom:0.5rem;"></i>
-                <div class="kpi-value" id="kpi-custo">---</div>
-                <div class="kpi-label">Custo Médio Mensal</div>
+            <div class="card kpi-card" style="grid-column: span 3;">
+                <div class="kpi-label">Custo Estimado / Mês</div>
+                <div class="kpi-value" id="val-custo">---</div>
+                <div class="kpi-sub" style="color: var(--danger);" id="preju-calc">Risco Financeiro Estimado</div>
             </div>
-            <div class="kpi-card">
-                <i class="ri-line-chart-line" style="color:#18aeb6; font-size:1.5rem; margin-bottom:0.5rem;"></i>
-                <div class="kpi-value" id="kpi-tendencia">---</div>
-                <div class="kpi-label">Tendência Financeira</div>
+            <div class="card kpi-card" style="grid-column: span 3;">
+                <div class="kpi-label">Maturidade de Gestão</div>
+                <div class="kpi-value" id="val-maturidade">0%</div>
+                <div class="kpi-sub">Protocolos Internos</div>
             </div>
-            <div class="kpi-card">
-                <i class="ri-node-tree" style="color:#18aeb6; font-size:1.5rem; margin-bottom:0.5rem;"></i>
-                <div class="kpi-value" id="kpi-protocolo">---</div>
-                <div class="kpi-label">Maturidade Clínica</div>
+            <div class="card kpi-card" style="grid-column: span 3;">
+                <div class="kpi-label">Auditoria Técnica</div>
+                <div class="kpi-value" id="val-auditoria" style="font-size: 1.5rem; color: var(--warning);">PENDENTE</div>
+                <div class="kpi-sub">Status de Regulação</div>
             </div>
-        </div>
 
-        <div class="chart-container">
-            <h2 class="chart-title"><i class="ri-alert-line" style="color:#ff6b6b;"></i> Mapa de Entraves Identificados (Gravidade x Incidência)</h2>
-            <div id="indicators-list">
-                <!-- JS -->
+            <!-- GRAFICO DE BARRAS CENTRAL -->
+            <div class="card" style="grid-column: span 8;">
+                <h2 class="title"><i class="ri-bubble-chart-line"></i> Matriz Detalhada de Vulnerabilidades (Escala 0-5)</h2>
+                <div id="matrix-container">
+                    <!-- Dinâmico -->
+                </div>
             </div>
-        </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-            <div class="chart-container">
-                <h3 class="chart-title"><i class="ri-file-search-line"></i> Processo Regulatório</h3>
-                <div id="analise-auditoria" style="color: #e5e7eb; font-size: 1.1rem; line-height: 1.6;">---</div>
+            <!-- ANÁLISE TÉRMICA E RECOMENDAÇÕES -->
+            <div style="grid-column: span 4; display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="card">
+                    <h2 class="title" style="font-size: 1.2rem;"><i class="ri-focus-3-line"></i> Zonas de Atenção</h2>
+                    <div class="thermal-grid">
+                        <div class="thermal-item critical">
+                            <i class="ri-error-warning-fill" style="color: var(--danger);"></i>
+                            <div style="font-size: 0.7rem; margin-top: 0.5rem;">FINANCEIRO</div>
+                        </div>
+                        <div class="thermal-item critical" id="thermal-juridico">
+                            <i class="ri-shield-flash-fill" style="color: var(--danger);"></i>
+                            <div style="font-size: 0.7rem; margin-top: 0.5rem;">JURÍDICO</div>
+                        </div>
+                        <div class="thermal-item ok">
+                            <i class="ri-checkbox-circle-fill" style="color: var(--success);"></i>
+                            <div style="font-size: 0.7rem; margin-top: 0.5rem;">SOCIAL</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="flex: 1; background: linear-gradient(180deg, rgba(24, 174, 182, 0.05) 0%, rgba(0,0,0,0.2) 100%);">
+                    <h2 class="title" style="font-size: 1.2rem;"><i class="ri-lightbulb-line"></i> Parecer Diretor</h2>
+                    <p id="parecer-txt" style="color: #bbb; line-height: 1.6; font-size: 0.95rem;">
+                        Com base nos indicadores coletados, a operadora apresenta uma exposição severa a custos descontrolados por falta de regulação técnica...
+                    </p>
+                    <div style="margin-top: 2rem; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1);">
+                        <strong style="color: var(--primary); display: block; margin-bottom: 0.5rem;">Ação Recomendada:</strong>
+                        <span style="font-size: 0.9rem;">Implantar imediatamente a EntreCuidar para auditoria de 100% dos planos terapêuticos.</span>
+                    </div>
+                </div>
             </div>
-            <div class="chart-container">
-                <h3 class="chart-title"><i class="ri-group-line"></i> Estrutura de Gestão</h3>
-                <div id="analise-equipe" style="color: #e5e7eb; font-size: 1.1rem; line-height: 1.6;">---</div>
+
+            <!-- FOOTER DE DADOS -->
+            <div class="card" style="grid-column: span 12; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem;">
+                <div style="display: flex; gap: 4rem;">
+                    <div>
+                        <span style="color: #666; font-size: 0.8rem; text-transform: uppercase;">Sistema de Controle</span>
+                        <div id="ext-tool" style="font-weight: 700; color: #aaa;">Excel / Planilhas</div>
+                    </div>
+                    <div>
+                        <span style="color: #666; font-size: 0.8rem; text-transform: uppercase;">Equipe Dedicada</span>
+                        <div id="ext-team" style="font-weight: 700; color: #aaa;">Não Possui</div>
+                    </div>
+                    <div>
+                        <span style="color: #666; font-size: 0.8rem; text-transform: uppercase;">Região Foco</span>
+                        <div id="ext-regiao" style="font-weight: 700; color: #aaa;">Nacional</div>
+                    </div>
+                </div>
+                <div style="text-align: right; color: #444; font-size: 0.8rem;">
+                    Relatório Gerado Automático pelo Engine EntreCuidar Inteligência<br>
+                    © 2026 EntreCuidar - Gestão Estratégica
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         const entrantsNames = [
-            "Alto Custo Terápico",
-            "Falta de Indicadores de Evolução",
-            "Controle de Alta Terapêutica",
-            "Carga Horária Exagerada",
-            "Laudos Receita de Bolo",
-            "Diagnósticos Precipitados",
-            "Intervenção Precoce Tardia",
-            "Manutenção de Terapias Convencionais",
-            "Dificuldade de Auditoria In Loco",
+            "Custo Exorbitante das Terapias",
+            "Inexistência de Indicadores de Evolução",
+            "Falta de Controle de Alta Terapêutica",
+            "Carga Horária Desproporcional",
+            "Laudos Genéricos / 'Receita de Bolo'",
+            "Diagnósticos Precipitados / Frágeis",
+            "Intervenção Precoce Ineficaz ou Tardia",
+            "Terapias Convencionais vs Especiais",
+            "Dificuldade de Auditoria Técnica e Visitas",
             "Prescrições com Conflito de Interesse",
-            "Vulnerabilidade Psicológica/Fraude"
+            "Vulnerabilidade Psicológica das Famílias"
         ];
 
-        function loadDetails() {
+        function loadBI() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
             if(!id) return;
@@ -112,44 +227,82 @@
             .then(resData => {
                 if(resData.status === 'success') {
                     const d = resData.data;
-                    document.getElementById('title-empresa').textContent = d.empresa_nome;
-                    document.getElementById('data-entrevista').textContent = new Date(d.data_entrevista).toLocaleDateString('pt-BR');
+                    document.getElementById('protocolo-id').innerText = d.id;
+                    document.getElementById('ent-empresa').innerText = d.empresa_nome;
+                    document.getElementById('ent-respondente').innerText = d.respondente_nome;
+                    document.getElementById('ent-data').innerText = new Date(d.data_entrevista).toLocaleDateString('pt-BR');
                     
-                    document.getElementById('kpi-beneficiarios').textContent = d.q1_beneficiarios;
-                    document.getElementById('kpi-custo').textContent = d.q2_custo_mensal;
-                    document.getElementById('kpi-tendencia').textContent = d.q3_crescimento;
-                    document.getElementById('kpi-protocolo').textContent = d.q4_protocolo;
+                    document.getElementById('val-pop').innerText = d.q1_beneficiarios;
+                    document.getElementById('val-custo').innerText = d.q2_custo_mensal;
+                    document.getElementById('porte-label').innerText = "Porte: " + d.porte_empresa;
                     
-                    document.getElementById('analise-auditoria').innerHTML = `Sistema de Acompanhamento: <strong>${d.q6_ferramenta_acompanhamento || 'Não informado'}</strong><br>Histórico de Auditoria: <strong>${d.q7_auditoria || 'Nula'}</strong>`;
-                    document.getElementById('analise-equipe').innerHTML = `Equipe Dedicada: <strong>${d.q5_equipe_dedicada}</strong><br>Porte da Operadora: <strong>${d.porte_empresa}</strong>`;
+                    document.getElementById('ext-tool').innerText = d.q6_ferramenta_acompanhamento || "---";
+                    document.getElementById('ext-team').innerText = d.q5_equipe_dedicada;
+                    document.getElementById('ext-regiao').innerText = d.regiao_atuacao;
 
-                    // Generate Indicators
-                    const listCont = document.getElementById('indicators-list');
-                    let totalGravity = 0;
-                    
-                    for(let i=1; i<=11; i++) {
-                        const gravity = parseInt(d['g'+i]);
-                        const percent = (gravity / 5) * 100;
-                        totalGravity += gravity;
-                        
-                        const row = document.createElement('div');
-                        row.className = 'bar-row';
-                        row.innerHTML = `
-                            <div class="bar-label">${i}. ${entrantsNames[i-1]}</div>
-                            <div class="bar-outer"><div class="bar-inner" style="width: ${percent}%; ${gravity > 3 ? 'background: linear-gradient(90deg, #ff6b6b, #b91c1c);' : ''}"></div></div>
-                            <div class="bar-value" style="${gravity > 3 ? 'color: #ff6b6b;' : ''}">${gravity}</div>
-                        `;
-                        listCont.appendChild(row);
+                    // Auditoria mapping
+                    const audBadge = document.getElementById('val-auditoria');
+                    if(d.q7_auditoria === 'Eficiente') {
+                        audBadge.innerText = 'CONTROLADA';
+                        audBadge.style.color = 'var(--success)';
+                    } else if(d.q7_auditoria === 'Parcial') {
+                        audBadge.innerText = 'FRÁGIL';
+                        audBadge.style.color = 'var(--warning)';
+                    } else {
+                        audBadge.innerText = 'EQUIPARADA';
+                        audBadge.style.color = 'var(--danger)';
                     }
 
-                    // Score Cálculo (Total Gravidade x 100 / Máx possível 55)
-                    const finalRisk = Math.round((totalGravity / (11 * 5)) * 100);
-                    document.getElementById('risk-score').innerText = finalRisk + '%';
+                    // Maturidade (baseado em q4)
+                    let mat = 0;
+                    if(d.q4_protocolo === 'Sim, estruturado') mat = 100;
+                    else if(d.q4_protocolo === 'Em implantação') mat = 50;
+                    else mat = 15;
+                    document.getElementById('val-maturidade').innerText = mat + "%";
+
+                    // Matrix Loop
+                    const matrixCont = document.getElementById('matrix-container');
+                    let totalScore = 0;
+                    for(let i=1; i<=11; i++) {
+                        const gravity = parseInt(d['g'+i]);
+                        totalScore += gravity;
+                        const percent = (gravity / 5) * 100;
+                        const color = gravity >= 4 ? 'var(--danger)' : (gravity >= 2 ? 'var(--warning)' : 'var(--primary)');
+                        
+                        matrixCont.innerHTML += `
+                            <div class="indicator-row">
+                                <div class="indicator-name"><strong>${i}.</strong> ${entrantsNames[i-1]}</div>
+                                <div class="progress-box">
+                                    <div class="progress-fill" style="width: ${percent}%; background: ${color}; box-shadow: 0 0 10px ${color}44;"></div>
+                                </div>
+                                <div class="val-badge" style="color: ${color}">${gravity}</div>
+                            </div>
+                        `;
+                    }
+
+                    // Score Final
+                    const finalRiskVal = Math.round((totalScore / 55) * 100);
+                    document.getElementById('risk-val').innerText = finalRiskVal + "%";
+                    const riskRing = document.getElementById('risk-visual');
+                    const riskColor = finalRiskVal > 70 ? '#ff4d4d' : (finalRiskVal > 40 ? '#ffb300' : '#18aeb6');
+                    riskRing.style.background = `conic-gradient(${riskColor} 0% ${finalRiskVal}%, rgba(255,255,255,0.05) ${finalRiskVal}% 100%)`;
+                    
+                    const label = document.getElementById('risk-label');
+                    label.innerText = finalRiskVal > 70 ? "Crítico Operacional" : (finalRiskVal > 40 ? "Risco Moderado" : "Controlado");
+                    label.style.color = riskColor;
+
+                    // Parecer dinâmico simples
+                    const parecer = document.getElementById('parecer-txt');
+                    if(finalRiskVal > 60) {
+                        parecer.innerText = `ANÁLISE CRÍTICA: A operadora ${d.empresa_nome} apresenta um índice de risco de ${finalRiskVal}%. A ausência de equipe dedicada e a falta de auditoria in loco estão gerando um dreno financeiro severo. Recomenda-se intervenção imediata no fluxo de terapias especiais.`;
+                    } else {
+                        parecer.innerText = `ANÁLISE PREVENTIVA: Embora a operadora possua alguns controles, existem brechas nos laudos terapêuticos que podem causar judicialização no médio prazo. A EntreCuidar pode atuar na blindagem desses processos.`;
+                    }
                 }
             });
         }
 
-        document.addEventListener('DOMContentLoaded', loadDetails);
+        document.addEventListener('DOMContentLoaded', loadBI);
     </script>
 </body>
 </html>

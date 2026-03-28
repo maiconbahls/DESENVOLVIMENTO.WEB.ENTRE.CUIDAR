@@ -479,14 +479,25 @@
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ user_id: userId, message: msg })
         })
-        .then(res => res.json())
+        .then(async res => {
+            const text = await res.text();
+            try {
+                return JSON.parse(text);
+            } catch(e) {
+                throw new Error("Resposta inválida: " + text);
+            }
+        })
         .then(data => {
             if(data.status === 'success') {
                 input.value = '';
                 loadMessages();
             } else {
-                alert('Erro ao enviar mensagem.');
+                alert('Erro ao enviar mensagem: ' + data.message);
             }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Falha total no chat: ' + err.message);
         });
     }
 
@@ -495,6 +506,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
+        const userId = localStorage.getItem('user_id');
         const empresa = localStorage.getItem('user_empresa');
         if(empresa) {
             document.getElementById('nome-empresa-logada').innerHTML = `<i class="ri-building-4-line"></i> ${empresa}`;
