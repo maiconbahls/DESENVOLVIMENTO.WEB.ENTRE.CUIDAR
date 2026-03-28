@@ -246,7 +246,14 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
-            .then(res => res.json())
+            .then(async res => {
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch(e) {
+                    throw new Error("Resposta inválida do servidor: " + text);
+                }
+            })
             .then(resData => {
                 if(resData.status === 'success') {
                     alert('Entrevista Finalizada com Sucesso! Redirecionando para o Dashboard de Indicadores...');
@@ -259,8 +266,9 @@
             })
             .catch(err => {
                 console.error(err);
-                alert('Erro na conexão com o servidor.');
+                alert('Erro durante o envio: ' + err.message);
                 btn.disabled = false;
+                btn.innerHTML = '<i class="ri-save-3-line"></i> Tentar Novamente';
             });
         });
     </script>
