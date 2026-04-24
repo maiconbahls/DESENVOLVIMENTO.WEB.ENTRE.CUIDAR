@@ -258,7 +258,8 @@
             top: 2px;
             width: calc(100% - 4px);
             height: calc(100% - 4px);
-            background: #111;
+            background: rgba(15, 25, 25, 0.8);
+            backdrop-filter: blur(20px);
             border-radius: 14px;
         }
 
@@ -273,30 +274,6 @@
 
         .animate-card {
             animation: card-entry 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        /* Notificação Toast Premium */
-        #notification-toast {
-            position: fixed;
-            top: 100px;
-            right: 40px;
-            background: rgba(157, 207, 127, 0.95);
-            backdrop-filter: blur(10px);
-            color: #000;
-            padding: 1.2rem 2rem;
-            border-radius: 16px;
-            display: none;
-            align-items: center;
-            gap: 1.5rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(157, 207, 127, 0.3);
-            z-index: 9999;
-            animation: slide-in-toast 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        @keyframes slide-in-toast {
-            from { transform: translateX(120%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
@@ -687,22 +664,64 @@
                     }
                     currentPropostaStatus = newStatus;
 
-                    if(newStatus === 'Respondido' || newStatus === 'Aceito') {
-                        // Preparar dados comuns para o modal e cards
-                        let valorExibido = data.data.orcamento_valor || '0,00';
-                        if (valorExibido !== '0,00' && !valorExibido.includes('R$') && !valorExibido.includes(',')) {
-                            const num = parseFloat(valorExibido.replace(/[^\d.]/g, ''));
-                            if (!isNaN(num)) {
-                                valorExibido = num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    if(newStatus === 'Respondido') {
+                        // Atualiza o card de orcamento
+                        const orcCard = document.getElementById('card-orcamento');
+                        if(orcCard) {
+                            orcCard.style.borderColor = "rgba(157, 207, 127, 0.5)";
+                            orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.8) 0%, rgba(157,207,127,0.1) 100%)";
+                            
+                            // Garante que o valor esteja formatado corretamente (R$ 0.000,00)
+                            let valorExibido = data.data.orcamento_valor || '0,00';
+                            
+                            // Se o valor for um número puro (sem R$ ou vírgula), formatamos
+                            if (valorExibido !== '0,00' && !valorExibido.includes('R$') && !valorExibido.includes(',')) {
+                                const num = parseFloat(valorExibido.replace(/[^\d.]/g, ''));
+                                if (!isNaN(num)) {
+                                    valorExibido = num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                                }
                             }
-                        }
-                        if(valorExibido === '0.00' || valorExibido === '0' || valorExibido === 'R$ 0,00') valorExibido = 'Pendente';
-                        if(!valorExibido.includes('R$') && valorExibido !== 'Pendente') valorExibido = 'R$ ' + valorExibido;
 
-                        // Preencher os dados no modal de proposta (sempre que houver dados)
-                        const propEmpresa = document.getElementById('prop_empresa');
-                        if(propEmpresa) {
-                            propEmpresa.innerText = empresa;
+                            // Fallback para pendente se for 0
+                            if(valorExibido === '0.00' || valorExibido === '0' || valorExibido === 'R$ 0,00') valorExibido = 'Pendente';
+                            
+                            if(!valorExibido.includes('R$') && valorExibido !== 'Pendente') valorExibido = 'R$ ' + valorExibido;
+
+                            orcCard.innerHTML = `
+                                <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-verified-badge-line"></i></div>
+                                <div class="card-content" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                                    <span class="badge liberado" style="margin-bottom: 1rem;"><i class="ri-check-line"></i> Orçamento Disponível</span>
+                                    <h4 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Seu Orçamento Chegou!</h4>
+                                    <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Análise técnica baseada no seu diagnóstico assistencial.</p>
+                                    
+                                    <div style="width: 100%; background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; text-align: left;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1rem;">
+                                            <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Plano Indicado</span>
+                                            <strong style="color: white; font-size: 1.1rem; letter-spacing: 1px;">${data.data.orcamento_produto || 'Integral'}</strong>
+                                        </div>
+
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
+                                            <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Investimento</span>
+                                            <strong style="color: #9dcf7f; font-size: 1.5rem;">${valorExibido}</strong>
+                                        </div>
+
+                                        <div style="margin-bottom: 1.5rem;">
+                                            <span style="color: var(--text-muted); display: block; margin-bottom: 0.6rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Resumo do Escopo</span>
+                                            <p style="font-size: 0.95rem; color: #e5e7eb; line-height: 1.6; margin: 0; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03);">${data.data.orcamento_detalhes || 'Escopo técnico detalhado disponível na proposta completa.'}</p>
+                                        </div>
+
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.8rem; font-weight: 600; justify-content: center; background: rgba(248, 113, 113, 0.05); padding: 0.6rem; border-radius: 6px;">
+                                            <i class="ri-calendar-event-line"></i> Válido por 15 dias corridos
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn-action primary" style="width: 100%; justify-content: center; height: 55px; font-size: 1.1rem; border-radius: 12px;" onclick="abrirPropostaCompleta()">
+                                    <i class="ri-file-list-3-line"></i> Visualizar Proposta Completa
+                                </button>
+                            `;
+
+                            // Preencher os dados no modal de proposta
+                            document.getElementById('prop_empresa').innerText = empresa;
                             document.getElementById('prop_plano').innerText = data.data.orcamento_produto || 'Integral';
                             document.getElementById('prop_valor').innerText = valorExibido;
                             document.getElementById('prop_detalhes').innerText = data.data.orcamento_detalhes || 'Escopo técnico em anexo.';
@@ -715,47 +734,7 @@
                             document.getElementById('prop_data_validade').innerText = validade.toLocaleDateString('pt-BR');
                             document.getElementById('prop_ref_id').innerText = 'ORC-2026-' + (Math.floor(Math.random() * 900) + 100);
                         }
-
-                        if(newStatus === 'Respondido') {
-                            const orcCard = document.getElementById('card-orcamento');
-                            if(orcCard) {
-                                orcCard.style.borderColor = "rgba(157, 207, 127, 0.5)";
-                                orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.8) 0%, rgba(157,207,127,0.1) 100%)";
-                                
-                                orcCard.innerHTML = `
-                                    <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-verified-badge-line"></i></div>
-                                    <div class="card-content" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-                                        <span class="badge liberado" style="margin-bottom: 1rem;"><i class="ri-check-line"></i> Orçamento Disponível</span>
-                                        <h4 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Seu Orçamento Chegou!</h4>
-                                        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Análise técnica baseada no seu diagnóstico assistencial.</p>
-                                        
-                                        <div style="width: 100%; background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; text-align: left;">
-                                            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1rem;">
-                                                <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Plano Indicado</span>
-                                                <strong style="color: white; font-size: 1.1rem; letter-spacing: 1px;">${data.data.orcamento_produto || 'Integral'}</strong>
-                                            </div>
-
-                                            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
-                                                <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Investimento</span>
-                                                <strong style="color: #9dcf7f; font-size: 1.5rem;">${valorExibido}</strong>
-                                            </div>
-
-                                            <div style="margin-bottom: 1.5rem;">
-                                                <span style="color: var(--text-muted); display: block; margin-bottom: 0.6rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Resumo do Escopo</span>
-                                                <p style="font-size: 0.95rem; color: #e5e7eb; line-height: 1.6; margin: 0; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03);">${data.data.orcamento_detalhes || 'Escopo técnico detalhado disponível na proposta completa.'}</p>
-                                            </div>
-
-                                            <div style="display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.8rem; font-weight: 600; justify-content: center; background: rgba(248, 113, 113, 0.05); padding: 0.6rem; border-radius: 6px;">
-                                                <i class="ri-calendar-event-line"></i> Válido por 15 dias corridos
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button class="btn-action primary" style="width: 100%; justify-content: center; height: 55px; font-size: 1.1rem; border-radius: 12px;" onclick="abrirPropostaCompleta()">
-                                        <i class="ri-file-list-3-line"></i> Visualizar Proposta Completa
-                                    </button>
-                                `;
-                            }
-                        } else if(newStatus === 'Aceito') {
+                    } else if(newStatus === 'Aceito') {
                         const orcCard = document.getElementById('card-orcamento');
                         if(orcCard) {
                             orcCard.classList.add('active-card-effect');
@@ -810,9 +789,7 @@
                                     <h4>Aguarde nosso contato</h4>
                                     <p>Nossa equipe de suporte técnico e comercial entrará em contato em breve para os próximos passos da implementação.</p>
                                 </div>
-                                <button class="btn-action" onclick="toggleChat()" style="background: rgba(24, 174, 182, 0.1); color: #18aeb6; border: 1px solid rgba(24, 174, 182, 0.3); justify-content: center; font-weight: 700;">
-                                    <i class="ri-customer-service-2-line"></i> Suporte Prioritário
-                                </button>
+                                <button class="btn-action" onclick="toggleChat()" style="background: #18aeb6; color: white; justify-content: center;">Enviar Mensagem <i class="ri-chat-smile-3-line"></i></button>
                             `;
                         }
                     }
