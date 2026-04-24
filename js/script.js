@@ -86,12 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(data.user) {
                     sessionStorage.setItem('user_id', data.user.id);
                     sessionStorage.setItem('user_empresa', data.user.empresa);
-                    sessionStorage.setItem('user_role', data.user.role);
-                }
-                if(data.user.role === 'admin') {
-                    window.location.href = 'admin.html';
-                } else {
-                    window.location.href = 'client-hub.html';
+                    const userRole = (data.user.role || '').toLowerCase();
+                    sessionStorage.setItem('user_role', userRole);
+                    
+                    if(userRole === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'client-hub.html';
+                    }
                 }
             } else {
                 let errorMsg = loginForm.querySelector('.login-error');

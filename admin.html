@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="css/style.css?v=8">
     <script>
         // Check authentication before page load
-        if (sessionStorage.getItem('user_role') !== 'admin') {
+        const storedRole = (sessionStorage.getItem('user_role') || '').toLowerCase();
+        if (storedRole !== 'admin') {
             window.location.href = 'index.html';
         }
     </script>
@@ -77,9 +78,16 @@
             .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
             .stat-card { padding: 1.5rem; }
             .stat-card .value { font-size: 2rem; }
-            .table-responsive { padding: 0.5rem; border-radius: 8px; }
-            table { min-width: 600px; }
-            th, td { padding: 0.8rem 0.5rem; font-size: 0.85rem; }
+            
+            /* Table to Cards Transformation */
+            .table-responsive { border: none; background: transparent; padding: 0; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+            tr { background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 1rem; padding: 1rem; }
+            td { border: none; position: relative; padding-left: 50% !important; text-align: right; margin-bottom: 0.5rem; }
+            td:before { content: attr(data-label); position: absolute; left: 1rem; width: 45%; text-align: left; font-weight: 600; color: var(--text-muted); }
+            td:last-child { margin-bottom: 0; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem !important; text-align: center; padding-left: 0 !important; }
+            td:last-child:before { display: none; }
         }
 
         @media (max-width: 480px) {
@@ -415,14 +423,14 @@
                         }
 
                     tr.innerHTML = `
-                        <td><span style="color:var(--text-muted);">#${user.id}</span></td>
-                        <td><strong>${user.empresa_name}</strong></td>
-                        <td>${user.contato_name}</td>
-                        <td>${user.email}</td>
-                        <td>${dataFormatada}</td>
-                        <td>${statusHTML}</td>
-                        <td>
-                            <div style="display: flex; gap: 0.5rem;">
+                        <td data-label="#"><span style="color:var(--text-muted);">#${user.id}</span></td>
+                        <td data-label="Nome da Empresa"><strong>${user.empresa_name}</strong></td>
+                        <td data-label="Responsável">${user.contato_name}</td>
+                        <td data-label="E-mail Corporativo">${user.email}</td>
+                        <td data-label="Data de Cadastro">${dataFormatada}</td>
+                        <td data-label="Status Proposta">${statusHTML}</td>
+                        <td data-label="Ação">
+                            <div style="display: flex; gap: 0.5rem; justify-content: center;">
                                 <button class="btn-action" style="background:#18aeb6; color:white; padding:0.4rem 0.8rem; font-size:0.85rem;" title="Fazer Entrevista" onclick="window.location.href='entrevista.html?id=${user.id}&empresa=${encodeURIComponent(user.empresa_name)}&contato=${encodeURIComponent(user.contato_name)}'"><i class="ri-survey-line" style="margin-right: 0.3rem;"></i>Entrevista</button>
                                 <button class="btn-action primary" style="padding:0.4rem 0.8rem; font-size:0.85rem;" title="Criar Orçamento" onclick="abrirModalOrcamento(${user.id}, '${user.empresa_name}')"><i class="ri-money-dollar-circle-line" style="margin-right: 0.3rem;"></i>Orçamento</button>
                                 <button class="btn-action" style="background:rgba(255,255,255,0.05); color:#9ca3af; padding:0.4rem; font-size:1.1rem; border:1px solid rgba(255,255,255,0.1);" title="Resetar Diagnóstico" onclick="resetProposta(${user.id}, '${user.empresa_name}')"><i class="ri-refresh-line"></i></button>

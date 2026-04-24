@@ -7,8 +7,8 @@ if (!isset($data->email) || !isset($data->password)) {
     exit;
 }
 
-$email = $data->email;
-$password = $data->password;
+$email = trim($data->email);
+$password = trim($data->password);
 
 $stmt = $conn->prepare("SELECT id, role, empresa_name, contato_name, password_hash FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
