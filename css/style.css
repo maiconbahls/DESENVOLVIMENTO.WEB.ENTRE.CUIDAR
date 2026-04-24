@@ -58,10 +58,34 @@ body::before {
     left: -5%;
     width: 110%;
     height: 110%;
-    background: radial-gradient(circle at 20% 30%, rgba(243, 115, 62, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(100, 205, 246, 0.05) 0%, transparent 40%),
-                #0d1217;
+    background-image: linear-gradient(rgba(10, 15, 20, 0.6), rgba(5, 8, 12, 0.9)), url('../assets/img/bg-brain.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(15px);
     z-index: -1;
+}
+
+/* Print Overrides - Removes the "child" image and dark background for PDFs */
+@media print {
+    body::before, .background-year {
+        display: none !important;
+    }
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    .glass-container, .stat-card, #proposta-modal {
+        background: white !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: black !important;
+        backdrop-filter: none !important;
+    }
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
 }
 
 .background-year {
