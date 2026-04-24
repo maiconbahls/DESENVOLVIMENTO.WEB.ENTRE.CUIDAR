@@ -125,10 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const submitBtn = registerForm.querySelector('button[type="submit"]');
-        const empresaInput = registerForm.querySelectorAll('input[type="text"]')[0].value;
-        const contatoInput = registerForm.querySelectorAll('input[type="text"]')[1].value;
-        const emailInput = registerForm.querySelector('input[type="email"]').value;
-        const passInput = registerForm.querySelector('input[type="password"]').value;
+        const empresaInput = registerForm.querySelector('input[name="empresa"]').value;
+        const contatoInput = registerForm.querySelector('input[name="contato"]').value;
+        const emailInput = registerForm.querySelector('input[name="email"]').value;
+        const passInput = registerForm.querySelector('input[name="password"]').value;
         
         const produtoSelectEl = registerForm.querySelector('select[name="produto_interesse"]');
         const produtoSelect = produtoSelectEl ? produtoSelectEl.value : 'Essencial';
@@ -140,22 +140,28 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('api/register.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ empresa: empresaInput, contato: contatoInput, email: emailInput, password: passInput, produto_interesse: produtoSelect })
+            body: JSON.stringify({ 
+                empresa: empresaInput, 
+                contato: contatoInput, 
+                email: emailInput, 
+                password: passInput
+            })
         })
         .then(res => res.json())
         .then(data => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-            
             if (data.status === 'success') {
                 if(data.user) {
                     sessionStorage.setItem('user_id', data.user.id);
                     sessionStorage.setItem('user_empresa', data.user.empresa);
                     sessionStorage.setItem('user_role', 'empresa');
                 }
-                alert("Sua conta foi criada com sucesso! Redirecionando para as soluções...");
+                alert(data.message || "Conta criada com sucesso!");
                 window.location.href = 'client-hub.html';
             } else {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                alert('Erro ao cadastrar: ' + data.message);
+                
                 let errorMsg = registerForm.querySelector('.login-error');
                 if (!errorMsg) {
                     errorMsg = document.createElement('p');
