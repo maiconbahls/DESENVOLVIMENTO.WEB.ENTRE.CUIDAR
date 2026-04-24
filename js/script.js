@@ -65,8 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const submitBtn = loginForm.querySelector('button[type="submit"]');
-        const emailInput = loginForm.querySelector('input[type="email"]').value;
-        const passInput = loginForm.querySelector('input[type="password"]').value;
+        const emailInput = loginForm.querySelector('input[type="email"]').value.trim();
+        const passInput = loginForm.querySelector('input[type="password"]').value.trim();
         const originalText = submitBtn.innerHTML;
 
         submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Entrando...';
@@ -89,11 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const userRole = (data.user.role || '').toLowerCase();
                     sessionStorage.setItem('user_role', userRole);
                     
-                    if(userRole === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'client-hub.html';
-                    }
+                    // Pequeno delay para garantir que o storage foi gravado no mobile
+                    setTimeout(() => {
+                        if(userRole === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'client-hub.html';
+                        }
+                    }, 100);
                 }
             } else {
                 let errorMsg = loginForm.querySelector('.login-error');
