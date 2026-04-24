@@ -14,4 +14,3 @@ if($prop = $res->fetch_assoc()) {
 } else {
     echo json_encode(["status" => "empty"]);
 }
-?>
