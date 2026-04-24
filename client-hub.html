@@ -105,11 +105,14 @@
             padding: 2.5rem;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             gap: 1.5rem;
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             backdrop-filter: blur(10px);
+            min-height: 400px;
+            height: 100%;
         }
 
         .stat-card:hover {
@@ -155,6 +158,9 @@
 
         .card-content {
             z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .btn-action {
@@ -723,34 +729,34 @@
 
                             orcCard.innerHTML = `
                                 <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-verified-badge-line"></i></div>
-                                <div class="card-content" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                                <div class="card-content" style="text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%;">
                                     <span class="badge liberado" style="margin-bottom: 1rem;"><i class="ri-check-line"></i> Orçamento Disponível</span>
-                                    <h4 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Seu Orçamento Chegou!</h4>
-                                    <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Análise técnica baseada no seu diagnóstico assistencial.</p>
+                                    <h4 style="font-size: 1.6rem; margin-bottom: 0.5rem; width: 100%;">Seu Orçamento Chegou!</h4>
+                                    <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; width: 100%;">Análise técnica baseada no seu diagnóstico assistencial.</p>
                                     
                                     <div style="width: 100%; background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; text-align: left;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1rem;">
-                                            <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Plano Indicado</span>
-                                            <strong style="color: white; font-size: 1.1rem; letter-spacing: 1px;">${data.data.orcamento_produto || 'Integral'}</strong>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 0.8rem; gap: 10px;">
+                                            <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;">Plano</span>
+                                            <strong style="color: white; font-size: 1rem; letter-spacing: 1px; text-align: right;">${data.data.orcamento_produto || 'Integral'}</strong>
                                         </div>
 
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
-                                            <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Investimento</span>
-                                            <strong style="color: #9dcf7f; font-size: 1.5rem;">${valorExibido}</strong>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1rem; gap: 10px;">
+                                            <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;">Investimento</span>
+                                            <strong style="color: #9dcf7f; font-size: 1.3rem; text-align: right;">${valorExibido}</strong>
                                         </div>
 
-                                        <div style="margin-bottom: 1.5rem;">
-                                            <span style="color: var(--text-muted); display: block; margin-bottom: 0.6rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Resumo do Escopo</span>
-                                            <p style="font-size: 0.95rem; color: #e5e7eb; line-height: 1.6; margin: 0; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03);">${data.data.orcamento_detalhes || 'Escopo técnico detalhado disponível na proposta completa.'}</p>
+                                        <div style="margin-bottom: 1rem;">
+                                            <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">Resumo do Escopo</span>
+                                            <p style="font-size: 0.85rem; color: #e5e7eb; line-height: 1.5; margin: 0; background: rgba(255,255,255,0.02); padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); max-height: 80px; overflow-y: auto;">${data.data.orcamento_detalhes || 'Escopo técnico detalhado disponível na proposta completa.'}</p>
                                         </div>
 
-                                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.8rem; font-weight: 600; justify-content: center; background: rgba(248, 113, 113, 0.05); padding: 0.6rem; border-radius: 6px;">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.75rem; font-weight: 600; justify-content: center; background: rgba(248, 113, 113, 0.05); padding: 0.5rem; border-radius: 6px;">
                                             <i class="ri-calendar-event-line"></i> Válido por 15 dias corridos
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn-action primary" style="width: 100%; justify-content: center; height: 55px; font-size: 1.1rem; border-radius: 12px;" onclick="abrirPropostaCompleta()">
-                                    <i class="ri-file-list-3-line"></i> Visualizar Proposta Completa
+                                <button class="btn-action primary" style="width: 100%; justify-content: center; height: 50px; font-size: 1rem; border-radius: 12px; margin-top: auto;" onclick="abrirPropostaCompleta()">
+                                    <i class="ri-file-list-3-line"></i> Visualizar Proposta
                                 </button>
                             `;
 
