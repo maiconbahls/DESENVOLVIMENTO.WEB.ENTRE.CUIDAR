@@ -8,6 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=7">
+    <script>
+        if (!sessionStorage.getItem('user_id')) {
+            window.location.href = 'index.html';
+        }
+    </script>
     <style>
         /* Override styles for full-page website look */
         body {
@@ -275,6 +280,35 @@
         .animate-card {
             animation: card-entry 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
+
+        /* Media Queries Responsividade */
+        @media (max-width: 1024px) {
+            .top-navbar { padding: 0 2rem; }
+            .main-container { padding: 2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { height: 70px; padding: 0 1rem; }
+            .top-navbar img { height: 35px; }
+            .user-menu span { display: none; }
+            .main-container { margin-top: 70px; padding: 1.5rem 1rem; }
+            .page-header h2 { font-size: 1.8rem; }
+            .stats-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .stat-card { padding: 1.5rem; }
+            .activity-item { padding: 1rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .activity-status { width: 100%; display: flex; justify-content: space-between; }
+            
+            /* Chat adjustments for mobile */
+            .chat-modal-content { width: 95%; height: 80vh; bottom: 20px; right: 2.5%; left: 2.5%; }
+            #chat-window { width: calc(100vw - 2rem) !important; right: 1rem !important; left: 1rem !important; bottom: 5rem !important; }
+            #floating-chat { right: 1rem !important; bottom: 1rem !important; }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h2 { font-size: 1.5rem; }
+            .page-header p { font-size: 0.95rem; }
+            .btn-action { width: 100%; justify-content: center; }
+        }
     </style>
 </head>
 
@@ -284,7 +318,7 @@
         <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo">
         <div class="user-menu">
             <span id="nome-empresa-logada"><i class="ri-building-4-line"></i> Empresa</span>
-            <button class="btn-logout" title="Sair do Portal" onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
+            <button class="btn-logout" title="Sair do Portal" onclick="sessionStorage.clear(); window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
                 <i class="ri-logout-box-r-line"></i> Sair
             </button>
         </div>
@@ -545,7 +579,7 @@
     }
 
     function loadMessages() {
-        const userId = localStorage.getItem('user_id');
+        const userId = sessionStorage.getItem('user_id');
         if(!userId) return;
 
         fetch(`api/get_messages.php?user_id=${userId}`)
@@ -593,7 +627,7 @@
         const msg = input.value.trim();
         if(!msg) return;
 
-        const userId = localStorage.getItem('user_id');
+        const userId = sessionStorage.getItem('user_id');
         if(!userId) return alert('Sessão expirada. Faça login novamente.');
 
         // Salvar via API
@@ -631,8 +665,8 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-        const userId = localStorage.getItem('user_id');
-        const empresa = localStorage.getItem('user_empresa');
+        const userId = sessionStorage.getItem('user_id');
+        const empresa = sessionStorage.getItem('user_empresa');
         if(empresa) {
             document.getElementById('nome-empresa-logada').innerHTML = `<i class="ri-building-4-line"></i> ${empresa}`;
         }
@@ -875,7 +909,7 @@
 
     <script>
         function aceitarProposta() {
-            const userId = localStorage.getItem('user_id');
+            const userId = sessionStorage.getItem('user_id');
             if(!userId) return;
 
             if(!confirm('Tem certeza que deseja aceitar esta proposta comercial?')) return;

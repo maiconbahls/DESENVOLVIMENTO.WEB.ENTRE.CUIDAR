@@ -7,6 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=15">
+    <script>
+        if (sessionStorage.getItem('user_role') !== 'admin') {
+            window.location.href = 'index.html';
+        }
+    </script>
     <style>
         :root {
             --bg-dark: #080808;
@@ -86,6 +91,44 @@
 
         h2.title { font-size: 1.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.8rem; margin-bottom: 2rem; }
         h2.title i { color: var(--primary); font-size: 1.8rem; }
+
+        /* Media Queries Responsividade */
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: repeat(6, 1fr); }
+            .kpi-card { grid-column: span 3 !important; }
+            .card[style*="grid-column: span 8"] { grid-column: span 6 !important; }
+            .card[style*="grid-column: span 12"] { grid-column: span 6 !important; }
+            div[style*="grid-column: span 4"] { grid-column: span 6 !important; }
+        }
+
+        @media (max-width: 1024px) {
+            .top-navbar { padding: 0 2rem; }
+            .main-content { padding: 0 2rem; }
+            .report-header { padding: 2rem !important; }
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { height: 70px; padding: 0 1rem; }
+            .top-navbar div[style*="font-weight: 700"] { display: none; }
+            .main-content { margin-top: 90px; padding: 0 1rem; }
+            .report-header { flex-direction: column; text-align: center; gap: 2rem; }
+            .report-header div[style*="border-left"] { border-left: none; border-top: 1px solid rgba(255,255,255,0.1); padding-left: 0; padding-top: 2rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .kpi-card { grid-column: span 1 !important; }
+            .card { grid-column: span 1 !important; }
+            div[style*="grid-column: span 4"] { grid-column: span 1 !important; }
+            .indicator-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .indicator-name { flex: 0 0 auto; width: 100%; }
+            .val-badge { align-self: flex-end; }
+            .footer-data { flex-direction: column; gap: 2rem; text-align: center; }
+            .footer-data div[style*="display: flex"] { flex-direction: column; gap: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .report-header h1 { font-size: 2.2rem; }
+            .kpi-value { font-size: 2rem; }
+            .btn-print span { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -100,7 +143,7 @@
 
     <div class="main-content">
         <!-- HEADER DO RELATÓRIO -->
-        <header style="background: linear-gradient(90deg, rgba(24, 174, 182, 0.1) 0%, transparent 100%); padding: 3rem; border-radius: 30px; border: 1px solid rgba(24, 174, 182, 0.2); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <header class="report-header" style="background: linear-gradient(90deg, rgba(24, 174, 182, 0.1) 0%, transparent 100%); padding: 3rem; border-radius: 30px; border: 1px solid rgba(24, 174, 182, 0.2); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <span class="badge" style="background: var(--primary); color: white; margin-bottom: 1rem;">Protocolo Analisado: #<span id="protocolo-id">---</span></span>
                 <h1 id="ent-empresa" style="font-size: 3.5rem; margin: 0.5rem 0; font-weight: 900; letter-spacing: -1px;">---</h1>
@@ -179,7 +222,7 @@
             </div>
 
             <!-- FOOTER DE DADOS -->
-            <div class="card" style="grid-column: span 12; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem;">
+            <div class="card footer-data" style="grid-column: span 12; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem;">
                 <div style="display: flex; gap: 4rem;">
                     <div>
                         <span style="color: #666; font-size: 0.8rem; text-transform: uppercase;">Sistema de Controle</span>

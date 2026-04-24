@@ -7,6 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=12">
+    <script>
+        if (sessionStorage.getItem('user_role') !== 'admin') {
+            window.location.href = 'index.html';
+        }
+    </script>
     <style>
         body { margin: 0; padding: 0; min-height: 100vh; background: #080808; color: white; font-family: 'Outfit', sans-serif; }
         .top-navbar { height: 80px; width: 100%; position: fixed; top: 0; z-index: 100; background: rgba(25, 25, 30, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 4rem; box-sizing: border-box; }
@@ -28,10 +33,26 @@
         .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(24, 174, 182, 0.4); filter: brightness(1.1); }
         .btn-submit:disabled { background: #374151; cursor: not-allowed; transform: none; box-shadow: none; }
         
-        /* Ajuste para opções do select ficarem legíveis no dark mode */
-        select option {
-            background-color: #1a1a1a;
-            color: white;
+        /* Media Queries Responsividade */
+        @media (max-width: 1024px) {
+            .top-navbar { padding: 0 2rem; }
+            .container { padding: 2rem; margin: 100px 1rem 50px; }
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { height: 70px; padding: 0 1rem; }
+            .top-navbar div { display: none; }
+            .container { padding: 1.5rem; margin-top: 90px; }
+            .section-title { font-size: 1.2rem; }
+            header h1 { font-size: 2rem !important; }
+            div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            .matrix-table th, .matrix-table td { padding: 0.8rem; font-size: 0.85rem; }
+            .matrix-table th:nth-child(1), .matrix-table td:nth-child(1) { width: 50%; }
+        }
+
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.6rem !important; }
+            .btn-submit { padding: 1rem; font-size: 1rem; }
         }
     </style>
 </head>

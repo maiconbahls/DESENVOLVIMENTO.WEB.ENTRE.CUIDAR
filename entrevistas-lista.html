@@ -7,6 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=13">
+    <script>
+        if (sessionStorage.getItem('user_role') !== 'admin') {
+            window.location.href = 'index.html';
+        }
+    </script>
     <style>
         body { 
             margin: 0; padding: 0; min-height: 100vh; 
@@ -82,13 +87,39 @@
         .nav-item.active i {
             color: white;
         }
+
+        /* Media Queries Responsividade */
+        @media (max-width: 1024px) {
+            .top-navbar { padding: 0 2rem; }
+            .main-content { padding: 0 2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .top-navbar { height: 70px; padding: 0 1rem; }
+            .top-navbar img { height: 35px; }
+            .user-menu { display: none; }
+            .main-content { margin-top: 90px; padding: 0 1rem; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+            .page-header div[style*="text-align: right"] { text-align: left !important; width: 100%; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; }
+            .admin-nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; margin-bottom: 2rem; }
+            .nav-item { padding: 0.6rem 1rem; white-space: nowrap; font-size: 0.85rem; }
+            .filters-bar { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .search-input { width: 100% !important; max-width: none !important; }
+            .table-container { overflow-x: auto; }
+            table { min-width: 800px; }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 { font-size: 1.8rem !important; }
+            .page-header p { font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
     <nav class="top-navbar">
         <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo" style="height: 45px;">
         <div class="user-menu" style="display: flex; align-items: center; gap: 1.5rem;">
-            <button class="btn-logout" title="Sair do Sistema" onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
+            <button class="btn-logout" title="Sair do Sistema" onclick="sessionStorage.clear(); window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
                 <i class="ri-logout-box-r-line"></i> Sair
             </button>
         </div>

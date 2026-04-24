@@ -1068,4 +1068,24 @@ button {
     .intro-right h3 {
         font-size: 2.2rem;
     }
+
+    .intro-left p {
+        font-size: 1.1rem;
+        padding-left: 1rem;
+    }
+
+    .pillars {
+        gap: 1rem;
+    }
+
+    .pillar {
+        padding: 1.2rem;
+    }
+
+    /* Fix for very small screens */
+    @media (max-width: 380px) {
+        .intro-left h2 { font-size: 1.8rem; }
+        .intro-right h3 { font-size: 1.8rem; }
+        .auth-container { padding: 1.5rem 1rem; }
+    }
 }

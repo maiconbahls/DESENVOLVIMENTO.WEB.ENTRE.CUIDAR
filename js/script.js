@@ -83,9 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = false;
             
             if (data.status === 'success') {
-                if(data.user && data.user.empresa) {
-                    localStorage.setItem('user_empresa', data.user.empresa);
-                    localStorage.setItem('user_id', data.user.id);
+                if(data.user) {
+                    sessionStorage.setItem('user_id', data.user.id);
+                    sessionStorage.setItem('user_empresa', data.user.empresa);
+                    sessionStorage.setItem('user_role', data.user.role);
                 }
                 if(data.user.role === 'admin') {
                     window.location.href = 'admin.html';
@@ -139,9 +140,10 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = false;
             
             if (data.status === 'success') {
-                if(data.user && data.user.empresa) {
-                    localStorage.setItem('user_empresa', data.user.empresa);
-                    localStorage.setItem('user_id', data.user.id);
+                if(data.user) {
+                    sessionStorage.setItem('user_id', data.user.id);
+                    sessionStorage.setItem('user_empresa', data.user.empresa);
+                    sessionStorage.setItem('user_role', 'empresa');
                 }
                 alert("Sua conta foi criada com sucesso! Redirecionando para as soluções...");
                 window.location.href = 'client-hub.html';
@@ -170,16 +172,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle Logout
-    btnLogout.addEventListener('click', () => {
-        formView.classList.add('hidden');
-        authView.classList.remove('hidden');
-        codeBox.classList.remove('active');
-        loginBox.classList.add('active');
-        // Reset the main form steps
-        currentStep = 0;
-        updateFormSteps();
-        document.getElementById('multi-step-form').reset();
-    });
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        });
+    }
 
     // Handle Access Code Submit
     codeForm.addEventListener('submit', (e) => {
@@ -277,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (validateStep(currentStep)) {
             const submitBtn = document.getElementById('btn-submit');
             const originalHTML = submitBtn.innerHTML;
-            const userId = localStorage.getItem('user_id');
+            const userId = sessionStorage.getItem('user_id');
 
             submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Processando...';
             submitBtn.disabled = true;
