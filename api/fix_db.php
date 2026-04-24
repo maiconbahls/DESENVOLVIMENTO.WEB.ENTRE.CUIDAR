@@ -1,3 +1,4 @@
+<?php
 require 'config.php';
 
 echo "<h2>Iniciando atualização do banco de dados...</h2>";
