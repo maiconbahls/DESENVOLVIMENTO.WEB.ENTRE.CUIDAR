@@ -566,7 +566,7 @@
         })
         .catch(err => {
             console.error("Erro no chat:", err);
-            alert('Erro ao enviar mensagem. Verifique sua conexão.');
+            alert('Erro ao enviar mensagem: ' + err.message);
             // Se falhar, tentamos carregar as mensagens de novo silenciosamente
             setTimeout(loadMessages, 2000);
         });
