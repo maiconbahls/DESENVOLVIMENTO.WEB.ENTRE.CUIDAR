@@ -1061,68 +1061,86 @@ button {
     }
 
     .intro-wrapper {
-        padding: 4rem 2rem;
-        position: absolute;
+        padding: 2rem 1.2rem;
+        position: relative;
         height: auto;
         min-height: 100vh;
-        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         overflow-y: auto;
     }
 
     .intro-content {
         grid-template-columns: 1fr;
-        gap: 2.5rem;
-        margin-top: 2rem;
+        gap: 2rem;
+        margin-top: 1.5rem;
+        width: 100%;
     }
 
     .intro-left {
         border-right: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding-right: 0;
-        padding-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        text-align: center;
     }
 
     .intro-left h2 {
-        font-size: 2.2rem;
+        font-size: 2rem;
+        line-height: 1.2;
     }
 
     .intro-right h3 {
-        font-size: 2.2rem;
+        font-size: 1.8rem;
+        text-align: center;
     }
 
     .intro-left p {
-        font-size: 1.1rem;
-        padding-left: 1rem;
+        font-size: 1rem;
+        padding-left: 0;
+        margin-top: 1rem;
     }
 
     .pillars {
-        gap: 1rem;
+        gap: 0.8rem;
     }
 
     .pillar {
-        padding: 1.2rem;
+        padding: 1rem;
+    }
+    
+    .pillar i {
+        font-size: 1.5rem;
     }
 
     /* Premium Mobile Touches */
     .btn-primary, .btn-secondary, button {
-        min-height: 50px; /* Better touch target */
-    }
-
-    input, select, textarea {
-        font-size: 16px !important; /* Prevent iOS zoom on focus */
+        min-height: 48px;
     }
 
     .glass-container {
-        border-radius: 20px;
-        margin-top: 1rem;
+        border-radius: 0; /* Edge to edge on mobile looks more professional */
+        margin-top: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-left: none;
+        border-right: none;
+    }
+
+    .form-wrapper {
+        padding: 1.5rem 1rem !important;
+    }
+
+    .form-header h2 {
+        font-size: 1.5rem;
     }
 
     /* Fix for very small screens */
     @media (max-width: 380px) {
-        .intro-left h2 { font-size: 1.8rem; }
-        .intro-right h3 { font-size: 1.8rem; }
-        .auth-container { padding: 1.5rem 1rem; }
-        .form-header h2 { font-size: 1.6rem; }
+        .intro-left h2 { font-size: 1.7rem; }
+        .intro-right h3 { font-size: 1.6rem; }
+        .auth-container { padding: 1.2rem 0.8rem; }
     }
 }
 

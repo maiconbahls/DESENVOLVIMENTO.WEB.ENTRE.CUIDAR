@@ -23,11 +23,13 @@ if ($check_stmt->get_result()->num_rows > 0) {
 }
 $check_stmt->close();
 
+$produto = isset($data->produto_interesse) ? $data->produto_interesse : 'Não informado';
+
 // Criptografa a senha com Hash Forte
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt = $conn->prepare("INSERT INTO users (role, empresa_name, contato_name, email, password_hash) VALUES ('empresa', ?, ?, ?, ?)");
-$stmt->bind_param("ssss", $empresa, $contato, $email, $hash);
+$stmt = $conn->prepare("INSERT INTO users (role, empresa_name, contato_name, email, password_hash, produto_interesse) VALUES ('empresa', ?, ?, ?, ?, ?)");
+$stmt->bind_param("sssss", $empresa, $contato, $email, $hash, $produto);
 
 if ($stmt->execute()) {
     $user_id = $stmt->insert_id;

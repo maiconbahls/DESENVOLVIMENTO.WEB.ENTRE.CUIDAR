@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const btnShowRegister = document.getElementById('btn-show-register');
     const btnShowLogin = document.getElementById('btn-show-login');
-    const btnLogout = document.getElementById('btn-logout');
+    const btnHome = document.getElementById('btn-home');
 
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const contatoInput = registerForm.querySelectorAll('input[type="text"]')[1].value;
         const emailInput = registerForm.querySelector('input[type="email"]').value;
         const passInput = registerForm.querySelector('input[type="password"]').value;
+        const produtoSelect = registerForm.querySelector('select').value;
         const originalText = submitBtn.innerHTML;
 
         submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Criando conta...';
@@ -134,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('api/register.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ empresa: empresaInput, contato: contatoInput, email: emailInput, password: passInput })
+            body: JSON.stringify({ empresa: empresaInput, contato: contatoInput, email: emailInput, password: passInput, produto_interesse: produtoSelect })
         })
         .then(res => res.json())
         .then(data => {
@@ -173,10 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle Logout
-    if (btnLogout) {
-        btnLogout.addEventListener('click', () => {
-            sessionStorage.clear();
+    // Handle Home navigation
+    if (btnHome) {
+        btnHome.addEventListener('click', () => {
             window.location.href = 'index.html';
         });
     }
