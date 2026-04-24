@@ -583,11 +583,19 @@
                             orcCard.style.borderColor = "rgba(157, 207, 127, 0.5)";
                             orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.8) 0%, rgba(157,207,127,0.1) 100%)";
                             
-                            // Garante que o valor tenha o prefixo R$ se não tiver
+                            // Garante que o valor esteja formatado corretamente (R$ 0.000,00)
                             let valorExibido = data.data.orcamento_valor || '0,00';
                             
-                            // Se o valor for 0.00 ou similar, pode ser erro de coluna DB, tenta limpar
-                            if(valorExibido === '0.00' || valorExibido === '0') valorExibido = 'Pendente';
+                            // Se o valor for um número puro (sem R$ ou vírgula), formatamos
+                            if (valorExibido !== '0,00' && !valorExibido.includes('R$') && !valorExibido.includes(',')) {
+                                const num = parseFloat(valorExibido.replace(/[^\d.]/g, ''));
+                                if (!isNaN(num)) {
+                                    valorExibido = num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                                }
+                            }
+
+                            // Fallback para pendente se for 0
+                            if(valorExibido === '0.00' || valorExibido === '0' || valorExibido === 'R$ 0,00') valorExibido = 'Pendente';
                             
                             if(!valorExibido.includes('R$') && valorExibido !== 'Pendente') valorExibido = 'R$ ' + valorExibido;
 

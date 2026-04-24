@@ -169,27 +169,23 @@
                     <h4>Clientes na Base</h4>
                     <div class="value" id="total-clientes">...</div>
                 </div>
-                <i class="ri-building-line" style="font-size: 3rem; color: var(--primary-light); opacity: 0.8;"></i>
+                <i class="ri-building-line" style="font-size: 2.5rem; color: #18aeb6; opacity: 0.8;"></i>
             </div>
             
             <div class="stat-card">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div>
-                        <span class="stat-label">PROPOSTAS ENVIADAS</span>
-                        <h2 class="stat-value" id="total-propostas">0</h2>
-                    </div>
-                    <div class="stat-icon" style="background: rgba(24, 174, 182, 0.1); color: #18aeb6;"><i class="ri-checkbox-circle-line"></i></div>
+                <div>
+                    <h4>Propostas Enviadas</h4>
+                    <div class="value" id="total-propostas">0</div>
                 </div>
+                <i class="ri-mail-send-line" style="font-size: 2.5rem; color: #64cdf6; opacity: 0.8;"></i>
             </div>
 
             <div class="stat-card">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div>
-                        <span class="stat-label">CONTRATOS ACEITOS</span>
-                        <h2 class="stat-value" id="total-aceitos" style="color: #9dcf7f;">0</h2>
-                    </div>
-                    <div class="stat-icon" style="background: rgba(157, 207, 127, 0.1); color: #9dcf7f;"><i class="ri-shake-hands-line"></i></div>
+                <div>
+                    <h4>Contratos Aceitos</h4>
+                    <div class="value" id="total-aceitos" style="color: #9dcf7f;">0</div>
                 </div>
+                <i class="ri-shake-hands-line" style="font-size: 2.5rem; color: #9dcf7f; opacity: 0.8;"></i>
             </div> 
 
             <div class="stat-card" style="border-color: rgba(243,115,62,0.3); background: linear-gradient(145deg, rgba(25,25,30,0.6) 0%, rgba(243,115,62,0.05) 100%);">
@@ -197,36 +193,58 @@
                     <h4>Diagnósticos Pendentes</h4>
                     <div class="value" style="color: var(--primary-color);" id="total-pendentes">...</div>
                 </div>
-                <i class="ri-survey-line" style="font-size: 3rem; color: var(--primary-color); opacity: 0.8;"></i>
-            </div>
-            <div class="stat-card">
-                <div>
-                    <h4>Propostas Enviadas</h4>
-                    <div class="value" style="color: #9dcf7f;" id="total-propostas">...</div>
-                </div>
-                <i class="ri-checkbox-circle-line" style="font-size: 3rem; color: #9dcf7f; opacity: 0.8;"></i>
+                <i class="ri-survey-line" style="font-size: 2.5rem; color: var(--primary-color); opacity: 0.8;"></i>
             </div>
         </div>
 
-        <div class="recent-activity">
-            <h3><i class="ri-team-line" style="margin-right: 0.5rem; color: var(--primary-light);"></i> Empresas Cadastradas Recentemente</h3>
-            <div class="table-responsive">
-                <table id="table-empresas">
-                    <thead>
-                        <tr>
-                            <th>Nº</th>
-                            <th>Nome da Empresa</th>
-                            <th>Responsável</th>
-                            <th>E-mail Corporativo</th>
-                        <th>Data de Cadastro</th>
-                        <th>Status Proposta</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="7" style="text-align:center; color:#6c757d; padding: 2rem;">Carregando banco de dados...</td></tr>
-                </tbody>
-            </table>
+        <div id="gestao-operacional-view">
+            <div class="recent-activity">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3><i class="ri-history-line" style="margin-right: 0.5rem; color: #18aeb6;"></i> Empresas Cadastradas Recentemente</h3>
+                </div>
+                
+                <div class="table-responsive">
+                    <table id="table-empresas">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nome da Empresa</th>
+                                <th>Responsável</th>
+                                <th>E-mail Corporativo</th>
+                                <th>Data de Cadastro</th>
+                                <th>Status Proposta</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="7" style="text-align:center; color:#6c757d; padding: 2rem;">Carregando banco de dados...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="recent-activity" style="margin-top: 4rem;">
+                <h3><i class="ri-mail-unread-line" style="margin-right: 0.5rem; color: #18aeb6;"></i> Caixa de Mensagens (Suporte)</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Quando um cliente utilizar a opção "Fale com a Gestão" no Portal dele, as mensagens cairão nesta caixa de entrada.</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Protocolo</th>
+                                <th>Remetente (Operadora)</th>
+                                <th>Sua Mensagem</th>
+                                <th>Recebido em</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" style="text-align:center; color:#6c757d; padding: 2rem;">Nenhuma mensagem pendente no momento.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div id="base-relatorios" style="display: none; margin-top: 3rem;">
@@ -260,30 +278,6 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-full-base"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-        <div class="recent-activity" style="margin-top: 4rem;">
-            <h3><i class="ri-mail-unread-line" style="margin-right: 0.5rem; color: #18aeb6;"></i> Caixa de Mensagens (Suporte)</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Quando um cliente utilizar a opção "Fale com a Gestão" no Portal dele, as mensagens cairão nesta caixa de entrada.</p>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Protocolo</th>
-                            <th>Remetente (Operadora)</th>
-                            <th>Sua Mensagem</th>
-                            <th>Recebido em</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5" style="text-align:center; color:#6c757d; padding: 2rem;">Nenhuma mensagem pendente no momento.</td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -400,7 +394,7 @@
     }
 
     function showBaseReport() {
-        const recentSection = document.querySelector('.recent-activity');
+        const gestaoView = document.getElementById('gestao-operacional-view');
         const reportSection = document.getElementById('base-relatorios');
         const navItems = document.querySelectorAll('.nav-item');
         
@@ -409,7 +403,7 @@
         const target = Array.from(navItems).find(i => i.innerText.includes('Base de Cadastros'));
         if(target) target.classList.add('active');
 
-        recentSection.style.display = 'none';
+        gestaoView.style.display = 'none';
         reportSection.style.display = 'block';
     }
 
