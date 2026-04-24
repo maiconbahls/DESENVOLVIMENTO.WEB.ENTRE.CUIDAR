@@ -240,11 +240,13 @@
             top: -50%;
             width: 200%;
             height: 200%;
-            background-color: transparent;
-            background-repeat: no-repeat;
-            background-size: 50% 50%, 50% 50%;
-            background-position: 0 0, 100% 0, 100% 100%, 0 100%;
-            background-image: linear-gradient(#18aeb6, #18aeb6), linear-gradient(#9dcf7f, #9dcf7f), linear-gradient(#18aeb6, #18aeb6), linear-gradient(#9dcf7f, #9dcf7f);
+            background: conic-gradient(
+                transparent, 
+                #18aeb6, 
+                #9dcf7f, 
+                #18aeb6, 
+                transparent 40%
+            );
             animation: rotate-border 4s linear infinite;
         }
 
@@ -256,7 +258,8 @@
             top: 2px;
             width: calc(100% - 4px);
             height: calc(100% - 4px);
-            background: #111;
+            background: rgba(15, 25, 25, 0.8);
+            backdrop-filter: blur(20px);
             border-radius: 14px;
         }
 
@@ -319,7 +322,7 @@
             </div>
             
             <!-- Card Atendimento -->
-            <div class="stat-card">
+            <div class="stat-card" id="card-suporte">
                 <div class="card-icon-bg" style="color: rgba(100, 205, 246, 0.02);"><i class="ri-customer-service-2-line"></i></div>
                 <div class="card-content">
                     <span class="badge"><i class="ri-message-3-line"></i> Suporte Direto</span>
@@ -773,6 +776,20 @@
                                     <p>Seu diagnóstico assistencial foi concluído e serviu de base para a ativação do seu plano atual.</p>
                                 </div>
                                 <button class="btn-action disabled" disabled style="background: rgba(157, 207, 127, 0.1); color: #9dcf7f;">Questionário Concluído <i class="ri-check-double-line"></i></button>
+                            `;
+                        }
+
+                        // Atualiza também o terceiro card para a próxima etapa
+                        const chatCard = document.getElementById('card-suporte');
+                        if(chatCard) {
+                            chatCard.innerHTML = `
+                                <div class="card-icon-bg" style="color: rgba(24, 174, 182, 0.05);"><i class="ri-customer-service-2-line"></i></div>
+                                <div class="card-content">
+                                    <span class="badge" style="background: rgba(24, 174, 182, 0.1); color: #18aeb6;"><i class="ri-time-line"></i> Próxima Etapa</span>
+                                    <h4>Aguarde nosso contato</h4>
+                                    <p>Nossa equipe de suporte técnico e comercial entrará em contato em breve para os próximos passos da implementação.</p>
+                                </div>
+                                <button class="btn-action" onclick="toggleChat()" style="background: #18aeb6; color: white; justify-content: center;">Enviar Mensagem <i class="ri-chat-smile-3-line"></i></button>
                             `;
                         }
                     }
