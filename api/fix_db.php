@@ -1,20 +1,25 @@
-<?php
 require 'config.php';
 
-// Script para ajustar o banco de dados e adicionar a coluna de produto se não existir
-$sql = "ALTER TABLE users ADD COLUMN IF NOT EXISTS produto_interesse VARCHAR(50) DEFAULT 'Não informado'";
+echo "<h2>Iniciando atualização do banco de dados...</h2>";
 
-if ($conn->query($sql)) {
-    echo "Sucesso: Banco de dados atualizado. Agora você pode cadastrar o plano de interesse.";
-} else {
-    // Se o IF NOT EXISTS falhar por versão do MySQL antiga, tentamos sem ele e ignoramos o erro se já existir
-    $sql_fallback = "ALTER TABLE users ADD COLUMN produto_interesse VARCHAR(50) DEFAULT 'Não informado'";
-    if ($conn->query($sql_fallback)) {
-        echo "Sucesso: Coluna adicionada.";
+$columns = [
+    "empresa_name VARCHAR(255) DEFAULT 'Não informado'",
+    "contato_name VARCHAR(255) DEFAULT 'Não informado'",
+    "produto_interesse VARCHAR(100) DEFAULT 'Essencial'"
+];
+
+foreach ($columns as $col) {
+    $colName = explode(' ', $col)[0];
+    $sql = "ALTER TABLE users ADD COLUMN $col";
+    if ($conn->query($sql)) {
+        echo "<p style='color: green;'>Sucesso: Coluna <strong>$colName</strong> adicionada.</p>";
     } else {
-        echo "Aviso: O banco de dados já parece estar atualizado ou houve um erro: " . $conn->error;
+        echo "<p style='color: orange;'>Aviso: Coluna <strong>$colName</strong> já existe ou não pôde ser adicionada.</p>";
     }
 }
+
+echo "<h3>Atualização concluída!</h3>";
+echo "<p>Agora tente realizar o cadastro novamente no site.</p>";
 
 $conn->close();
 ?>

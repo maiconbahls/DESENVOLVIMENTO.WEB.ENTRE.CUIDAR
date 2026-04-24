@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-            alert('Erro de comunicação. Tente novamente mais tarde.');
+            alert('Erro de comunicação. Por favor, acesse o link de correção (fix_db) enviado anteriormente.');
             console.error(err);
         });
     });
