@@ -129,7 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const contatoInput = registerForm.querySelectorAll('input[type="text"]')[1].value;
         const emailInput = registerForm.querySelector('input[type="email"]').value;
         const passInput = registerForm.querySelector('input[type="password"]').value;
-        const produtoSelect = registerForm.querySelector('select').value;
+        
+        const produtoSelectEl = registerForm.querySelector('select[name="produto_interesse"]');
+        const produtoSelect = produtoSelectEl ? produtoSelectEl.value : 'Essencial';
         const originalText = submitBtn.innerHTML;
 
         submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Criando conta...';
