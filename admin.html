@@ -195,11 +195,12 @@
                             <th>Responsável</th>
                             <th>E-mail Corporativo</th>
                             <th>Data de Cadastro</th>
+                            <th>Status Proposta</th>
                             <th>Ação</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td colspan="6" style="text-align:center; color:#6c757d; padding: 2rem;">Carregando banco de dados...</td></tr>
+                        <tr><td colspan="7" style="text-align:center; color:#6c757d; padding: 2rem;">Carregando banco de dados...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -243,7 +244,7 @@
                 // Cálculo de Números Reais
                 const totalClientes = data.data.length;
                 const totalPendentes = data.data.filter(u => !u.proposta_id).length;
-                const totalPropostas = data.data.filter(u => u.proposta_status === 'Respondido').length;
+                const totalPropostas = data.data.filter(u => u.proposta_status === 'Respondido' || u.proposta_status === 'Aceito').length;
 
                 document.getElementById('total-clientes').innerText = totalClientes;
                 document.getElementById('total-pendentes').innerText = totalPendentes;
@@ -257,11 +258,19 @@
                     data.data.forEach(user => {
                         const tr = document.createElement('tr');
                         // Formatando a data
-                    let dataFormatada = "Recente";
-                    if(user.created_at) {
-                        const d = new Date(user.created_at);
-                        dataFormatada = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                    }
+                        let dataFormatada = "Recente";
+                        if(user.created_at) {
+                            const d = new Date(user.created_at);
+                            dataFormatada = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                        }
+
+                        // Badge de Status
+                        let statusHTML = '<span class="badge pendente">Pendente</span>';
+                        if(user.proposta_status === 'Respondido') {
+                            statusHTML = '<span class="badge" style="background:rgba(24,174,182,0.15); color:#18aeb6;">Enviado</span>';
+                        } else if(user.proposta_status === 'Aceito') {
+                            statusHTML = '<span class="badge analisado" style="background:rgba(157,207,127,0.2); color:#9dcf7f; border:1px solid #9dcf7f;"><i class="ri-checkbox-circle-fill"></i> ACEITO</span>';
+                        }
 
                     tr.innerHTML = `
                         <td><span style="color:var(--text-muted);">#${user.id}</span></td>
@@ -269,6 +278,7 @@
                         <td>${user.contato_name}</td>
                         <td>${user.email}</td>
                         <td>${dataFormatada}</td>
+                        <td>${statusHTML}</td>
                         <td>
                             <div style="display: flex; gap: 0.5rem;">
                                 <button class="btn-action" style="background:#18aeb6; color:white; padding:0.4rem 0.8rem; font-size:0.85rem;" title="Fazer Entrevista" onclick="window.location.href='entrevista.html?id=${user.id}&empresa=${encodeURIComponent(user.empresa_name)}&contato=${encodeURIComponent(user.contato_name)}'"><i class="ri-survey-line" style="margin-right: 0.3rem;"></i>Entrevista</button>
@@ -281,13 +291,13 @@
                     });
                 } else {
                     document.getElementById('total-clientes').innerText = "0";
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#6c757d; padding: 2rem;">Nenhuma operadora se cadastrou ainda. Teste o cadastro na home!</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#6c757d; padding: 2rem;">Nenhuma operadora se cadastrou ainda. Teste o cadastro na home!</td></tr>';
                 }
             }
         })
         .catch(err => {
             console.error("Erro ao puxar usuários do DB:", err);
-            document.querySelector('#table-empresas tbody').innerHTML = '<tr><td colspan="6" style="text-align:center; color:#ff6b6b; padding: 2rem;">Falha na conexão com o banco ou API não enviada.</td></tr>';
+            document.querySelector('#table-empresas tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; color:#ff6b6b; padding: 2rem;">Falha na conexão com o banco ou API não enviada.</td></tr>';
         });
     }
 

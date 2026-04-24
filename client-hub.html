@@ -409,7 +409,44 @@
         </button>
     </div>
 
+    <style>
+        /* Toast Notification */
+        #notification-toast {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: rgba(157, 207, 127, 0.95);
+            color: #000;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 10001;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+
+    <div id="notification-toast">
+        <div style="background: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;">
+            <i class="ri-notification-3-line" style="color: #9dcf7f;"></i>
+        </div>
+        <div>
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Novidade Chegou!</h5>
+            <p style="margin: 0; font-size: 0.9rem;">Seu orçamento técnico já está disponível.</p>
+        </div>
+        <button onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 1rem;">×</button>
+    </div>
+
     <script>
+    let currentPropostaStatus = null;
     function toggleChat() {
         const chatWindow = document.getElementById('chat-window');
         if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
@@ -521,65 +558,89 @@
         }, 5000);
 
         // Fetch propostas
-        console.log("Buscando proposta para user_id:", userId);
-        if(!userId) {
-            console.error("ERRO: userId não encontrado no localStorage!");
-        }
+        const checkProposta = () => {
+            console.log("Checando proposta para user_id:", userId);
+            if(!userId) return;
 
-        fetch(`api/get_my_proposta.php?user_id=${userId}`)
-        .then(res => res.json())
-        .then(data => {
-            console.log("Resposta Proposta:", data);
-            if(data.status === 'success' && data.data) {
-                if(data.data.status === 'Respondido') {
-                    // Atualiza o card de orcamento
-                    const orcCard = document.getElementById('card-orcamento');
-                    if(orcCard) {
-                        orcCard.style.borderColor = "rgba(157, 207, 127, 0.5)";
-                        orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.8) 0%, rgba(157,207,127,0.1) 100%)";
-                        
-                        // Garante que o valor tenha o prefixo R$ se não tiver
-                        let valorExibido = data.data.orcamento_valor || '0,00';
-                        if(!valorExibido.includes('R$')) valorExibido = 'R$ ' + valorExibido;
+            fetch(`api/get_my_proposta.php?user_id=${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success' && data.data) {
+                    const newStatus = data.data.status;
+                    
+                    // Notificação se mudar para Respondido
+                    if (currentPropostaStatus !== 'Respondido' && newStatus === 'Respondido') {
+                        if (currentPropostaStatus !== null) { // Só notifica se não for a primeira carga
+                            showNotification();
+                        }
+                    }
+                    currentPropostaStatus = newStatus;
 
-                        orcCard.innerHTML = `
-                            <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-verified-badge-line"></i></div>
-                            <div class="card-content">
-                                <span class="badge liberado"><i class="ri-check-line"></i> Orçamento Disponível</span>
-                                <h4>Seu Orçamento Chegou!</h4>
-                                <p style="margin-bottom: 1.5rem;">A Gestão elaborou uma proposta técnica baseada no seu diagnóstico.</p>
-                                
-                                <div style="background: rgba(0,0,0,0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.6rem; gap: 1rem;">
-                                        <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">Plano Indicado:</span>
-                                        <strong style="color: white; letter-spacing: 1px; text-align: right;">${data.data.orcamento_produto || 'Integral'}</strong>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.6rem; gap: 1rem;">
-                                        <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">Investimento Mensal:</span>
-                                        <strong style="color: #9dcf7f; font-size: 1.2rem; white-space: nowrap; text-align: right;">${valorExibido}</strong>
-                                    </div>
-                                    <div style="margin-top: 1rem;">
-                                        <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">Resumo do Escopo:</span>
-                                        <p style="font-size: 0.85rem; color: var(--text-light); line-height: 1.4; margin: 0;">${data.data.orcamento_detalhes || 'Aguardando PDF detalhado.'}</p>
-                                    </div>
-                                    <div style="margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.8rem; font-weight: 600;">
-                                        <i class="ri-calendar-event-line"></i> Válido por 15 dias corridos
+                    if(newStatus === 'Respondido') {
+                        // Atualiza o card de orcamento
+                        const orcCard = document.getElementById('card-orcamento');
+                        if(orcCard) {
+                            orcCard.style.borderColor = "rgba(157, 207, 127, 0.5)";
+                            orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.8) 0%, rgba(157,207,127,0.1) 100%)";
+                            
+                            // Garante que o valor tenha o prefixo R$ se não tiver
+                            let valorExibido = data.data.orcamento_valor || '0,00';
+                            
+                            // Se o valor for 0.00 ou similar, pode ser erro de coluna DB, tenta limpar
+                            if(valorExibido === '0.00' || valorExibido === '0') valorExibido = 'Pendente';
+                            
+                            if(!valorExibido.includes('R$') && valorExibido !== 'Pendente') valorExibido = 'R$ ' + valorExibido;
+
+                            orcCard.innerHTML = `
+                                <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-verified-badge-line"></i></div>
+                                <div class="card-content">
+                                    <span class="badge liberado"><i class="ri-check-line"></i> Orçamento Disponível</span>
+                                    <h4>Seu Orçamento Chegou!</h4>
+                                    <p style="margin-bottom: 1.5rem;">A Gestão elaborou uma proposta técnica baseada no seu diagnóstico.</p>
+                                    
+                                    <div style="background: rgba(0,0,0,0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.6rem; gap: 1rem;">
+                                            <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">Plano Indicado:</span>
+                                            <strong style="color: white; letter-spacing: 1px; text-align: right;">${data.data.orcamento_produto || 'Integral'}</strong>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.6rem; gap: 1rem;">
+                                            <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">Investimento Mensal:</span>
+                                            <strong style="color: #9dcf7f; font-size: 1.2rem; white-space: nowrap; text-align: right;">${valorExibido}</strong>
+                                        </div>
+                                        <div style="margin-top: 1rem;">
+                                            <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">Resumo do Escopo:</span>
+                                            <p style="font-size: 0.85rem; color: var(--text-light); line-height: 1.4; margin: 0;">${data.data.orcamento_detalhes || 'Aguardando PDF detalhado.'}</p>
+                                        </div>
+                                        <div style="margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.8rem; font-weight: 600;">
+                                            <i class="ri-calendar-event-line"></i> Válido por 15 dias corridos
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <button class="btn-action primary" style="width: 100%; justify-content: center;" onclick="abrirPropostaCompleta()"><i class="ri-file-list-3-line"></i> Visualizar Proposta Completa</button>
-                        `;
+                                <button class="btn-action primary" style="width: 100%; justify-content: center;" onclick="abrirPropostaCompleta()"><i class="ri-file-list-3-line"></i> Visualizar Proposta Completa</button>
+                            `;
 
-                        // Preencher os dados no modal de proposta
-                        document.getElementById('prop_empresa').innerText = empresa;
-                        document.getElementById('prop_plano').innerText = data.data.orcamento_produto || 'Integral';
-                        document.getElementById('prop_valor').innerText = valorExibido;
-                        document.getElementById('prop_detalhes').innerText = data.data.orcamento_detalhes || 'Escopo técnico em anexo.';
+                            // Preencher os dados no modal de proposta
+                            document.getElementById('prop_empresa').innerText = empresa;
+                            document.getElementById('prop_plano').innerText = data.data.orcamento_produto || 'Integral';
+                            document.getElementById('prop_valor').innerText = valorExibido;
+                            document.getElementById('prop_detalhes').innerText = data.data.orcamento_detalhes || 'Escopo técnico em anexo.';
+                        }
                     }
                 }
-            }
-        });
+            });
+        };
+
+        // Polling de proposta a cada 10 segundos
+        checkProposta();
+        setInterval(checkProposta, 10000);
     });
+
+    function showNotification() {
+        const toast = document.getElementById('notification-toast');
+        toast.style.display = 'flex';
+        // Auto hide after 8 seconds
+        setTimeout(() => { toast.style.display = 'none'; }, 8000);
+    }
 
     function abrirPropostaCompleta() {
         document.getElementById('proposta-modal').style.display = 'flex';
@@ -640,12 +701,35 @@
             <div style="padding: 1.5rem 3rem; background: #fafafa; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 1rem;">
                 <button onclick="document.getElementById('proposta-modal').style.display='none'" style="padding: 0.8rem 1.5rem; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: 600;">Fechar</button>
                 <button onclick="window.print()" style="padding: 0.8rem 1.5rem; border-radius: 8px; border: none; background: #111; color: white; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;"><i class="ri-printer-line"></i> Imprimir Proposta</button>
-                <button onclick="alert('Iniciando aceite digital...')" style="padding: 0.8rem 1.5rem; border-radius: 8px; border: none; background: #18aeb6; color: white; cursor: pointer; font-weight: 700;">Aceitar Proposta</button>
+                <button onclick="aceitarProposta()" style="padding: 0.8rem 1.5rem; border-radius: 8px; border: none; background: #18aeb6; color: white; cursor: pointer; font-weight: 700;">Aceitar Proposta</button>
             </div>
         </div>
     </div>
 
     <script>
+        function aceitarProposta() {
+            const userId = localStorage.getItem('user_id');
+            if(!userId) return;
+
+            if(!confirm('Tem certeza que deseja aceitar esta proposta comercial?')) return;
+
+            fetch('api/accept_proposta.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ user_id: userId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    alert('Proposta Aceita com Sucesso! Nossa equipe entrará em contato em breve.');
+                    location.reload(); // Recarrega para atualizar o status
+                } else {
+                    alert('Erro ao aceitar proposta: ' + data.message);
+                }
+            })
+            .catch(err => console.error(err));
+        }
+
         const hoje = new Date();
         const validade = new Date();
         validade.setDate(hoje.getDate() + 15);

@@ -7,8 +7,9 @@ if(!isset($data->user_id) || !isset($data->valor)) {
     exit;
 }
 
-// Failsafe to ensure columns exist w/o throwing fatal errors if they already exist
+// Ensure columns exist and have the correct type for formatted strings
 try { $conn->query("ALTER TABLE propostas ADD COLUMN orcamento_produto VARCHAR(255) NULL"); } catch(Exception $e) {}
+try { $conn->query("ALTER TABLE propostas MODIFY COLUMN orcamento_valor VARCHAR(255) NULL"); } catch(Exception $e) {}
 try { $conn->query("ALTER TABLE propostas ADD COLUMN orcamento_valor VARCHAR(255) NULL"); } catch(Exception $e) {}
 try { $conn->query("ALTER TABLE propostas ADD COLUMN orcamento_detalhes TEXT NULL"); } catch(Exception $e) {}
 
