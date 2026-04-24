@@ -549,18 +549,18 @@
                                 <h4>Seu Orçamento Chegou!</h4>
                                 <p style="margin-bottom: 1.5rem;">A Gestão elaborou uma proposta técnica baseada no seu diagnóstico.</p>
                                 
-                                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
-                                        <span style="color: var(--text-muted);">Plano Indicado:</span>
-                                        <strong style="color: white; letter-spacing: 1px;">${data.data.orcamento_produto || 'Integral'}</strong>
+                                <div style="background: rgba(0,0,0,0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.6rem; gap: 1rem;">
+                                        <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">Plano Indicado:</span>
+                                        <strong style="color: white; letter-spacing: 1px; text-align: right;">${data.data.orcamento_produto || 'Integral'}</strong>
                                     </div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
-                                        <span style="color: var(--text-muted);">Investimento Mensal:</span>
-                                        <strong style="color: #9dcf7f; font-size: 1.2rem;">${valorExibido}</strong>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.6rem; gap: 1rem;">
+                                        <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">Investimento Mensal:</span>
+                                        <strong style="color: #9dcf7f; font-size: 1.2rem; white-space: nowrap; text-align: right;">${valorExibido}</strong>
                                     </div>
                                     <div style="margin-top: 1rem;">
                                         <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">Resumo do Escopo:</span>
-                                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">${data.data.orcamento_detalhes || 'Aguardando PDF detalhado.'}</p>
+                                        <p style="font-size: 0.85rem; color: var(--text-light); line-height: 1.4; margin: 0;">${data.data.orcamento_detalhes || 'Aguardando PDF detalhado.'}</p>
                                     </div>
                                 </div>
                             </div>
