@@ -7,7 +7,17 @@ if (!isset($data->user_id)) {
     exit;
 }
 
-$user_id = $data->user_id;
+$user_id = intval($data->user_id);
+
+// Verifica se o usuário ainda existe no banco
+$checkUser = $conn->prepare("SELECT id FROM users WHERE id = ?");
+$checkUser->bind_param("i", $user_id);
+$checkUser->execute();
+if ($checkUser->get_result()->num_rows === 0) {
+    echo json_encode(["status" => "error", "message" => "Sessão inválida. Este usuário foi removido do sistema."]);
+    exit;
+}
+
 $q1 = isset($data->q1) ? $data->q1 : '';
 $q2 = isset($data->q2) ? $data->q2 : '';
 $q3 = isset($data->q3) ? $data->q3 : '';

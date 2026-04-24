@@ -277,17 +277,38 @@ document.addEventListener('DOMContentLoaded', () => {
         if (validateStep(currentStep)) {
             const submitBtn = document.getElementById('btn-submit');
             const originalHTML = submitBtn.innerHTML;
+            const userId = localStorage.getItem('user_id');
 
             submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Processando...';
             submitBtn.disabled = true;
 
-            setTimeout(() => {
-                currentStep++; // Move to success step (Step 4)
-                updateFormSteps();
-                form.reset();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            data.user_id = userId;
+
+            fetch('api/save_quick_request.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(resData => {
+                if(resData.status === 'success') {
+                    currentStep++; // Move to success step (Step 4)
+                    updateFormSteps();
+                    form.reset();
+                } else {
+                    alert('Erro ao salvar: ' + resData.message);
+                }
                 submitBtn.innerHTML = originalHTML;
                 submitBtn.disabled = false;
-            }, 1500);
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Erro de conexão.');
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+            });
         }
     });
 
