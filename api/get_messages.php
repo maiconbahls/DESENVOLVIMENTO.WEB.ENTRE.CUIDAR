@@ -10,6 +10,15 @@ if (!isset($_GET['user_id'])) {
 
 $user_id = intval($_GET['user_id']);
 
+// Failsafe: Garantir que a tabela existe
+$conn->query("CREATE TABLE IF NOT EXISTS messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    message TEXT NOT NULL,
+    is_admin TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)");
+
 $stmt = $conn->prepare("SELECT * FROM messages WHERE user_id = ? ORDER BY created_at ASC");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
