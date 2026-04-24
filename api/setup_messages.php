@@ -2,10 +2,10 @@
 require 'config.php';
 
 $sql = "CREATE TABLE IF NOT EXISTS messages (
-    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id INT(6) NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     message TEXT NOT NULL,
-    is_admin BOOLEAN DEFAULT FALSE,
+    is_admin TINYINT(1) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 

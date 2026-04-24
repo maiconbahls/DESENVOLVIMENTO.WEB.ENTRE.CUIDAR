@@ -429,6 +429,9 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
         @media print {
+            /* Força fundo branco e remove imagens de fundo */
+            body, html { background: white !important; background-image: none !important; color: black !important; }
+
             /* Esconde TUDO da página principal */
             body > *:not(#proposta-modal) { display: none !important; }
             .no-print, .btn-action, .top-navbar, .sidebar, .main-container { display: none !important; }
@@ -635,30 +638,35 @@
 
                             orcCard.innerHTML = `
                                 <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-verified-badge-line"></i></div>
-                                <div class="card-content">
-                                    <span class="badge liberado"><i class="ri-check-line"></i> Orçamento Disponível</span>
-                                    <h4>Seu Orçamento Chegou!</h4>
-                                    <p style="margin-bottom: 1.5rem;">A Gestão elaborou uma proposta técnica baseada no seu diagnóstico.</p>
+                                <div class="card-content" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                                    <span class="badge liberado" style="margin-bottom: 1rem;"><i class="ri-check-line"></i> Orçamento Disponível</span>
+                                    <h4 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Seu Orçamento Chegou!</h4>
+                                    <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Análise técnica baseada no seu diagnóstico assistencial.</p>
                                     
-                                    <div style="background: rgba(0,0,0,0.4); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.6rem; gap: 1rem;">
-                                            <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">Plano Indicado:</span>
-                                            <strong style="color: white; letter-spacing: 1px; text-align: right;">${data.data.orcamento_produto || 'Integral'}</strong>
+                                    <div style="width: 100%; background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem; text-align: left;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1rem;">
+                                            <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Plano Indicado</span>
+                                            <strong style="color: white; font-size: 1.1rem; letter-spacing: 1px;">${data.data.orcamento_produto || 'Integral'}</strong>
                                         </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.6rem; gap: 1rem;">
-                                            <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">Investimento Mensal:</span>
-                                            <strong style="color: #9dcf7f; font-size: 1.2rem; white-space: nowrap; text-align: right;">${valorExibido}</strong>
+
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
+                                            <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Investimento</span>
+                                            <strong style="color: #9dcf7f; font-size: 1.5rem;">${valorExibido}</strong>
                                         </div>
-                                        <div style="margin-top: 1rem;">
-                                            <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">Resumo do Escopo:</span>
-                                            <p style="font-size: 0.85rem; color: var(--text-light); line-height: 1.4; margin: 0;">${data.data.orcamento_detalhes || 'Aguardando PDF detalhado.'}</p>
+
+                                        <div style="margin-bottom: 1.5rem;">
+                                            <span style="color: var(--text-muted); display: block; margin-bottom: 0.6rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Resumo do Escopo</span>
+                                            <p style="font-size: 0.95rem; color: #e5e7eb; line-height: 1.6; margin: 0; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03);">${data.data.orcamento_detalhes || 'Escopo técnico detalhado disponível na proposta completa.'}</p>
                                         </div>
-                                        <div style="margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.8rem; font-weight: 600;">
+
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.8rem; font-weight: 600; justify-content: center; background: rgba(248, 113, 113, 0.05); padding: 0.6rem; border-radius: 6px;">
                                             <i class="ri-calendar-event-line"></i> Válido por 15 dias corridos
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn-action primary" style="width: 100%; justify-content: center;" onclick="abrirPropostaCompleta()"><i class="ri-file-list-3-line"></i> Visualizar Proposta Completa</button>
+                                <button class="btn-action primary" style="width: 100%; justify-content: center; height: 55px; font-size: 1.1rem; border-radius: 12px;" onclick="abrirPropostaCompleta()">
+                                    <i class="ri-file-list-3-line"></i> Visualizar Proposta Completa
+                                </button>
                             `;
 
                             // Preencher os dados no modal de proposta
@@ -674,6 +682,50 @@
                             document.getElementById('prop_data_hoje').innerText = hoje.toLocaleDateString('pt-BR');
                             document.getElementById('prop_data_validade').innerText = validade.toLocaleDateString('pt-BR');
                             document.getElementById('prop_ref_id').innerText = 'ORC-2026-' + (Math.floor(Math.random() * 900) + 100);
+                        }
+                    } else if(newStatus === 'Aceito') {
+                        const orcCard = document.getElementById('card-orcamento');
+                        if(orcCard) {
+                            orcCard.style.borderColor = "#9dcf7f";
+                            orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.9) 0%, rgba(157,207,127,0.15) 100%)";
+                            orcCard.style.boxShadow = "0 15px 45px rgba(157, 207, 127, 0.15)";
+                            
+                            orcCard.innerHTML = `
+                                <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.08);"><i class="ri-shake-hands-line"></i></div>
+                                <div class="card-content" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="width: 80px; height: 80px; background: rgba(157, 207, 127, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; border: 2px solid #9dcf7f; box-shadow: 0 0 30px rgba(157, 207, 127, 0.3);">
+                                        <i class="ri-checkbox-circle-fill" style="font-size: 3rem; color: #9dcf7f;"></i>
+                                    </div>
+                                    <h4 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: white;">Parceria Confirmada!</h4>
+                                    <p style="color: #9dcf7f; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 2px;">PLANO ${data.data.orcamento_produto || 'ATIVO'}</p>
+                                    
+                                    <div style="width: 100%; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(157,207,127,0.2); margin-bottom: 2rem;">
+                                        <p style="color: #e5e7eb; font-size: 1rem; line-height: 1.6; margin: 0;">Sua proposta foi aceita com sucesso. Nossa equipe de gestão já foi notificada e iniciará os procedimentos de implementação em breve.</p>
+                                    </div>
+
+                                    <div style="display: flex; gap: 1rem; width: 100%;">
+                                        <button class="btn-action" style="flex: 1; background: rgba(255,255,255,0.05); color: white; justify-content: center; border: 1px solid rgba(255,255,255,0.1);" onclick="abrirPropostaCompleta()">
+                                            <i class="ri-file-text-line"></i> Ver Proposta
+                                        </button>
+                                        <button class="btn-action" style="flex: 1; background: #18aeb6; color: white; justify-content: center;" onclick="toggleChat()">
+                                            <i class="ri-message-3-line"></i> Falar com Gestor
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        // Atualiza também o primeiro card para "Finalizado"
+                        const questCard = document.getElementById('card-questionario');
+                        if(questCard) {
+                            questCard.innerHTML = `
+                                <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-checkbox-circle-line"></i></div>
+                                <div class="card-content">
+                                    <span class="badge liberado"><i class="ri-check-line"></i> Finalizado</span>
+                                    <h4>Relatório de Diagnóstico</h4>
+                                    <p>Seu diagnóstico assistencial foi concluído e serviu de base para a ativação do seu plano atual.</p>
+                                </div>
+                                <button class="btn-action disabled" disabled style="background: rgba(157, 207, 127, 0.1); color: #9dcf7f;">Questionário Concluído <i class="ri-check-double-line"></i></button>
+                            `;
                         }
                     }
                 }

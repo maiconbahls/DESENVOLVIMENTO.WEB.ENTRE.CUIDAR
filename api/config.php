@@ -21,4 +21,3 @@ $conn->set_charset("utf8mb4");
 // Ajuste de Fuso Horário para Brasil/São Paulo
 date_default_timezone_set('America/Sao_Paulo');
 $conn->query("SET time_zone = '-03:00'");
-?>

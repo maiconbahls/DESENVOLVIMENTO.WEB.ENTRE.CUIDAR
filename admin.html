@@ -130,6 +130,30 @@
         .nav-item.active i {
             color: white;
         }
+
+        /* Toast Notification */
+        #notification-toast {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: rgba(24, 174, 182, 0.95);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 10001;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 
@@ -227,19 +251,19 @@
                 <h3><i class="ri-mail-unread-line" style="margin-right: 0.5rem; color: #18aeb6;"></i> Caixa de Mensagens (Suporte)</h3>
                 <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Quando um cliente utilizar a opção "Fale com a Gestão" no Portal dele, as mensagens cairão nesta caixa de entrada.</p>
                 <div class="table-responsive">
-                    <table>
+                    <table id="table-mensagens">
                         <thead>
                             <tr>
                                 <th>Protocolo</th>
                                 <th>Remetente (Operadora)</th>
-                                <th>Sua Mensagem</th>
+                                <th>Última Mensagem</th>
                                 <th>Recebido em</th>
                                 <th>Ação</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="5" style="text-align:center; color:#6c757d; padding: 2rem;">Nenhuma mensagem pendente no momento.</td>
+                                <td colspan="5" style="text-align:center; color:#6c757d; padding: 2rem;">Carregando mensagens...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -283,8 +307,21 @@
         </div>
     </main>
 
+    <!-- Toast de Notificação -->
+    <div id="notification-toast">
+        <div style="background: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;">
+            <i class="ri-notification-3-line" style="color: #18aeb6;"></i>
+        </div>
+        <div id="notification-content">
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Novo Diagnóstico!</h5>
+            <p style="margin: 0; font-size: 0.9rem;">Uma nova empresa acabou de responder.</p>
+        </div>
+        <button onclick="document.getElementById('notification-toast').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 1rem; color: white;">×</button>
+    </div>
+
     <script>
     let globalUsers = [];
+    let lastKnownProposalIds = new Set();
 
     function loadUsers() {
         // Carrega todas as operadoras cadastradas no MySQL via Backend
@@ -292,13 +329,27 @@
         .then(res => res.json())
         .then(data => {
             if(data.status === 'success') {
-                globalUsers = data.data;
+                const users = data.data;
+                
+                // Verificar novas propostas para notificação
+                const currentProposalIds = users.filter(u => u.proposta_id).map(u => u.proposta_id);
+                
+                if (lastKnownProposalIds.size > 0) {
+                    const newProposals = users.filter(u => u.proposta_id && !lastKnownProposalIds.has(u.proposta_id));
+                    if (newProposals.length > 0) {
+                        showNewProposalNotification(newProposals[0].empresa_name);
+                    }
+                }
+                
+                // Atualizar lista de IDs conhecidos
+                lastKnownProposalIds = new Set(currentProposalIds);
+                globalUsers = users;
                 
                 // Cálculo de Números Reais
-                const totalClientes = data.data.length;
-                const totalPendentes = data.data.filter(u => !u.proposta_id).length;
-                const totalPropostas = data.data.filter(u => u.proposta_status === 'Respondido' || u.proposta_status === 'Aceito').length;
-                const totalAceitos = data.data.filter(u => u.proposta_status === 'Aceito').length;
+                const totalClientes = users.length;
+                const totalPendentes = users.filter(u => !u.proposta_id).length;
+                const totalPropostas = users.filter(u => u.proposta_status === 'Respondido' || u.proposta_status === 'Aceito').length;
+                const totalAceitos = users.filter(u => u.proposta_status === 'Aceito').length;
 
                 document.getElementById('total-clientes').innerText = totalClientes;
                 document.getElementById('total-pendentes').innerText = totalPendentes;
@@ -445,11 +496,133 @@
         }
     }
 
+    function showNewProposalNotification(empresa) {
+        const toast = document.getElementById('notification-toast');
+        const content = document.getElementById('notification-content');
+        content.innerHTML = `
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Novo Diagnóstico!</h5>
+            <p style="margin: 0; font-size: 0.9rem;">A empresa <strong>${empresa}</strong> acabou de responder.</p>
+        `;
+        toast.style.display = 'flex';
+        // Som de notificação opcional (pode ser bloqueado pelo browser)
+        try {
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+            audio.play();
+        } catch(e) {}
+        
+        setTimeout(() => { toast.style.display = 'none'; }, 10000);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         loadUsers();
+        loadAdminMessages();
         // Auto-refresh a cada 30 segundos para pegar novos cadastros e propostas
         setInterval(loadUsers, 30000);
+        setInterval(loadAdminMessages, 30000);
+        
+        // Polling do chat individual se estiver aberto
+        setInterval(() => {
+            if(activeChatUserId && document.getElementById('chat-admin-modal').style.display !== 'none') {
+                loadChatHistory(activeChatUserId);
+            }
+        }, 5000);
     });
+
+    function loadAdminMessages() {
+        fetch('api/get_admin_messages.php')
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                const tbody = document.querySelector('#table-mensagens tbody');
+                tbody.innerHTML = '';
+                
+                if(data.data && data.data.length > 0) {
+                    data.data.forEach(msg => {
+                        const tr = document.createElement('tr');
+                        const d = new Date(msg.created_at);
+                        const dataStr = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+                        
+                        tr.innerHTML = `
+                            <td><span style="color:var(--text-muted);">#MSG-${msg.id}</span></td>
+                            <td><strong>${msg.empresa_name}</strong></td>
+                            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${msg.message}</td>
+                            <td>${dataStr}</td>
+                            <td>
+                                <button class="btn-action" style="background:#18aeb6; color:white; padding:0.4rem 0.8rem; font-size:0.85rem;" onclick="abrirChatAdmin(${msg.user_id}, '${msg.empresa_name}')">
+                                    <i class="ri-chat-3-line"></i> Responder
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#6c757d; padding: 2rem;">Nenhuma mensagem recebida ainda.</td></tr>';
+                }
+            }
+        });
+    }
+
+    let activeChatUserId = null;
+    function abrirChatAdmin(userId, empresa) {
+        activeChatUserId = userId;
+        document.getElementById('chat_admin_empresa').innerText = empresa;
+        document.getElementById('chat-admin-modal').style.display = 'flex';
+        loadChatHistory(userId);
+    }
+
+    function loadChatHistory(userId) {
+        fetch(`api/get_messages.php?user_id=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                const historyBox = document.getElementById('chat-history-admin');
+                historyBox.innerHTML = '';
+                data.data.forEach(msg => {
+                    const div = document.createElement('div');
+                    const isUser = msg.is_admin == 0;
+                    const d = new Date(msg.created_at);
+                    const timeString = d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+                    
+                    if(isUser) {
+                        div.style.cssText = "align-self: flex-start; max-width: 85%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; border-top-left-radius: 0; margin-bottom: 1rem;";
+                        div.innerHTML = `
+                            <p style="color: white; margin: 0; font-size: 0.9rem; line-height: 1.5;">${msg.message}</p>
+                            <span style="display: block; font-size: 0.75rem; color: #18aeb6; margin-top: 0.5rem; text-align: left;">Cliente • ${timeString}</span>
+                        `;
+                    } else {
+                        div.style.cssText = "align-self: flex-end; max-width: 85%; background: rgba(243, 115, 62, 0.15); border: 1px solid rgba(243, 115, 62, 0.3); padding: 1rem; border-radius: 12px; border-top-right-radius: 0; margin-bottom: 1rem;";
+                        div.innerHTML = `
+                            <p style="color: white; margin: 0; font-size: 0.9rem; line-height: 1.5;">${msg.message}</p>
+                            <span style="display: block; font-size: 0.75rem; color: var(--primary-color); margin-top: 0.5rem; text-align: right;"><i class="ri-shield-star-line"></i> Você • ${timeString}</span>
+                        `;
+                    }
+                    historyBox.appendChild(div);
+                });
+                historyBox.scrollTop = historyBox.scrollHeight;
+            }
+        });
+    }
+
+    function sendAdminReply() {
+        const input = document.getElementById('admin-chat-input');
+        const msg = input.value.trim();
+        if(!msg || !activeChatUserId) return;
+
+        fetch('api/send_message.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ user_id: activeChatUserId, message: msg, is_admin: 1 })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                input.value = '';
+                loadChatHistory(activeChatUserId);
+            } else {
+                alert('Erro ao enviar: ' + data.message);
+            }
+        });
+    }
 
     function abrirModalOrcamento(id, empresa) {
         document.getElementById('orc_empresa').innerText = empresa;
@@ -559,5 +732,32 @@
             color: white;
         }
     </style>
+    <!-- Modal de Chat Admin -->
+    <div id="chat-admin-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+        <div style="background:#111; padding: 0; border-radius:16px; border:1px solid rgba(255,255,255,0.1); width: 500px; max-width:90%; color:white; height: 600px; display: flex; flex-direction: column; overflow: hidden;">
+            <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0; font-size: 1.2rem;">Chat com o Cliente</h3>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);" id="chat_admin_empresa"></p>
+                </div>
+                <button onclick="document.getElementById('chat-admin-modal').style.display='none'" style="background:none; border:none; color:white; font-size: 1.5rem; cursor:pointer;"><i class="ri-close-line"></i></button>
+            </div>
+            
+            <div id="chat-history-admin" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; background: rgba(0,0,0,0.2);">
+                <!-- Mensagens aqui -->
+            </div>
+
+            <div style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 0.8rem; background: #111;">
+                <input type="text" id="admin-chat-input" placeholder="Digite sua resposta..." style="flex: 1; background:#222; border:1px solid rgba(255,255,255,0.1); padding: 0.8rem; color:white; border-radius:8px; font-family: inherit;" onkeypress="if(e.key === 'Enter') sendAdminReply()">
+                <button onclick="sendAdminReply()" style="background:var(--primary-color); color:white; border:none; padding: 0 1.5rem; border-radius:8px; cursor:pointer;"><i class="ri-send-plane-2-line"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById('admin-chat-input').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') sendAdminReply();
+    });
+    </script>
 </body>
 </html>

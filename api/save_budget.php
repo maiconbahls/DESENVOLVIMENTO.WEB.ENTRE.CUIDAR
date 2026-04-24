@@ -34,4 +34,3 @@ if($res->num_rows > 0) {
 }
 
 echo json_encode(["status" => "success"]);
-?>
