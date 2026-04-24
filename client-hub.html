@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EntreCuidar - Hub da Operadora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css?v=7">
+    <style>
+        /* Override styles for full-page website look */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #111 0%, #080808 100%);
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        .top-navbar {
+            box-sizing: border-box;
+            width: 100%;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4rem;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-navbar img {
+            height: 45px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-menu span {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-menu span i {
+            font-size: 1.2rem;
+            color: var(--primary-light);
+        }
+
+        .main-container {
+            margin-top: 80px; /* Offset for navbar */
+            padding: 4rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+        }
+
+        .page-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(25, 25, 30, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .stat-card h4 {
+            color: var(--text-white);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .badge {
+            background: rgba(100, 205, 246, 0.15);
+            color: var(--primary-light);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge.pendente { background: rgba(243, 115, 62, 0.15); color: var(--primary-color); }
+        .badge.liberado { background: rgba(157, 207, 127, 0.15); color: #9dcf7f; }
+
+        .card-icon-bg {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 12rem;
+            z-index: 0;
+        }
+
+        .card-content {
+            z-index: 1;
+        }
+
+        .btn-action {
+            z-index: 1;
+            align-self: flex-start;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .btn-action.primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(243, 115, 62, 0.3);
+        }
+
+        .btn-action.primary:hover {
+            background: #d86231;
+            transform: translateY(-2px);
+        }
+
+        .btn-action.disabled {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+        
+        .recent-activity {
+            margin-top: 4rem;
+        }
+        
+        .recent-activity h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-white);
+        }
+        
+        .activity-list {
+            background: rgba(25, 25, 30, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .activity-item {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-info h5 {
+            font-size: 1.1rem;
+            color: var(--text-white);
+            margin-bottom: 0.3rem;
+        }
+        
+        .activity-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+        <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo">
+        <div class="user-menu">
+            <span id="nome-empresa-logada"><i class="ri-building-4-line"></i> Empresa</span>
+            <button class="btn-logout" title="Sair do Portal" onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
+                <i class="ri-logout-box-r-line"></i> Sair
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Portal Content -->
+    <main class="main-container">
+        
+        <div class="page-header">
+            <h2>Meu Portal <i class="ri-dashboard-line" style="color: var(--primary-color);"></i></h2>
+            <p>Acompanhe o andamento das suas solicitações, realize diagnósticos e veja suas propostas de escopo.</p>
+        </div>
+
+        <div class="stats-grid">
+            <!-- Card Questionário Liberado -->
+            <div class="stat-card" style="border-color: rgba(157, 207, 127, 0.3); background: linear-gradient(145deg, rgba(25,25,30,0.6) 0%, rgba(157,207,127,0.05) 100%);">
+                <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.03);"><i class="ri-survey-line"></i></div>
+                <div class="card-content">
+                    <span class="badge liberado"><i class="ri-lock-unlock-line"></i> Ação Necessária</span>
+                    <h4>Relatório de Proposta e Escopo</h4>
+                    <p>Preencha nosso questionário inicial. Com suas respostas, a nossa equipe de Gestão elaborará o seu orçamento sob medida.</p>
+                </div>
+                <button class="btn-action primary" onclick="window.location.href='proposta.html'">Preencher Questionário <i class="ri-arrow-right-line"></i></button>
+            </div>
+
+            <!-- Card Proposta (Liberado ou Bloqueado) -->
+            <div class="stat-card" id="card-orcamento">
+                <div class="card-icon-bg" style="color: rgba(255, 255, 255, 0.02);"><i class="ri-file-search-line"></i></div>
+                <div class="card-content">
+                    <span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-muted);"><i class="ri-lock-line"></i> Bloqueado</span>
+                    <h4>Orçamento e Proposta Final</h4>
+                    <p>Após nossa análise, o seu orçamento completo e a proposta técnica comercial serão liberados aqui nesta mesma página.</p>
+                </div>
+                <button class="btn-action disabled" disabled>Aguardando Questionário <i class="ri-time-line"></i></button>
+            </div>
+            
+            <!-- Card Atendimento -->
+            <div class="stat-card">
+                <div class="card-icon-bg" style="color: rgba(100, 205, 246, 0.02);"><i class="ri-customer-service-2-line"></i></div>
+                <div class="card-content">
+                    <span class="badge"><i class="ri-message-3-line"></i> Suporte Direto</span>
+                    <h4>Fale com a Gestão</h4>
+                    <p>Ficou com alguma dúvida ou deseja adiantar informações? Envie uma mensagem confidencial para a equipe de análise.</p>
+                </div>
+                <button class="btn-action" style="background: #18aeb6; color: white;" onclick="toggleChat()">Enviar Mensagem <i class="ri-message-3-line"></i></button>
+            </div>
+        </div>
+        
+        <!-- SEÇÃO CONHEÇA NOSSOS PRODUTOS -->
+        <div class="recent-activity" style="margin-top: 5rem;">
+            <h3 style="font-size: 1.8rem; margin-bottom: 2.5rem; color: var(--text-white); text-align: center; font-weight: 300;">Explore nossas <strong style="font-weight: 700;">Soluções Estratégicas</strong></h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem;">
+                <!-- PRODUTO ESSENCIAL -->
+                <div style="background: rgba(25, 25, 30, 0.6); border-radius: 16px; overflow: hidden; position: relative; transition: 0.4s; border: 1px solid rgba(24, 174, 182, 0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.2);" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 50px rgba(24, 174, 182, 0.15)'; this.style.borderColor='rgba(24, 174, 182, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.2)'; this.style.borderColor='rgba(24, 174, 182, 0.1)';">
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #18aeb6, transparent);"></div>
+                    <div style="padding: 2.5rem 2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.03); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10rem; color: rgba(24, 174, 182, 0.02); z-index: 0;"><i class="ri-microscope-line"></i></div>
+                        <div style="position: relative; z-index: 1;">
+                            <i class="ri-microscope-line" style="font-size: 3rem; color: #18aeb6; text-shadow: 0 0 20px rgba(24, 174, 182, 0.4);"></i>
+                            <h4 style="color: white; font-size: 1.5rem; margin-top: 1rem; font-weight: 700;">Produto Essencial</h4>
+                            <span style="display: inline-block; margin-top: 0.5rem; background: rgba(24, 174, 182, 0.1); color: #18aeb6; padding: 0.3rem 1rem; border-radius: 50px; font-size: 0.8rem; letter-spacing: 2px; font-weight: 700;">FASE DE DIAGNÓSTICO</span>
+                        </div>
+                    </div>
+                    <div style="padding: 2.5rem 2rem;">
+                        <p style="color: var(--text-muted); margin-bottom: 2rem; text-align: center; font-size: 0.95rem; line-height: 1.6;">Uma análise imersiva completa par identificar as reais raízes dos problemas assistenciais e financeiros.</p>
+                        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.5rem;">
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: rgba(24, 174, 182, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 0.1rem;"><i class="ri-check-line" style="color: #18aeb6; font-size: 0.9rem;"></i></div>
+                                <div><strong style="color: white; display: block; margin-bottom: 0.2rem; font-size: 1rem;">Entrevista Detalhada</strong><span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block;">Reunião profunda com gestores sobre a realidade.</span></div>
+                            </li>
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: rgba(24, 174, 182, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 0.1rem;"><i class="ri-check-line" style="color: #18aeb6; font-size: 0.9rem;"></i></div>
+                                <div><strong style="color: white; display: block; margin-bottom: 0.2rem; font-size: 1rem;">Coleta de Dados Essenciais</strong><span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block;">Levantamento de números, custos e processos vitais.</span></div>
+                            </li>
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: rgba(24, 174, 182, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 0.1rem;"><i class="ri-check-line" style="color: #18aeb6; font-size: 0.9rem;"></i></div>
+                                <div><strong style="color: white; display: block; margin-bottom: 0.2rem; font-size: 1rem;">Mapeamento de Entraves</strong><span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block;">Identificação precisa e pontual dos gargalos.</span></div>
+                            </li>
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: rgba(24, 174, 182, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 0.1rem;"><i class="ri-check-line" style="color: #18aeb6; font-size: 0.9rem;"></i></div>
+                                <div><strong style="color: white; display: block; margin-bottom: 0.2rem; font-size: 1rem;">Relatório Técnico</strong><span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block;">Documento diretivo consolidado com plano de ação.</span></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- PRODUTO INTEGRAL -->
+                <div style="background: rgba(25, 25, 30, 0.6); border-radius: 16px; overflow: hidden; position: relative; transition: 0.4s; border: 1px solid rgba(157, 207, 127, 0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.2);" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 50px rgba(157, 207, 127, 0.15)'; this.style.borderColor='rgba(157, 207, 127, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.2)'; this.style.borderColor='rgba(157, 207, 127, 0.1)';">
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #9dcf7f, transparent);"></div>
+                    <div style="padding: 2.5rem 2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.03); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10rem; color: rgba(157, 207, 127, 0.02); z-index: 0;"><i class="ri-settings-4-line"></i></div>
+                        <div style="position: relative; z-index: 1;">
+                            <i class="ri-settings-4-line" style="font-size: 3rem; color: #9dcf7f; text-shadow: 0 0 20px rgba(157, 207, 127, 0.4);"></i>
+                            <h4 style="color: white; font-size: 1.5rem; margin-top: 1rem; font-weight: 700;">Produto Integral</h4>
+                            <span style="display: inline-block; margin-top: 0.5rem; background: rgba(157, 207, 127, 0.1); color: #9dcf7f; padding: 0.3rem 1rem; border-radius: 50px; font-size: 0.8rem; letter-spacing: 2px; font-weight: 700;">COMO FAZER</span>
+                        </div>
+                    </div>
+                    <div style="padding: 2.5rem 2rem;">
+                        <p style="color: var(--text-muted); margin-bottom: 2rem; text-align: center; font-size: 0.95rem; line-height: 1.6;">Formação e capacitação das equipes internas para estruturar tratamentos de longo prazo com alta qualidade e viabilidade.</p>
+                        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.5rem;">
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: rgba(157, 207, 127, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 0.1rem;"><i class="ri-check-line" style="color: #9dcf7f; font-size: 0.9rem;"></i></div>
+                                <div><strong style="color: white; display: block; margin-bottom: 0.2rem; font-size: 1rem;">Avaliação Científica</strong><span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block;">Decisões e capacitações baseadas 100% em evidências reais.</span></div>
+                            </li>
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: rgba(157, 207, 127, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 0.1rem;"><i class="ri-check-line" style="color: #9dcf7f; font-size: 0.9rem;"></i></div>
+                                <div><strong style="color: white; display: block; margin-bottom: 0.2rem; font-size: 1rem;">Serviços Direcionados</strong><span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block;">Treinamentos guiados em protocolos altamente específicos.</span></div>
+                            </li>
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: rgba(157, 207, 127, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 0.1rem;"><i class="ri-check-line" style="color: #9dcf7f; font-size: 0.9rem;"></i></div>
+                                <div><strong style="color: white; display: block; margin-bottom: 0.2rem; font-size: 1rem;">Tratamentos Personalizados</strong><span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block;">Formação técnica fundamentada para a rede de apoio.</span></div>
+                            </li>
+                            <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                                <div style="background: rgba(157, 207, 127, 0.1); width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 0.1rem;"><i class="ri-check-line" style="color: #9dcf7f; font-size: 0.9rem;"></i></div>
+                                <div><strong style="color: white; display: block; margin-bottom: 0.2rem; font-size: 1rem;">Monitoramento Mensal</strong><span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; display: block;">Auditoria constante da efetividade do que foi implantado.</span></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel Central: Histórico do Projeto -->
+        <div style="margin-top: 4rem;">
+            <!-- Histórico de Atividades -->
+            <div class="recent-activity" style="margin-top: 0;">
+                <h3 style="font-size: 1.4rem; margin-bottom: 1.5rem; color: var(--text-white); display: flex; align-items: center; gap: 0.5rem;"><i class="ri-history-line" style="color: var(--primary-light);"></i> Histórico do Projeto</h3>
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-info">
+                            <h5>Acesso ao Portal Liberado</h5>
+                            <p>A equipe liberou suas credenciais de acesso ao sistema.</p>
+                        </div>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">Hoje, 09:30</span>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-info">
+                            <h5>Conta Corporativa Criada</h5>
+                            <p>Perfil estruturado no banco de dados.</p>
+                        </div>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">Recente</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="floating-chat" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end;">
+        <!-- Chat Area (Hidden By Default) -->
+        <div id="chat-window" style="display: none; width: 350px; height: 450px; background: rgba(25, 25, 30, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; margin-bottom: 1rem; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(20px);">
+            <div style="padding: 1rem; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: white; font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;"><i class="ri-chat-4-line" style="color: #18aeb6;"></i> Suporte da Gestão</span>
+                <button onclick="toggleChat()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.5rem;"><i class="ri-close-line"></i></button>
+            </div>
+
+            <div id="chat-history-area" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: rgba(0,0,0,0.1);">
+                <div style="align-self: flex-start; max-width: 85%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; border-top-left-radius: 0;">
+                    <p style="color: var(--text-white); margin: 0; font-size: 0.9rem; line-height: 1.5;">Olá! Pode mandar sua mensagem que a nossa Gestão responde direto por aqui.</p>
+                </div>
+            </div>
+
+            <div style="padding: 1rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 0.5rem; align-items: center; background: rgba(25, 25, 30, 0.95);">
+                <input type="text" id="quick-message-input" placeholder="Digite sua mensagem..." style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.6rem 1rem; border-radius: 50px; font-family: inherit; font-size: 0.9rem; outline: none;">
+                <button onclick="sendQuickMessage()" class="btn-action" style="background: #18aeb6; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; flex-shrink: 0;"><i class="ri-send-plane-fill"></i></button>
+            </div>
+        </div>
+
+        <!-- Float Button -->
+        <button onclick="toggleChat()" style="width: 65px; height: 65px; border-radius: 50%; background: #18aeb6; border: none; color: white; font-size: 2rem; cursor: pointer; box-shadow: 0 10px 25px rgba(24, 174, 182, 0.5); display: flex; justify-content: center; align-items: center; transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)'">
+            <i class="ri-chat-smile-3-line"></i>
+        </button>
+    </div>
+
+    <script>
+    function toggleChat() {
+        const chatWindow = document.getElementById('chat-window');
+        if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+            chatWindow.style.display = 'flex';
+            setTimeout(() => { document.getElementById('quick-message-input').focus(); }, 100);
+            loadMessages();
+        } else {
+            chatWindow.style.display = 'none';
+        }
+    }
+
+    function loadMessages() {
+        const userId = localStorage.getItem('user_id');
+        if(!userId) return;
+
+        fetch(`api/get_messages.php?user_id=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                const historyBox = document.getElementById('chat-history-area');
+                historyBox.innerHTML = '';
+                
+                if(data.data.length === 0) {
+                    historyBox.innerHTML = `
+                    <div style="align-self: flex-start; max-width: 85%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; border-top-left-radius: 0;">
+                        <p style="color: var(--text-white); margin: 0; font-size: 0.9rem; line-height: 1.5;">Olá! Pode mandar sua mensagem que a nossa Gestão responde direto por aqui.</p>
+                    </div>`;
+                } else {
+                    data.data.forEach(msg => {
+                        const div = document.createElement('div');
+                        const isUser = msg.is_admin == 0;
+                        const d = new Date(msg.created_at);
+                        const timeString = d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+                        
+                        if(isUser) {
+                            div.style.cssText = "align-self: flex-end; max-width: 85%; background: rgba(24, 174, 182, 0.15); border: 1px solid rgba(24, 174, 182, 0.3); padding: 1rem; border-radius: 12px; border-top-right-radius: 0;";
+                            div.innerHTML = `
+                                <p style="color: white; margin: 0; font-size: 0.9rem; line-height: 1.5;">${msg.message}</p>
+                                <span style="display: block; font-size: 0.75rem; color: #18aeb6; margin-top: 0.5rem; text-align: left;"><i class="ri-check-double-line"></i> ${timeString}</span>
+                            `;
+                        } else {
+                            div.style.cssText = "align-self: flex-start; max-width: 85%; background: rgba(243, 115, 62, 0.15); border: 1px solid rgba(243, 115, 62, 0.3); padding: 1rem; border-radius: 12px; border-top-left-radius: 0;";
+                            div.innerHTML = `
+                                <p style="color: white; margin: 0; font-size: 0.9rem; line-height: 1.5;">${msg.message}</p>
+                                <span style="display: block; font-size: 0.75rem; color: var(--primary-color); margin-top: 0.5rem; text-align: right;"><i class="ri-shield-star-line"></i> Gestão • ${timeString}</span>
+                            `;
+                        }
+                        historyBox.appendChild(div);
+                    });
+                }
+                historyBox.scrollTop = historyBox.scrollHeight;
+            }
+        });
+    }
+
+    function sendQuickMessage() {
+        const input = document.getElementById('quick-message-input');
+        const msg = input.value.trim();
+        if(!msg) return;
+
+        const userId = localStorage.getItem('user_id');
+        if(!userId) return alert('Sessão expirada. Faça login novamente.');
+
+        // Salvar via API
+        fetch('api/send_message.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ user_id: userId, message: msg })
+        })
+        .then(async res => {
+            const text = await res.text();
+            try {
+                return JSON.parse(text);
+            } catch(e) {
+                throw new Error("Resposta inválida: " + text);
+            }
+        })
+        .then(data => {
+            if(data.status === 'success') {
+                input.value = '';
+                loadMessages();
+            } else {
+                alert('Erro ao enviar mensagem: ' + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Falha total no chat: ' + err.message);
+        });
+    }
+
+    document.getElementById('quick-message-input').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') sendQuickMessage();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const userId = localStorage.getItem('user_id');
+        const empresa = localStorage.getItem('user_empresa');
+        if(empresa) {
+            document.getElementById('nome-empresa-logada').innerHTML = `<i class="ri-building-4-line"></i> ${empresa}`;
+        }
+        
+        // Polling do chat a cada 5 segundos se estiver aberto
+        setInterval(() => {
+            const chatWindow = document.getElementById('chat-window');
+            if(chatWindow.style.display !== 'none') {
+                loadMessages();
+            }
+        }, 5000);
+
+        // Fetch propostas
+        console.log("Buscando proposta para user_id:", userId);
+        if(!userId) {
+            console.error("ERRO: userId não encontrado no localStorage!");
+        }
+
+        fetch(`api/get_my_proposta.php?user_id=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Resposta Proposta:", data);
+            if(data.status === 'success' && data.data) {
+                if(data.data.status === 'Respondido') {
+                    // Atualiza o card de orcamento
+                    const orcCard = document.getElementById('card-orcamento');
+                    if(orcCard) {
+                        orcCard.style.borderColor = "rgba(157, 207, 127, 0.5)";
+                        orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.8) 0%, rgba(157,207,127,0.1) 100%)";
+                        orcCard.innerHTML = `
+                            <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-verified-badge-line"></i></div>
+                            <div class="card-content">
+                                <span class="badge liberado"><i class="ri-check-line"></i> Orçamento Disponível</span>
+                                <h4>Seu Orçamento Chegou!</h4>
+                                <p style="margin-bottom: 1.5rem;">A Gestão elaborou uma proposta técnica baseada no seu diagnóstico.</p>
+                                
+                                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                                        <span style="color: var(--text-muted);">Plano Indicado:</span>
+                                        <strong style="color: white;">${data.data.orcamento_produto || 'Integral'}</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                                        <span style="color: var(--text-muted);">Valor Mensal:</span>
+                                        <strong style="color: #9dcf7f; font-size: 1.2rem;">R$ ${data.data.orcamento_valor || '0,00'}</strong>
+                                    </div>
+                                    <div style="margin-top: 1rem;">
+                                        <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">Escopo Detalhado:</span>
+                                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">${data.data.orcamento_detalhes || 'Aguardando PDF detalhado.'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-action primary" style="width: 100%; justify-content: center;" onclick="alert('O contrato oficial está sendo gerado e será enviado para o seu e-mail!')"><i class="ri-file-download-line"></i> Visualizar Proposta Completa</button>
+                        `;
+                    }
+                }
+            }
+        });
+    });
+    </script>
+</body>
+</html>
