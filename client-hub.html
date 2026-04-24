@@ -566,6 +566,7 @@
         })
         .catch(err => {
             console.error("Erro no chat:", err);
+            alert('Erro ao enviar mensagem. Verifique sua conexão.');
             // Se falhar, tentamos carregar as mensagens de novo silenciosamente
             setTimeout(loadMessages, 2000);
         });
@@ -786,5 +787,12 @@
         document.getElementById('prop_data_hoje').innerText = hoje.toLocaleDateString('pt-BR');
         document.getElementById('prop_data_validade').innerText = validade.toLocaleDateString('pt-BR');
     </script>
+    <style>
+        /* Ajuste para opções do select ficarem legíveis no dark mode */
+        select option {
+            background-color: #1a1a1a;
+            color: white;
+        }
+    </style>
 </body>
 </html>
