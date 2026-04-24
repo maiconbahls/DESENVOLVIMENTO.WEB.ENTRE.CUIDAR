@@ -1,4 +1,6 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
 require 'config.php';
 
 // Failsafe: Recreate/Check messages table
@@ -10,9 +12,11 @@ $conn->query("CREATE TABLE IF NOT EXISTS messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
 
-// If it already exists but doesn't have 'message' (maybe it was 'content' or something), let's just make it right.
-// However, the error 'Unknown column message' is the smoker.
-// Let's try to add the column 'message' if it doesn't exist, but simplest is to just ensure it's there.
+// Garantir que a coluna 'message' existe (caso tenha sido criada com outro nome antes)
+$res = $conn->query("SHOW COLUMNS FROM messages LIKE 'message'");
+if($res->num_rows == 0) {
+    $conn->query("ALTER TABLE messages ADD COLUMN message TEXT NOT NULL AFTER user_id");
+}
 
 $data = json_decode(file_get_contents("php://input"));
 if (!isset($data->user_id) || !isset($data->message)) {
