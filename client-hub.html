@@ -102,17 +102,16 @@
             background: rgba(25, 25, 30, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
-            padding: 1.8rem;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 1.2rem;
+            gap: 1rem;
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             backdrop-filter: blur(10px);
-            min-height: 320px;
-            height: 100%;
+            height: auto;
         }
 
         .stat-card:hover {
@@ -749,24 +748,24 @@
                                     <h4 style="font-size: 1.6rem; margin-bottom: 0.5rem; width: 100%;">Seu Orçamento Chegou!</h4>
                                     <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; width: 100%;">Análise técnica baseada no seu diagnóstico assistencial.</p>
                                     
-                                    <div style="width: 100%; background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.2rem; text-align: left;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 0.6rem; gap: 8px;">
-                                            <span style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;">Plano</span>
-                                            <strong style="color: white; font-size: 0.9rem; letter-spacing: 1px; text-align: right;">${data.data.orcamento_produto || 'Integral'}</strong>
+                                    <div style="width: 100%; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1rem; text-align: left;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 0.5rem; gap: 8px;">
+                                            <span style="color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;">Plano</span>
+                                            <strong style="color: white; font-size: 0.85rem; letter-spacing: 1px; text-align: right; line-height: 1;">${data.data.orcamento_produto || 'Integral'}</strong>
                                         </div>
 
-                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 0.8rem; gap: 8px;">
-                                            <span style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;">Investimento</span>
-                                            <strong style="color: #9dcf7f; font-size: 1.1rem; text-align: right;">${valorExibido}</strong>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 0.8rem; gap: 8px;">
+                                            <span style="color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;">Investimento</span>
+                                            <strong style="color: #9dcf7f; font-size: 1.1rem; text-align: right; line-height: 1;">${valorExibido}</strong>
                                         </div>
 
                                         <div style="margin-bottom: 0.8rem;">
-                                            <span style="color: var(--text-muted); display: block; margin-bottom: 0.4rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Resumo do Escopo</span>
-                                            <p style="font-size: 0.8rem; color: #e5e7eb; line-height: 1.4; margin: 0; background: rgba(255,255,255,0.02); padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03); max-height: 60px; overflow-y: auto;">${data.data.orcamento_detalhes || 'Escopo técnico detalhado disponível na proposta completa.'}</p>
+                                            <span style="color: var(--text-muted); display: block; margin-bottom: 0.4rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;">Resumo do Escopo</span>
+                                            <p style="font-size: 0.75rem; color: #e5e7eb; line-height: 1.4; margin: 0; background: rgba(255,255,255,0.02); padding: 0.5rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03); max-height: 50px; overflow-y: auto;">${data.data.orcamento_detalhes || 'Escopo técnico detalhado.'}</p>
                                         </div>
 
-                                        <div style="display: flex; align-items: center; gap: 0.4rem; color: #f87171; font-size: 0.7rem; font-weight: 600; justify-content: center; background: rgba(248, 113, 113, 0.05); padding: 0.4rem; border-radius: 6px;">
-                                            <i class="ri-calendar-event-line"></i> Válido por 15 dias corridos
+                                        <div style="display: flex; align-items: center; gap: 0.4rem; color: #f87171; font-size: 0.65rem; font-weight: 600; justify-content: center; background: rgba(248, 113, 113, 0.05); padding: 0.4rem; border-radius: 6px;">
+                                            <i class="ri-calendar-event-line"></i> Válido por 15 dias
                                         </div>
                                     </div>
                                 </div>
