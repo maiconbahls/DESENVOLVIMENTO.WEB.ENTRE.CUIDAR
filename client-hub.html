@@ -224,6 +224,54 @@
             color: var(--text-muted);
             font-size: 0.9rem;
         }
+
+        /* Efeito de Card Ativo (Giro de Borda Premium) */
+        .active-card-effect {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .active-card-effect::before {
+            content: '';
+            position: absolute;
+            z-index: -2;
+            left: -50%;
+            top: -50%;
+            width: 200%;
+            height: 200%;
+            background-color: transparent;
+            background-repeat: no-repeat;
+            background-size: 50% 50%, 50% 50%;
+            background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+            background-image: linear-gradient(#18aeb6, #18aeb6), linear-gradient(#9dcf7f, #9dcf7f), linear-gradient(#18aeb6, #18aeb6), linear-gradient(#9dcf7f, #9dcf7f);
+            animation: rotate-border 4s linear infinite;
+        }
+
+        .active-card-effect::after {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            left: 2px;
+            top: 2px;
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
+            background: #111;
+            border-radius: 14px;
+        }
+
+        @keyframes rotate-border {
+            100% { transform: rotate(1turn); }
+        }
+
+        @keyframes card-entry {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .animate-card {
+            animation: card-entry 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
     </style>
 </head>
 
@@ -686,25 +734,26 @@
                     } else if(newStatus === 'Aceito') {
                         const orcCard = document.getElementById('card-orcamento');
                         if(orcCard) {
-                            orcCard.style.borderColor = "#9dcf7f";
-                            orcCard.style.background = "rgba(157, 207, 127, 0.03)";
+                            orcCard.classList.add('active-card-effect');
+                            orcCard.classList.add('animate-card');
+                            orcCard.style.borderColor = "transparent"; // Borda controlada pelo efeito
                             
                             orcCard.innerHTML = `
                                 <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-checkbox-circle-line"></i></div>
                                 <div class="card-content" style="text-align: center;">
-                                    <span class="badge liberado" style="margin: 0 auto 1.5rem auto;"><i class="ri-check-double-line"></i> Plano Ativo</span>
-                                    <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">Parceria Confirmada!</h4>
+                                    <span class="badge liberado" style="margin: 0 auto 1.5rem auto; background: #9dcf7f; color: #111; font-weight: 800;"><i class="ri-check-double-line"></i> PLANO ATIVO</span>
+                                    <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: white;">Parceria Confirmada!</h4>
                                     
                                     <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(157,207,127,0.1); margin-bottom: 1.5rem; min-height: 180px; display: flex; flex-direction: column; justify-content: center;">
                                         <p style="color: #9dcf7f; font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase;">${data.data.orcamento_produto || 'ESSENCIAL'}</p>
                                         <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin: 0;">Sua proposta foi aceita. Nossa equipe de gestão iniciará os procedimentos de implementação em breve.</p>
-                                        <div style="margin-top: 1rem; font-size: 0.8rem; color: #9dcf7f; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
-                                            <i class="ri-shield-check-line"></i> Proteção Ativa
+                                        <div style="margin-top: 1rem; font-size: 0.85rem; color: #9dcf7f; display: flex; align-items: center; justify-content: center; gap: 0.4rem; font-weight: 700;">
+                                            <i class="ri-shield-check-line"></i> PROTEÇÃO ATIVA
                                         </div>
                                     </div>
                                 </div>
                                 <div style="display: flex; gap: 0.8rem;">
-                                    <button class="btn-action" style="flex: 1; background: rgba(255,255,255,0.05); color: white; justify-content: center; font-size: 0.85rem;" onclick="abrirPropostaCompleta()">
+                                    <button class="btn-action" style="flex: 1; background: rgba(255,255,255,0.05); color: white; justify-content: center; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.1);" onclick="abrirPropostaCompleta()">
                                         <i class="ri-file-list-3-line"></i> Proposta
                                     </button>
                                     <button class="btn-action primary" style="flex: 1.5; justify-content: center; font-size: 0.85rem;" onclick="toggleChat()">
