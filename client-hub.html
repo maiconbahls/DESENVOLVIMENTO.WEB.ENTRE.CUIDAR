@@ -687,30 +687,29 @@
                         const orcCard = document.getElementById('card-orcamento');
                         if(orcCard) {
                             orcCard.style.borderColor = "#9dcf7f";
-                            orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.9) 0%, rgba(157,207,127,0.15) 100%)";
-                            orcCard.style.boxShadow = "0 15px 45px rgba(157, 207, 127, 0.15)";
+                            orcCard.style.background = "rgba(157, 207, 127, 0.03)";
                             
                             orcCard.innerHTML = `
-                                <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.08);"><i class="ri-shake-hands-line"></i></div>
-                                <div class="card-content" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-                                    <div style="width: 80px; height: 80px; background: rgba(157, 207, 127, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; border: 2px solid #9dcf7f; box-shadow: 0 0 30px rgba(157, 207, 127, 0.3);">
-                                        <i class="ri-checkbox-circle-fill" style="font-size: 3rem; color: #9dcf7f;"></i>
-                                    </div>
-                                    <h4 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: white;">Parceria Confirmada!</h4>
-                                    <p style="color: #9dcf7f; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 2px;">PLANO ${data.data.orcamento_produto || 'ATIVO'}</p>
+                                <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-checkbox-circle-line"></i></div>
+                                <div class="card-content" style="text-align: center;">
+                                    <span class="badge liberado" style="margin: 0 auto 1.5rem auto;"><i class="ri-check-double-line"></i> Plano Ativo</span>
+                                    <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">Parceria Confirmada!</h4>
                                     
-                                    <div style="width: 100%; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(157,207,127,0.2); margin-bottom: 2rem;">
-                                        <p style="color: #e5e7eb; font-size: 1rem; line-height: 1.6; margin: 0;">Sua proposta foi aceita com sucesso. Nossa equipe de gestão já foi notificada e iniciará os procedimentos de implementação em breve.</p>
+                                    <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(157,207,127,0.1); margin-bottom: 1.5rem; min-height: 180px; display: flex; flex-direction: column; justify-content: center;">
+                                        <p style="color: #9dcf7f; font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase;">${data.data.orcamento_produto || 'ESSENCIAL'}</p>
+                                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin: 0;">Sua proposta foi aceita. Nossa equipe de gestão iniciará os procedimentos de implementação em breve.</p>
+                                        <div style="margin-top: 1rem; font-size: 0.8rem; color: #9dcf7f; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+                                            <i class="ri-shield-check-line"></i> Proteção Ativa
+                                        </div>
                                     </div>
-
-                                    <div style="display: flex; gap: 1rem; width: 100%;">
-                                        <button class="btn-action" style="flex: 1; background: rgba(255,255,255,0.05); color: white; justify-content: center; border: 1px solid rgba(255,255,255,0.1);" onclick="abrirPropostaCompleta()">
-                                            <i class="ri-file-text-line"></i> Ver Proposta
-                                        </button>
-                                        <button class="btn-action" style="flex: 1; background: #18aeb6; color: white; justify-content: center;" onclick="toggleChat()">
-                                            <i class="ri-message-3-line"></i> Falar com Gestor
-                                        </button>
-                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.8rem;">
+                                    <button class="btn-action" style="flex: 1; background: rgba(255,255,255,0.05); color: white; justify-content: center; font-size: 0.85rem;" onclick="abrirPropostaCompleta()">
+                                        <i class="ri-file-list-3-line"></i> Proposta
+                                    </button>
+                                    <button class="btn-action primary" style="flex: 1.5; justify-content: center; font-size: 0.85rem;" onclick="toggleChat()">
+                                        <i class="ri-message-3-line"></i> Falar com Gestor
+                                    </button>
                                 </div>
                             `;
                         }
