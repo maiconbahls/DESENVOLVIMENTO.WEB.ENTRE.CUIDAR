@@ -562,6 +562,9 @@
                                         <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">Resumo do Escopo:</span>
                                         <p style="font-size: 0.85rem; color: var(--text-light); line-height: 1.4; margin: 0;">${data.data.orcamento_detalhes || 'Aguardando PDF detalhado.'}</p>
                                     </div>
+                                    <div style="margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 0.5rem; color: #f87171; font-size: 0.8rem; font-weight: 600;">
+                                        <i class="ri-calendar-event-line"></i> Válido por 15 dias corridos
+                                    </div>
                                 </div>
                             </div>
                             <button class="btn-action primary" style="width: 100%; justify-content: center;" onclick="abrirPropostaCompleta()"><i class="ri-file-list-3-line"></i> Visualizar Proposta Completa</button>
@@ -593,8 +596,9 @@
                     <h1 style="margin: 1rem 0 0 0; font-size: 1.5rem; color: #111; letter-spacing: 2px; text-transform: uppercase; font-weight: 800;">Proposta Técnica Comercial</h1>
                 </div>
                 <div style="text-align: right; color: #666;">
-                    <p style="margin: 0; font-weight: 600;">Data: <span id="prop_data_hoje"></span></p>
-                    <p style="margin: 0; font-size: 0.8rem;">Ref: ORC-2026-00${Math.floor(Math.random() * 900) + 100}</p>
+                    <p style="margin: 0; font-weight: 600;">Emissão: <span id="prop_data_hoje"></span></p>
+                    <p style="margin: 0; color: #ef4444; font-weight: 700; font-size: 0.9rem;">Válida até: <span id="prop_data_validade"></span></p>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.75rem; color: #999;">Ref: ORC-2026-00${Math.floor(Math.random() * 900) + 100}</p>
                 </div>
             </div>
 
@@ -626,7 +630,8 @@
                 </div>
 
                 <div style="margin-top: 5rem; border-top: 1px solid #eee; padding-top: 2rem; color: #888; font-size: 0.85rem; text-align: center;">
-                    <p>Esta proposta tem validade de 15 dias corridos. Para aceitação, favor contatar seu gestor de conta via chat do portal.</p>
+                    <p style="background: #fff5f5; color: #c53030; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 600; margin-bottom: 1rem; border: 1px solid #feb2b2;">Atenção: Esta proposta tem validade de 15 dias corridos.</p>
+                    <p>Para aceitação e próximos passos, favor contatar seu gestor de conta via chat do portal.</p>
                     <p style="margin-top: 1rem; font-weight: 700; color: #444;">ENTRECUIDAR - GESTÃO ASSISTENCIAL ESTRATÉGICA</p>
                 </div>
             </div>
@@ -641,7 +646,12 @@
     </div>
 
     <script>
-        document.getElementById('prop_data_hoje').innerText = new Date().toLocaleDateString('pt-BR');
+        const hoje = new Date();
+        const validade = new Date();
+        validade.setDate(hoje.getDate() + 15);
+        
+        document.getElementById('prop_data_hoje').innerText = hoje.toLocaleDateString('pt-BR');
+        document.getElementById('prop_data_validade').innerText = validade.toLocaleDateString('pt-BR');
     </script>
 </body>
 </html>
