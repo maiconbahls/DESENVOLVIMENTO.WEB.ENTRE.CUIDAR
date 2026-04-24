@@ -537,6 +537,11 @@
                     if(orcCard) {
                         orcCard.style.borderColor = "rgba(157, 207, 127, 0.5)";
                         orcCard.style.background = "linear-gradient(145deg, rgba(25,25,30,0.8) 0%, rgba(157,207,127,0.1) 100%)";
+                        
+                        // Garante que o valor tenha o prefixo R$ se não tiver
+                        let valorExibido = data.data.orcamento_valor || '0,00';
+                        if(!valorExibido.includes('R$')) valorExibido = 'R$ ' + valorExibido;
+
                         orcCard.innerHTML = `
                             <div class="card-icon-bg" style="color: rgba(157, 207, 127, 0.05);"><i class="ri-verified-badge-line"></i></div>
                             <div class="card-content">
@@ -547,25 +552,96 @@
                                 <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
                                         <span style="color: var(--text-muted);">Plano Indicado:</span>
-                                        <strong style="color: white;">${data.data.orcamento_produto || 'Integral'}</strong>
+                                        <strong style="color: white; letter-spacing: 1px;">${data.data.orcamento_produto || 'Integral'}</strong>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
-                                        <span style="color: var(--text-muted);">Valor Mensal:</span>
-                                        <strong style="color: #9dcf7f; font-size: 1.2rem;">R$ ${data.data.orcamento_valor || '0,00'}</strong>
+                                        <span style="color: var(--text-muted);">Investimento Mensal:</span>
+                                        <strong style="color: #9dcf7f; font-size: 1.2rem;">${valorExibido}</strong>
                                     </div>
                                     <div style="margin-top: 1rem;">
-                                        <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">Escopo Detalhado:</span>
+                                        <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-size: 0.85rem;">Resumo do Escopo:</span>
                                         <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">${data.data.orcamento_detalhes || 'Aguardando PDF detalhado.'}</p>
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn-action primary" style="width: 100%; justify-content: center;" onclick="alert('O contrato oficial está sendo gerado e será enviado para o seu e-mail!')"><i class="ri-file-download-line"></i> Visualizar Proposta Completa</button>
+                            <button class="btn-action primary" style="width: 100%; justify-content: center;" onclick="abrirPropostaCompleta()"><i class="ri-file-list-3-line"></i> Visualizar Proposta Completa</button>
                         `;
+
+                        // Preencher os dados no modal de proposta
+                        document.getElementById('prop_empresa').innerText = empresa;
+                        document.getElementById('prop_plano').innerText = data.data.orcamento_produto || 'Integral';
+                        document.getElementById('prop_valor').innerText = valorExibido;
+                        document.getElementById('prop_detalhes').innerText = data.data.orcamento_detalhes || 'Escopo técnico em anexo.';
                     }
                 }
             }
         });
     });
+
+    function abrirPropostaCompleta() {
+        document.getElementById('proposta-modal').style.display = 'flex';
+    }
+    </script>
+
+    <!-- Modal de Proposta Completa (Premium Look) -->
+    <div id="proposta-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; justify-content:center; align-items:center; backdrop-filter:blur(10px); padding: 2rem;">
+        <div style="background: white; width: 850px; max-width: 100%; height: 90vh; border-radius: 4px; color: #333; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.5);">
+            <!-- Header do Documento -->
+            <div style="padding: 3rem; border-bottom: 2px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; background: #fafafa;">
+                <div>
+                    <img src="assets/img/entrecuidar-logo.gif" alt="Logo" style="height: 60px; filter: grayscale(1) brightness(0.5);">
+                    <h1 style="margin: 1rem 0 0 0; font-size: 1.5rem; color: #111; letter-spacing: 2px; text-transform: uppercase; font-weight: 800;">Proposta Técnica Comercial</h1>
+                </div>
+                <div style="text-align: right; color: #666;">
+                    <p style="margin: 0; font-weight: 600;">Data: <span id="prop_data_hoje"></span></p>
+                    <p style="margin: 0; font-size: 0.8rem;">Ref: ORC-2026-00${Math.floor(Math.random() * 900) + 100}</p>
+                </div>
+            </div>
+
+            <!-- Conteúdo do Documento -->
+            <div style="flex: 1; overflow-y: auto; padding: 4rem; font-family: 'Outfit', sans-serif; line-height: 1.6;">
+                <div style="margin-bottom: 3rem;">
+                    <h3 style="color: #111; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">1. Apresentação do Cliente</h3>
+                    <p>À Empresa: <strong id="prop_empresa" style="color: #18aeb6; font-size: 1.2rem;"></strong></p>
+                    <p>Prezados gestores, baseados no diagnóstico assistencial realizado, apresentamos a seguir nossa proposta estruturada para otimização dos seus serviços de cuidado e saúde.</p>
+                </div>
+
+                <div style="margin-bottom: 3rem;">
+                    <h3 style="color: #111; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">2. Escopo dos Serviços</h3>
+                    <p style="white-space: pre-wrap; color: #444; background: #f9f9f9; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #18aeb6;" id="prop_detalhes"></p>
+                </div>
+
+                <div style="margin-bottom: 3rem;">
+                    <h3 style="color: #111; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">3. Investimento e Plano</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem;">
+                        <div style="background: #111; color: white; padding: 2rem; border-radius: 12px; text-align: center;">
+                            <p style="margin: 0; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #aaa;">Plano Selecionado</p>
+                            <h2 style="margin: 0.5rem 0 0 0; font-size: 2rem; color: #9dcf7f;" id="prop_plano"></h2>
+                        </div>
+                        <div style="background: #f0f0f0; padding: 2rem; border-radius: 12px; text-align: center; border: 1px solid #ddd;">
+                            <p style="margin: 0; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #666;">Valor Mensal</p>
+                            <h2 style="margin: 0.5rem 0 0 0; font-size: 2rem; color: #111;" id="prop_valor"></h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 5rem; border-top: 1px solid #eee; padding-top: 2rem; color: #888; font-size: 0.85rem; text-align: center;">
+                    <p>Esta proposta tem validade de 15 dias corridos. Para aceitação, favor contatar seu gestor de conta via chat do portal.</p>
+                    <p style="margin-top: 1rem; font-weight: 700; color: #444;">ENTRECUIDAR - GESTÃO ASSISTENCIAL ESTRATÉGICA</p>
+                </div>
+            </div>
+
+            <!-- Footer/Actions -->
+            <div style="padding: 1.5rem 3rem; background: #fafafa; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 1rem;">
+                <button onclick="document.getElementById('proposta-modal').style.display='none'" style="padding: 0.8rem 1.5rem; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: 600;">Fechar</button>
+                <button onclick="window.print()" style="padding: 0.8rem 1.5rem; border-radius: 8px; border: none; background: #111; color: white; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;"><i class="ri-printer-line"></i> Imprimir Proposta</button>
+                <button onclick="alert('Iniciando aceite digital...')" style="padding: 0.8rem 1.5rem; border-radius: 8px; border: none; background: #18aeb6; color: white; cursor: pointer; font-weight: 700;">Aceitar Proposta</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('prop_data_hoje').innerText = new Date().toLocaleDateString('pt-BR');
     </script>
 </body>
 </html>

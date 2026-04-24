@@ -171,14 +171,14 @@
             <div class="stat-card" style="border-color: rgba(243,115,62,0.3); background: linear-gradient(145deg, rgba(25,25,30,0.6) 0%, rgba(243,115,62,0.05) 100%);">
                 <div>
                     <h4>Diagnósticos Pendentes</h4>
-                    <div class="value" style="color: var(--primary-color);">5</div>
+                    <div class="value" style="color: var(--primary-color);" id="total-pendentes">...</div>
                 </div>
                 <i class="ri-survey-line" style="font-size: 3rem; color: var(--primary-color); opacity: 0.8;"></i>
             </div>
             <div class="stat-card">
                 <div>
-                    <h4>Propostas Analisadas</h4>
-                    <div class="value" style="color: #9dcf7f;">19</div>
+                    <h4>Propostas Enviadas</h4>
+                    <div class="value" style="color: #9dcf7f;" id="total-propostas">...</div>
                 </div>
                 <i class="ri-checkbox-circle-line" style="font-size: 3rem; color: #9dcf7f; opacity: 0.8;"></i>
             </div>
@@ -239,11 +239,20 @@
         .then(data => {
             if(data.status === 'success') {
                 globalUsers = data.data;
+                
+                // Cálculo de Números Reais
+                const totalClientes = data.data.length;
+                const totalPendentes = data.data.filter(u => !u.proposta_id).length;
+                const totalPropostas = data.data.filter(u => u.proposta_status === 'Respondido').length;
+
+                document.getElementById('total-clientes').innerText = totalClientes;
+                document.getElementById('total-pendentes').innerText = totalPendentes;
+                document.getElementById('total-propostas').innerText = totalPropostas;
+
                 const tbody = document.querySelector('#table-empresas tbody');
                 tbody.innerHTML = '';
                 
                 if(data.data && data.data.length > 0) {
-                    document.getElementById('total-clientes').innerText = data.data.length;
                     
                     data.data.forEach(user => {
                         const tr = document.createElement('tr');
@@ -382,7 +391,7 @@
             </select>
 
             <label style="display:block; margin-bottom: 0.5rem; color:#bbb;">Valor Mensal (R$)</label>
-            <input type="number" id="orc_valor" placeholder="Ex: 1500" style="background:#222; border:1px solid rgba(255,255,255,0.1); width:100%; margin-bottom:1.5rem; padding:0.8rem; color:white; border-radius:8px; box-sizing: border-box;">
+            <input type="text" id="orc_valor" placeholder="R$ 0,00" oninput="formatarMoeda(this)" style="background:#222; border:1px solid rgba(255,255,255,0.1); width:100%; margin-bottom:1.5rem; padding:0.8rem; color:white; border-radius:8px; box-sizing: border-box;">
 
             <label style="display:block; margin-bottom: 0.5rem; color:#bbb;">Proposta Técnica (Escopo e Observações)</label>
             <textarea id="orc_obs" rows="4" placeholder="Descreva os itens do diagnóstico que estão inclusos..." style="background:#222; border:1px solid rgba(255,255,255,0.1); width:100%; margin-bottom:1.5rem; padding:0.8rem; color:white; border-radius:8px; box-sizing: border-box; font-family: inherit;"></textarea>
@@ -393,5 +402,16 @@
             </div>
         </div>
     </div>
+
+    <script>
+    function formatarMoeda(campo) {
+        let valor = campo.value.replace(/\D/g, "");
+        valor = (valor / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+        });
+        campo.value = valor;
+    }
+    </script>
 </body>
 </html>
