@@ -79,15 +79,17 @@
             .stat-card { padding: 1.5rem; }
             .stat-card .value { font-size: 2rem; }
             
-            /* Table to Cards Transformation */
+            /* Table to Cards Transformation - Premium Look */
             .table-responsive { border: none; background: transparent; padding: 0; }
             table, thead, tbody, th, td, tr { display: block; }
             thead tr { position: absolute; top: -9999px; left: -9999px; }
-            tr { background: rgba(25, 25, 30, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 1rem; padding: 1rem; }
-            td { border: none; position: relative; padding-left: 50% !important; text-align: right; margin-bottom: 0.5rem; }
-            td:before { content: attr(data-label); position: absolute; left: 1rem; width: 45%; text-align: left; font-weight: 600; color: var(--text-muted); }
-            td:last-child { margin-bottom: 0; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem !important; text-align: center; padding-left: 0 !important; }
+            tr { background: rgba(30, 30, 35, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; margin-bottom: 1.2rem; padding: 1.2rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+            td { border: none; position: relative; padding-left: 45% !important; text-align: right; margin-bottom: 0.8rem; font-size: 0.9rem; min-height: 24px; display: flex; align-items: center; justify-content: flex-end; }
+            td:before { content: attr(data-label); position: absolute; left: 0; width: 40%; text-align: left; font-weight: 700; color: #18aeb6; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+            td:last-child { margin-bottom: 0; border-top: 1px solid rgba(255,255,255,0.05); padding: 1.2rem 0 0 0 !important; text-align: center; padding-left: 0 !important; display: block; }
             td:last-child:before { display: none; }
+            
+            .btn-action { width: 100%; margin-bottom: 0.5rem; justify-content: center; min-height: 48px; }
         }
 
         @media (max-width: 480px) {

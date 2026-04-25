@@ -1114,40 +1114,58 @@ button {
         font-size: 1.5rem;
     }
 
-    /* Premium Mobile Touches */
-    .btn-primary, .btn-secondary, button {
-        min-height: 48px;
-    }
-
     .glass-container {
-        border-radius: 0; /* Edge to edge on mobile looks more professional */
-        margin-top: 0;
+        border-radius: 0; /* Totalmente sem bordas para parecer app nativo */
+        margin: 0;
         width: 100% !important;
         max-width: 100% !important;
-        border-left: none;
-        border-right: none;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
     .form-wrapper {
-        padding: 1.5rem 1rem !important;
+        padding: 2rem 1.2rem !important;
+        border-radius: 0 !important;
     }
 
-    .form-header h2 {
-        font-size: 1.5rem;
+    /* Evita o zoom automático do iOS ao focar em inputs */
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+
+    .btn-primary, .btn-secondary, button {
+        min-height: 52px;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    /* Refinamento de Tabelas no Mobile (Cards) */
+    .table-responsive {
+        border: none;
+        background: transparent;
     }
 
     /* Fix for very small screens */
     @media (max-width: 380px) {
-        .intro-left h2 { font-size: 1.7rem; }
-        .intro-right h3 { font-size: 1.6rem; }
-        .auth-container { padding: 1.2rem 0.8rem; }
+        .intro-left h2 { font-size: 1.6rem; }
+        .intro-right h3 { font-size: 1.5rem; }
+        .auth-container { padding: 1.5rem 1rem; }
     }
 }
 
-/* Global Smoothness */
+/* Global Aesthetics */
 html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+}
+
+/* Esconder scrollbar mantendo funcionalidade (apenas em containers específicos) */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 body {
