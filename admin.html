@@ -351,21 +351,12 @@
         </div>
     </main>
 
-    <!-- Toast de Notificação -->
-    <div id="notification-toast">
-        <div style="background: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;">
-            <i class="ri-notification-3-line" style="color: #18aeb6;"></i>
-        </div>
-        <div id="notification-content">
-            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Novo Diagnóstico!</h5>
-            <p style="margin: 0; font-size: 0.9rem;">Uma nova empresa acabou de responder.</p>
-        </div>
-        <button onclick="document.getElementById('notification-toast').style.display='none'" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 1rem; color: white;">×</button>
-    </div>
 
     <script>
     let globalUsers = [];
     let lastKnownProposalIds = new Set();
+    let lastUserCount = -1;
+    let lastMsgCount = -1;
 
     function loadUsers() {
         // Carrega todas as operadoras cadastradas no MySQL via Backend
@@ -375,17 +366,21 @@
             if(data.status === 'success') {
                 const users = data.data;
                 
-                // Verificar novas propostas para notificação
+                // Verificar novas empresas cadastradas
+                if (lastUserCount !== -1 && users.length > lastUserCount) {
+                    const newUser = users[0]; // O mais recente
+                    showNotification('Novo Cadastro!', `A empresa <strong>${newUser.empresa_name}</strong> acabou de se cadastrar.`, 'ri-building-line');
+                }
+                lastUserCount = users.length;
+
+                // Verificar novos diagnósticos (propostas)
                 const currentProposalIds = users.filter(u => u.proposta_id).map(u => u.proposta_id);
-                
                 if (lastKnownProposalIds.size > 0) {
                     const newProposals = users.filter(u => u.proposta_id && !lastKnownProposalIds.has(u.proposta_id));
                     if (newProposals.length > 0) {
-                        showNewProposalNotification(newProposals[0].empresa_name);
+                        showNotification('Novo Diagnóstico!', `A empresa <strong>${newProposals[0].empresa_name}</strong> respondeu ao diagnóstico.`, 'ri-survey-line');
                     }
                 }
-                
-                // Atualizar lista de IDs conhecidos
                 lastKnownProposalIds = new Set(currentProposalIds);
                 globalUsers = users;
                 
@@ -540,22 +535,6 @@
         }
     }
 
-    function showNewProposalNotification(empresa) {
-        const toast = document.getElementById('notification-toast');
-        const content = document.getElementById('notification-content');
-        content.innerHTML = `
-            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700;">Novo Diagnóstico!</h5>
-            <p style="margin: 0; font-size: 0.9rem;">A empresa <strong>${empresa}</strong> acabou de responder.</p>
-        `;
-        toast.style.display = 'flex';
-        // Som de notificação opcional (pode ser bloqueado pelo browser)
-        try {
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-            audio.play();
-        } catch(e) {}
-        
-        setTimeout(() => { toast.style.display = 'none'; }, 10000);
-    }
 
     document.addEventListener('DOMContentLoaded', () => {
         loadUsers();
@@ -577,6 +556,13 @@
         .then(res => res.json())
         .then(data => {
             if(data.status === 'success') {
+                // Notificação de Nova Mensagem
+                if (lastMsgCount !== -1 && data.data.length > lastMsgCount) {
+                    const newMsg = data.data[0];
+                    showNotification('Nova Mensagem!', `<strong>${newMsg.empresa_name}</strong> enviou uma mensagem no suporte.`, 'ri-chat-3-line');
+                }
+                lastMsgCount = data.data.length;
+
                 const tbody = document.querySelector('#table-mensagens tbody');
                 tbody.innerHTML = '';
                 
@@ -802,6 +788,51 @@
     document.getElementById('admin-chat-input').addEventListener('keypress', function(e) {
         if(e.key === 'Enter') sendAdminReply();
     });
+
+
+    function showNotification(title, message, icon = 'ri-notification-3-line') {
+        const toast = document.getElementById('notification-toast');
+        if (!toast) return;
+
+        const content = document.getElementById('notification-content');
+        toast.querySelector('.icon-circle').innerHTML = `<i class="${icon}"></i>`;
+        
+        content.innerHTML = `
+            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 700;">${title}</h5>
+            <p style="margin: 0; font-size: 0.9rem;">${message}</p>
+        `;
+        
+        toast.style.display = 'flex';
+        
+        try {
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+            audio.play();
+        } catch(e) { console.log('Audio blocked'); }
+        
+        setTimeout(() => { 
+            toast.style.animation = 'slideOut 0.5s forwards';
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.style.animation = 'slideIn 0.5s forwards';
+            }, 500);
+        }, 8000);
+    }
     </script>
+
+    <!-- Toast Notification HTML -->
+    <div id="notification-toast" style="position: fixed; top: 100px; right: 2rem; background: rgba(24, 174, 182, 0.95); color: white; padding: 1.2rem 1.8rem; border-radius: 16px; display: none; align-items: center; gap: 1.2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.4); z-index: 10001; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); width: 320px;">
+        <div class="icon-circle" style="width: 45px; height: 45px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">
+            <i class="ri-notification-3-line"></i>
+        </div>
+        <div id="notification-content" style="flex: 1;"></div>
+        <button onclick="document.getElementById('notification-toast').style.display='none'" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; opacity: 0.7;"><i class="ri-close-line"></i></button>
+    </div>
+
+    <style>
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(120%); opacity: 0; }
+        }
+    </style>
 </body>
 </html>
