@@ -97,6 +97,15 @@
             td:last-child:before { display: none; }
             
             .btn-action { width: 100%; margin-bottom: 0.5rem; justify-content: center; min-height: 48px; }
+
+            /* Admin Chat Modal Mobile Adjustment */
+            #chat-admin-modal > div {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                max-height: none !important;
+                border-radius: 0 !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -606,7 +615,15 @@
         activeChatUserId = userId;
         document.getElementById('chat_admin_empresa').innerText = empresa;
         document.getElementById('chat-admin-modal').style.display = 'flex';
+        if (window.innerWidth <= 768) {
+            document.body.style.overflow = 'hidden';
+        }
         loadChatHistory(userId);
+    }
+
+    function fecharChatAdmin() {
+        document.getElementById('chat-admin-modal').style.display = 'none';
+        document.body.style.overflow = '';
     }
 
     function loadChatHistory(userId) {
@@ -779,7 +796,7 @@
                     <h3 style="margin: 0; font-size: 1.2rem;">Chat com o Cliente</h3>
                     <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);" id="chat_admin_empresa"></p>
                 </div>
-                <button onclick="document.getElementById('chat-admin-modal').style.display='none'" style="background:none; border:none; color:white; font-size: 1.5rem; cursor:pointer;"><i class="ri-close-line"></i></button>
+                <button onclick="fecharChatAdmin()" style="background:none; border:none; color:white; font-size: 1.5rem; cursor:pointer;"><i class="ri-close-line"></i></button>
             </div>
             
             <div id="chat-history-admin" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; background: rgba(0,0,0,0.2);">
