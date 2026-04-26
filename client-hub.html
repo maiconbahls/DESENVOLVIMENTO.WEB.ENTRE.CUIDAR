@@ -9,17 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=7">
     <script>
-        const userId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
-        if (!userId) {
-            window.location.href = 'index.html';
-        } else {
-            // Sync back to sessionStorage if it was only in localStorage
-            if (!sessionStorage.getItem('user_id')) {
-                sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
-                sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
-                sessionStorage.setItem('user_role', localStorage.getItem('user_role'));
+        (function() {
+            const userId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
+            if (!userId) {
+                // If not found, wait a tiny bit and try one more time (for mobile storage initialization)
+                setTimeout(() => {
+                    const retryId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
+                    if (!retryId) window.location.replace('index.html');
+                }, 100);
+            } else {
+                // Sync back to sessionStorage if it was only in localStorage
+                if (!sessionStorage.getItem('user_id')) {
+                    sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
+                    sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
+                    sessionStorage.setItem('user_role', localStorage.getItem('user_role'));
+                }
             }
-        }
+        })();
     </script>
     <style>
         /* Override styles for full-page website look */

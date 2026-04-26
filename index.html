@@ -12,17 +12,28 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=2">
     <script>
-        // Auto-redirect if already logged in
-        const storedRole = sessionStorage.getItem('user_role') || localStorage.getItem('user_role');
-        const storedId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
-        
-        if (storedId && storedRole) {
-            if (storedRole.toLowerCase() === 'admin') {
-                window.location.href = 'admin.html';
-            } else {
-                window.location.href = 'client-hub.html';
+        // Check for existing session on page load
+        (function() {
+            const sId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
+            const sRole = sessionStorage.getItem('user_role') || localStorage.getItem('user_role');
+            
+            if (sId && sRole) {
+                // Sync to ensure both have it
+                if (!sessionStorage.getItem('user_id')) {
+                    sessionStorage.setItem('user_id', sId);
+                    sessionStorage.setItem('user_role', sRole);
+                    sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
+                }
+                
+                // Redirect based on role - Use replace to avoid back-button loops
+                const role = sRole.toLowerCase();
+                if (role === 'admin') {
+                    window.location.replace('admin.html');
+                } else {
+                    window.location.replace('client-hub.html');
+                }
             }
-        }
+        })();
     </script>
 </head>
 

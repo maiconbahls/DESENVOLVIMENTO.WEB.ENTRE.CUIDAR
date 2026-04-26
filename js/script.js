@@ -97,11 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Pequeno delay para garantir que o storage foi gravado no mobile
                     setTimeout(() => {
                         if(userRole === 'admin') {
-                            window.location.href = 'admin.html';
+                            window.location.replace('admin.html');
                         } else {
-                            window.location.href = 'client-hub.html';
+                            window.location.replace('client-hub.html');
                         }
-                    }, 150);
+                    }, 200); // Aumentado para 200ms para maior segurança no mobile
                 }
             } else {
                 let errorMsg = loginForm.querySelector('.login-error');

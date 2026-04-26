@@ -8,17 +8,23 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=15">
     <script>
-        const storedRole = (sessionStorage.getItem('user_role') || localStorage.getItem('user_role') || '').toLowerCase();
-        if (storedRole !== 'admin') {
-            window.location.href = 'index.html';
-        } else {
-            // Sync back to sessionStorage if it was only in localStorage
-            if (!sessionStorage.getItem('user_role')) {
-                sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
-                sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
-                sessionStorage.setItem('user_role', localStorage.getItem('user_role'));
+        (function() {
+            const storedRole = (sessionStorage.getItem('user_role') || localStorage.getItem('user_role') || '').toLowerCase();
+            if (storedRole !== 'admin') {
+                // Wait a bit for mobile storage sync if it fails at first
+                setTimeout(() => {
+                    const retryRole = (sessionStorage.getItem('user_role') || localStorage.getItem('user_role') || '').toLowerCase();
+                    if (retryRole !== 'admin') window.location.replace('index.html');
+                }, 100);
+            } else {
+                // Sync back to sessionStorage if it was only in localStorage
+                if (!sessionStorage.getItem('user_role')) {
+                    sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
+                    sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
+                    sessionStorage.setItem('user_role', localStorage.getItem('user_role'));
+                }
             }
-        }
+        })();
     </script>
     <style>
         :root {
