@@ -8,9 +8,16 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=13">
     <script>
-        const storedRole = (sessionStorage.getItem('user_role') || '').toLowerCase();
+        const storedRole = (sessionStorage.getItem('user_role') || localStorage.getItem('user_role') || '').toLowerCase();
         if (storedRole !== 'admin') {
             window.location.href = 'index.html';
+        } else {
+            // Sync back to sessionStorage if it was only in localStorage
+            if (!sessionStorage.getItem('user_role')) {
+                sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
+                sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
+                sessionStorage.setItem('user_role', localStorage.getItem('user_role'));
+            }
         }
     </script>
     <style>
@@ -120,7 +127,7 @@
     <nav class="top-navbar">
         <img src="assets/img/entrecuidar-logo.gif" alt="EntreCuidar Logo" style="height: 45px;">
         <div class="user-menu" style="display: flex; align-items: center; gap: 1.5rem;">
-            <button class="btn-logout" title="Sair do Sistema" onclick="sessionStorage.clear(); window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
+            <button class="btn-logout" title="Sair do Sistema" onclick="sessionStorage.clear(); localStorage.clear(); window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
                 <i class="ri-logout-box-r-line"></i> Sair
             </button>
         </div>

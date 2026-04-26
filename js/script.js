@@ -84,9 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (data.status === 'success') {
                 if(data.user) {
+                    // Save to both sessionStorage and localStorage for maximum compatibility/persistence on mobile
+                    localStorage.setItem('user_id', data.user.id);
+                    localStorage.setItem('user_empresa', data.user.empresa);
+                    const userRole = (data.user.role || '').toLowerCase();
+                    localStorage.setItem('user_role', userRole);
+                    
                     sessionStorage.setItem('user_id', data.user.id);
                     sessionStorage.setItem('user_empresa', data.user.empresa);
-                    const userRole = (data.user.role || '').toLowerCase();
                     sessionStorage.setItem('user_role', userRole);
                     
                     // Pequeno delay para garantir que o storage foi gravado no mobile
@@ -96,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             window.location.href = 'client-hub.html';
                         }
-                    }, 100);
+                    }, 150);
                 }
             } else {
                 let errorMsg = loginForm.querySelector('.login-error');
@@ -151,6 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             if (data.status === 'success') {
                 if(data.user) {
+                    localStorage.setItem('user_id', data.user.id);
+                    localStorage.setItem('user_empresa', data.user.empresa);
+                    localStorage.setItem('user_role', 'empresa');
+
                     sessionStorage.setItem('user_id', data.user.id);
                     sessionStorage.setItem('user_empresa', data.user.empresa);
                     sessionStorage.setItem('user_role', 'empresa');

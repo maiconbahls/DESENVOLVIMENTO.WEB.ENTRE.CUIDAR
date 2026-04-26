@@ -11,6 +11,19 @@
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=2">
+    <script>
+        // Auto-redirect if already logged in
+        const storedRole = sessionStorage.getItem('user_role') || localStorage.getItem('user_role');
+        const storedId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
+        
+        if (storedId && storedRole) {
+            if (storedRole.toLowerCase() === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'client-hub.html';
+            }
+        }
+    </script>
 </head>
 
 <body>
