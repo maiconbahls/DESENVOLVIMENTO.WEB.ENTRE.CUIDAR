@@ -85,23 +85,26 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.status === 'success') {
                 if(data.user) {
                     // Save to both sessionStorage and localStorage for maximum compatibility/persistence on mobile
-                    localStorage.setItem('user_id', data.user.id);
-                    localStorage.setItem('user_empresa', data.user.empresa);
-                    const userRole = (data.user.role || '').toLowerCase();
+                    const userId = data.user.id;
+                    const userRole = (data.user.role || '').toLowerCase().trim();
+                    const userEmpresa = data.user.empresa || '';
+
+                    localStorage.setItem('user_id', userId);
+                    localStorage.setItem('user_empresa', userEmpresa);
                     localStorage.setItem('user_role', userRole);
                     
-                    sessionStorage.setItem('user_id', data.user.id);
-                    sessionStorage.setItem('user_empresa', data.user.empresa);
+                    sessionStorage.setItem('user_id', userId);
+                    sessionStorage.setItem('user_empresa', userEmpresa);
                     sessionStorage.setItem('user_role', userRole);
                     
-                    // Pequeno delay para garantir que o storage foi gravado no mobile
+                    // Pequeno delay maior para garantir que o storage foi gravado no mobile (iOS/Android WebViews)
                     setTimeout(() => {
                         if(userRole === 'admin') {
                             window.location.replace('admin.html');
                         } else {
                             window.location.replace('client-hub.html');
                         }
-                    }, 200); // Aumentado para 200ms para maior segurança no mobile
+                    }, 400); // 400ms é o "sweet spot" para persistência em navegadores mobile lentos
                 }
             } else {
                 let errorMsg = loginForm.querySelector('.login-error');

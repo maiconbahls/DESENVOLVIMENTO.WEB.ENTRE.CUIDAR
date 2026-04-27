@@ -9,20 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=7">
     <script>
+        // Check authentication before page load - Hardened for Mobile
         (function() {
-            const userId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
+            const getId = () => (sessionStorage.getItem('user_id') || localStorage.getItem('user_id') || '').trim();
+            let userId = getId();
+            
             if (!userId) {
-                // If not found, wait a tiny bit and try one more time (for mobile storage initialization)
+                // If not found, wait a bit and try again (mobile storage initialization)
                 setTimeout(() => {
-                    const retryId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
-                    if (!retryId) window.location.replace('index.html');
-                }, 100);
+                    userId = getId();
+                    if (!userId) window.location.replace('index.html');
+                }, 200);
             } else {
                 // Sync back to sessionStorage if it was only in localStorage
                 if (!sessionStorage.getItem('user_id')) {
                     sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
-                    sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
-                    sessionStorage.setItem('user_role', localStorage.getItem('user_role'));
+                    sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa') || '');
+                    sessionStorage.setItem('user_role', localStorage.getItem('user_role') || 'empresa');
                 }
             }
         })();

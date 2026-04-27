@@ -12,24 +12,23 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=2">
     <script>
-        // Check for existing session on page load
+        // Check for existing session on page load - Hardened for Mobile
         (function() {
-            const sId = sessionStorage.getItem('user_id') || localStorage.getItem('user_id');
-            const sRole = sessionStorage.getItem('user_role') || localStorage.getItem('user_role');
+            const sId = (sessionStorage.getItem('user_id') || localStorage.getItem('user_id') || '').trim();
+            const sRole = (sessionStorage.getItem('user_role') || localStorage.getItem('user_role') || '').toLowerCase().trim();
             
             if (sId && sRole) {
-                // Sync to ensure both have it
+                // Ensure synchronization
                 if (!sessionStorage.getItem('user_id')) {
                     sessionStorage.setItem('user_id', sId);
                     sessionStorage.setItem('user_role', sRole);
-                    sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
+                    sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa') || '');
                 }
                 
-                // Redirect based on role - Use replace to avoid back-button loops
-                const role = sRole.toLowerCase();
-                if (role === 'admin') {
+                // Immediate redirect if session is valid
+                if (sRole === 'admin') {
                     window.location.replace('admin.html');
-                } else {
+                } else if (sRole === 'empresa' || sRole !== '') {
                     window.location.replace('client-hub.html');
                 }
             }
