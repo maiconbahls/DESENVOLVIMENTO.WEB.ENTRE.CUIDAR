@@ -8,17 +8,36 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=13">
     <script>
-        const storedRole = (sessionStorage.getItem('user_role') || localStorage.getItem('user_role') || '').toLowerCase();
-        if (storedRole !== 'admin') {
-            window.location.href = 'index.html';
-        } else {
-            // Sync back to sessionStorage if it was only in localStorage
-            if (!sessionStorage.getItem('user_role')) {
-                sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
-                sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa'));
-                sessionStorage.setItem('user_role', localStorage.getItem('user_role'));
+        // Check authentication before page load - Hardened for Mobile (Retry Loop)
+        (function() {
+            const getRole = () => (sessionStorage.getItem('user_role') || localStorage.getItem('user_role') || '').toLowerCase().trim();
+            let role = getRole();
+            
+            if (role !== 'admin') {
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                    attempts++;
+                    role = getRole();
+                    if (role === 'admin') {
+                        clearInterval(checkInterval);
+                        if (!sessionStorage.getItem('user_role')) {
+                            sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
+                            sessionStorage.setItem('user_role', 'admin');
+                        }
+                    } else if (attempts > 10) { // Tenta por 2 segundos
+                        clearInterval(checkInterval);
+                        window.location.replace('index.html');
+                    }
+                }, 200);
+            } else {
+                // Sync back to sessionStorage if it was only in localStorage
+                if (!sessionStorage.getItem('user_role')) {
+                    sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
+                    sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa') || '');
+                    sessionStorage.setItem('user_role', 'admin');
+                }
             }
-        }
+        })();
     </script>
     <style>
         body { 
@@ -103,18 +122,71 @@
         }
 
         @media (max-width: 768px) {
-            .top-navbar { height: 70px; padding: 0 1rem; }
-            .top-navbar img { height: 35px; }
-            .user-menu { display: none; }
-            .main-content { margin-top: 90px; padding: 0 1rem; }
-            .page-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-            .page-header div[style*="text-align: right"] { text-align: left !important; width: 100%; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; }
-            .admin-nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; margin-bottom: 2rem; }
-            .nav-item { padding: 0.6rem 1rem; white-space: nowrap; font-size: 0.85rem; }
-            .filters-bar { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .top-navbar { height: 60px; padding: 0 1rem; }
+            .top-navbar img { height: 30px; }
+            .user-menu { display: flex; align-items: center; gap: 0.8rem; }
+            .btn-logout { padding: 0.4rem 0.8rem !important; font-size: 0.8rem !important; }
+            
+            .main-content { margin-top: 80px; padding: 0 1rem !important; width: 100%; box-sizing: border-box; overflow-x: hidden; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; }
+            .page-header h1 { font-size: 2rem !important; }
+            .page-header div[style*="text-align: right"] { text-align: left !important; width: 100%; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; border-bottom: none; }
+            
+            .admin-nav { 
+                display: flex;
+                flex-direction: column;
+                width: 100%; 
+                gap: 0.6rem; 
+                padding: 0; 
+                margin-bottom: 2rem; 
+                background: transparent;
+                border: none;
+            }
+            .nav-item { 
+                width: 100%;
+                padding: 0.8rem 1.2rem; 
+                font-size: 0.9rem; 
+                justify-content: flex-start;
+                background: rgba(255,255,255,0.03);
+                border: 1px solid rgba(255,255,255,0.05);
+                white-space: normal;
+            }
+            
+            .filters-bar { flex-direction: column; align-items: stretch; gap: 1rem; padding: 1.2rem; }
             .search-input { width: 100% !important; max-width: none !important; }
-            .table-container { overflow-x: auto; }
-            table { min-width: 800px; }
+            
+            /* Table to Cards */
+            .table-container { border: none; background: transparent; overflow: visible; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+            tr { 
+                background: rgba(25, 25, 30, 0.6); 
+                border: 1px solid rgba(255,255,255,0.1); 
+                border-radius: 20px; 
+                margin-bottom: 1.5rem; 
+                padding: 1.5rem; 
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
+            td { 
+                border: none !important; 
+                padding: 0.8rem 0 !important; 
+                text-align: left !important; 
+                display: flex;
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+            td:before { 
+                content: attr(data-label); 
+                display: block;
+                font-weight: 700; 
+                color: #18aeb6; 
+                font-size: 0.7rem; 
+                text-transform: uppercase; 
+                letter-spacing: 1px;
+            }
+            td:last-child { margin-top: 1rem; padding-top: 1.5rem !important; border-top: 1px solid rgba(255,255,255,0.1) !important; }
+            td:last-child:before { display: none; }
+            .btn-view { width: 100%; justify-content: center; min-height: 48px; border-radius: 10px; }
         }
 
         @media (max-width: 480px) {
@@ -213,12 +285,12 @@
                 const dataStr = d.toLocaleDateString('pt-BR');
 
                 tr.innerHTML = `
-                    <td><span style="color:#6b7280;">#${item.id}</span></td>
-                    <td><strong style="color:white; font-size:1rem;">${item.empresa_nome}</strong></td>
-                    <td>${item.respondente_nome} (${item.respondente_cargo})</td>
-                    <td>${dataStr}</td>
-                    <td>${item.porte_empresa} / ${item.regiao_atuacao}</td>
-                    <td>
+                    <td data-label="Cód"><span style="color:#6b7280;">#${item.id}</span></td>
+                    <td data-label="Empresa"><strong style="color:white; font-size:1.1rem;">${item.empresa_nome}</strong></td>
+                    <td data-label="Respondente">${item.respondente_nome} (${item.respondente_cargo})</td>
+                    <td data-label="Data Realizada">${dataStr}</td>
+                    <td data-label="Porte / Região">${item.porte_empresa} / ${item.regiao_atuacao}</td>
+                    <td data-label="Ações">
                         <button class="btn-view" onclick="window.location.href='relatorio-diagnostico.html?id=${item.id}'">
                             <i class="ri-bar-chart-box-line"></i> Abrir Indicadores
                         </button>
