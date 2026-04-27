@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Usuário - EntreCuidar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #18aeb6;
+            --secondary: #f3733e;
+            --dark: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #080808;
+            color: #e5e7eb;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px;
+            background: rgba(15, 15, 20, 0.8);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .logo {
+            height: 60px;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 2.5rem; font-weight: 800; color: white; margin: 0; }
+        h2 { font-size: 1.8rem; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-top: 50px; display: flex; align-items: center; gap: 10px; }
+        h3 { color: white; margin-top: 30px; }
+        
+        .role-section {
+            padding: 25px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary);
+        }
+        .role-section.client { border-left-color: var(--secondary); }
+        
+        .step {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+        .step-num {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .client .step-num { background: var(--secondary); }
+        
+        .tip {
+            background: rgba(24, 174, 182, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-print {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(24, 174, 182, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .btn-print:hover { transform: translateY(-5px); background: #0e7b82; }
+
+        @media print {
+            .btn-print { display: none; }
+            body { background: white; color: black; }
+            .container { margin: 0; padding: 0; background: none; border: none; box-shadow: none; max-width: 100%; }
+            h1, h2, h3 { color: black; }
+            .role-section { border: 1px solid #ddd; background: #f9f9f9; }
+            .step-num { color: white !important; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 20px; margin: 10px; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <img src="assets/img/entrecuidar-logo.gif" alt="Logo" class="logo">
+            <h1>Manual da Plataforma</h1>
+            <p>Guia rápido de utilização para Administradores e Clientes</p>
+        </div>
+
+        <div class="role-section">
+            <h2><i class="ri-admin-line"></i> Acesso Administrador</h2>
+            <p><strong>Login:</strong> adm@entrecuidar.com</p>
+            
+            <div class="step">
+                <div class="step-num">1</div>
+                <div><strong>Gestão de Diagnósticos:</strong> No painel principal, você verá as empresas que se cadastraram. Use o botão <strong>"Entrevista"</strong> para iniciar o processo consultivo.</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-num">2</div>
+                <div><strong>Criação de Propostas:</strong> Após a entrevista, clique em <strong>"Orçamento"</strong> para definir os valores do plano e enviar a proposta ao cliente.</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div><strong>Análise de B.I.:</strong> Na aba "Relatórios de Entrevistas", visualize o nível de risco de cada empresa e gere o PDF técnico para envio.</div>
+            </div>
+        </div>
+
+        <div class="role-section client">
+            <h2><i class="ri-user-heart-line"></i> Acesso Cliente</h2>
+            <p><strong>Login:</strong> E-mail corporativo cadastrado pelo cliente.</p>
+            
+            <div class="step">
+                <div class="step-num">1</div>
+                <div><strong>Visualizar Proposta:</strong> No Hub do Cliente, localize o card de plano ativo e clique em <strong>"Ver Proposta"</strong> para analisar os detalhes comerciais.</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-num">2</div>
+                <div><strong>Aprovação Online:</strong> O cliente pode clicar em <strong>"Aceitar Proposta"</strong> diretamente na plataforma para formalizar o fechamento do negócio.</div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div><strong>Suporte e Chat:</strong> Utilize o ícone de chat no canto da tela para falar em tempo real com a equipe da EntreCuidar.</div>
+            </div>
+        </div>
+
+        <div class="tip">
+            <i class="ri-information-line" style="font-size: 2rem; color: var(--primary);"></i>
+            <div>
+                <strong>DICA PARA PDF:</strong> Para salvar este manual como PDF, clique no botão flutuante no canto da tela e escolha "Salvar como PDF" nas opções da sua impressora.
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px; color: #666; font-size: 0.8rem;">
+            © 2026 EntreCuidar - Gestão Estratégica em Saúde e Proteção.
+        </div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">
+        <i class="ri-file-pdf-2-line"></i> Gerar Manual em PDF
+    </button>
+
+</body>
+</html>
