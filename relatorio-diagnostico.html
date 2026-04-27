@@ -8,16 +8,26 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=15">
     <script>
-        // Check authentication before page load - Hardened for Mobile
+        // Check authentication before page load - Hardened for Mobile (Retry Loop)
         (function() {
             const getRole = () => (sessionStorage.getItem('user_role') || localStorage.getItem('user_role') || '').toLowerCase().trim();
             let role = getRole();
             
             if (role !== 'admin') {
-                // If not found, wait a bit and try again (mobile storage initialization)
-                setTimeout(() => {
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                    attempts++;
                     role = getRole();
-                    if (role !== 'admin') window.location.replace('index.html');
+                    if (role === 'admin') {
+                        clearInterval(checkInterval);
+                        if (!sessionStorage.getItem('user_role')) {
+                            sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
+                            sessionStorage.setItem('user_role', 'admin');
+                        }
+                    } else if (attempts > 10) { // Tenta por 2 segundos (10 * 200ms)
+                        clearInterval(checkInterval);
+                        window.location.replace('index.html');
+                    }
                 }, 200);
             } else {
                 // Sync back to sessionStorage if it was only in localStorage

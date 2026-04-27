@@ -9,16 +9,27 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css?v=7">
     <script>
-        // Check authentication before page load - Hardened for Mobile
+        // Check authentication before page load - Hardened for Mobile (Retry Loop)
         (function() {
             const getId = () => (sessionStorage.getItem('user_id') || localStorage.getItem('user_id') || '').trim();
             let userId = getId();
             
             if (!userId) {
-                // If not found, wait a bit and try again (mobile storage initialization)
-                setTimeout(() => {
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                    attempts++;
                     userId = getId();
-                    if (!userId) window.location.replace('index.html');
+                    if (userId) {
+                        clearInterval(checkInterval);
+                        if (!sessionStorage.getItem('user_id')) {
+                            sessionStorage.setItem('user_id', localStorage.getItem('user_id'));
+                            sessionStorage.setItem('user_empresa', localStorage.getItem('user_empresa') || '');
+                            sessionStorage.setItem('user_role', localStorage.getItem('user_role') || 'empresa');
+                        }
+                    } else if (attempts > 10) { // Tenta por 2 segundos
+                        clearInterval(checkInterval);
+                        window.location.replace('index.html');
+                    }
                 }, 200);
             } else {
                 // Sync back to sessionStorage if it was only in localStorage
