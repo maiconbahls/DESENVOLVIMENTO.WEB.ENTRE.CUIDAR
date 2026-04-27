@@ -23,7 +23,9 @@
     </script>
     <style>
         .form-step { max-width: 900px; }
-        .product-cards.grid-4 { grid-template-columns: 1fr 1fr; }
+        .product-cards { display: grid; gap: 1.5rem; }
+        .product-cards.grid-4 { grid-template-columns: repeat(2, 1fr); }
+        .product-cards.grid-3 { grid-template-columns: repeat(3, 1fr); }
         .product-card input[type="checkbox"] { position: absolute; opacity: 0; cursor: pointer; }
         .product-card input[type="checkbox"]:checked+.card-content {
             background: rgba(24, 174, 182, 0.05);
@@ -43,7 +45,7 @@
             .form-header p { font-size: 1rem; }
             .step-indicator { gap: 0.5rem; margin-bottom: 2rem; }
             .step-line { width: 30px; margin: 0 5px; }
-            .product-cards.grid-4 { grid-template-columns: 1fr; gap: 1rem; }
+            .product-cards.grid-4, .product-cards.grid-3 { grid-template-columns: 1fr !important; gap: 1rem; }
             .form-grid { grid-template-columns: 1fr; gap: 1rem; }
             .card-content { padding: 1.5rem; }
             .icon-wrapper { margin-bottom: 1rem; }
@@ -215,7 +217,7 @@
             <div class="form-step" id="step-4">
                 <h3>3. Já possuem protocolos estruturados para autismo e TDAH?</h3>
                 <p class="subtitle">Protocolos de autorização, altas e acompanhamento.</p>
-                <div class="product-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="product-cards grid-3">
                     <label class="product-card">
                         <input type="radio" name="q3" value="Sim">
                         <div class="card-content">
